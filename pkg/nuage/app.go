@@ -52,7 +52,8 @@ func RunApp(args ...string) (exitcode int) {
 
 	// Init and register HTTP endpoints.
 	endpoints := httpmux.Map{
-		"/":             {"GET": http.NotFoundHandler()},
+		"/":             {"GET": ExportAndServeHTML(profile)},
+		"/favicon.ico":  {"GET": http.NotFoundHandler()},
 		"/sitemap.xml":  {"GET": http.NotFoundHandler()},
 		"/robots.txt":   {"GET": http.NotFoundHandler()},
 		"/profile.md":   {"GET": ExportAndServeMarkdown(profile)},
@@ -84,17 +85,23 @@ func RunApp(args ...string) (exitcode int) {
 
 	// Wait for interrupt or server error.
 	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt)
+	signal.Notify(interrupt, os.Interrupt)
 	select {
 	case err := <-errc:
 		logger.Error("critical failure", "error", err)
-	case <-interrupt:
+		return
+	case sig := <-interrupt:
+		logger.Debug("shutting down", "signal", sig.String())
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	s.Shutdown(ctx)
-	logger.Debug("exiting gracefully")
+	err = s.Shutdown(ctx)
+	if err != nil {
+		logger.Error("shutdown HTTP server", "error", err)
+	}
+
+	logger.Debug("shutdown successful")
 	return 0
 }

@@ -30,6 +30,10 @@ func ExportAndServePDF(p *Profile) http.HandlerFunc {
 	return exportAndServe(p, ExportPDF, "application/pdf")
 }
 
+func ExportAndServeHTML(p *Profile) http.HandlerFunc {
+	return exportAndServe(p, ExportHTML, "text/html; charset=utf-8")
+}
+
 type exportFunc func(w io.Writer, p *Profile) error
 
 func exportAndServe(p *Profile, f exportFunc, typ string) http.HandlerFunc {
@@ -47,6 +51,10 @@ func exportAndServe(p *Profile, f exportFunc, typ string) http.HandlerFunc {
 }
 
 var (
+	//go:embed profile.html.gotmpl
+	DefaultHTMLExportTemplate string
+	tmplHTML                  = template.Must(template.New("").Parse(DefaultHTMLExportTemplate))
+
 	//go:embed profile.md.gotml
 	DefaultMarkdownExportTemplate string
 	tmplMarkdown                  = template.Must(template.New("").Parse(DefaultMarkdownExportTemplate))
@@ -56,6 +64,7 @@ var (
 	tmplText                  = template.Must(template.New("").Parse(DefaultTextExportTemplate))
 )
 
+func ExportHTML(w io.Writer, p *Profile) error     { return tmplHTML.Execute(w, p) }
 func ExportMarkdown(w io.Writer, p *Profile) error { return tmplMarkdown.Execute(w, p) }
 func ExportText(w io.Writer, p *Profile) error     { return tmplText.Execute(w, p) }
 func ExportJSON(w io.Writer, p *Profile) error     { return json.NewEncoder(w).Encode(p) }

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    	<meta charset="UTF-8">
+    	<link rel="icon" href="/favicon.ico" />
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    	<title>{{ .Name }}</title>
+    	<meta name="description" content="Welcome to my public web profile!">
+    	<meta name="robots" content="index, follow" />
+    	<meta name="author" content="{{ .Name }}" />
+
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                color: white;
+                padding: 16px;
+                background-color: #101010;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            a {
+                color: currentColor;
+            }
+
+            h1 {
+                text-align: center;
+            }
+
+            h2 {
+                color: #cacaca;
+                font-size: 133%;
+            }
+
+            ul {
+                list-style-type: none;
+            }
+
+            #top > nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            #top > nav a {
+                background-color: #303030;
+                padding: 8px 12px;
+                border-radius: 8px;
+            }
+
+            hr {
+                width: 100%;
+                background-color: grey;
+                height: 1px;
+                border: none;
+            }
+
+            main > section {
+                margin-top: 16px;
+                padding: 16px;
+                background-color: #202020;
+                border-radius: 8px;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            #experiences section {
+                padding: 16px;
+                background-color: #303030;
+            }
+        </style>
+    </head>
+
+    <body>
+        <main>
+            <section id="top">
+                <h1>{{ .Name }}</h1>
+                <hr>
+                <nav>
+                    <a href="#contact">Contact</a>
+                    <a href="#experiences">Experiences</a>
+                    <a href="#skills">Skills</a>
+                    <a href="#languages">Languages</a>
+                </nav>
+                <hr>
+                <nav>
+                    <a href="/profile.pdf">View as PDF</a>
+                    <a href="/profile.txt">View as text</a>
+                    <a href="/profile.md">View as Markdown</a>
+                    <a href="/profile.json">View as JSON</a>
+                </nav>
+            </section>
+
+        	<section id="experiences">
+        		<h2>Experiences</h2>
+        		<hr>
+        		{{ range .Experiences }}
+        		<section>
+        			<h3>{{ .Title }}</h3>
+        			<p><span>🏢</span>{{ .Organization }}</p>
+        			<p><span>🗓️</span>{{ .From }} - {{ .To }}</p>
+        			<div>
+        				<span>🦾</span>
+        				<ul>
+        					{{ range .Skills }}
+        					<li>{{ . }}</li>
+        					{{ end }}
+        				</ul>
+        			</div>
+        			<p><span>🌍</span>{{ .Location }}</p>
+        			<p><span>ℹ️</span>{{ .Description }}</p>
+        		</section>
+        		{{ end }}
+        	</section>
+
+        	<section id="skills">
+        		<h2>Skills</h2>
+        		<hr>
+        		{{ range .Skills }}
+        		<section>
+        			<h3>{{ .Title }}</h3>
+        			<ul>
+        				{{ range .Tools }}
+        				<li>{{ . }}</li>
+        				{{ end }}
+        			</ul>
+        		</section>
+        		{{ end }}
+        	</section>
+
+        	<section id="languages">
+        		<h2>Languages</h2>
+        		<hr>
+        		{{ range .Languages }}
+        		<section>
+        			<div>
+        				<h3>{{ .Label }}</h3>
+        				<p>{{ .Proficiency }}</p>
+        			</div>
+        		</section>
+        		{{ end }}
+        	</section>
+        </main>
+    </body>
+</html>
