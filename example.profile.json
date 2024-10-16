@@ -1,0 +1,89 @@
+{
+    "name": "Julien Sellier",
+    "experiences": [
+        {
+            "from": "September 2023",
+            "to": "now",
+            "title": "Backend Software Engineer",
+            "organization": "Scaleway",
+            "location": "Paris, France",
+            "description": "Working on DNS (and formerly transactional email).",
+            "skills": ["DNS", "Go", "SMTP"]
+        },
+        {
+            "from": "January 2023",
+            "to": "August 2023",
+            "title": "Web Development Teacher",
+            "organization": "Orange, Code Phenix, and others",
+            "location": "Paris, France",
+            "description": "Taught web development to (former-) inmates and youth at risk.",
+            "skills": ["HTML/CSS/JS", "HTTP", "DNS", "Computer programming"]
+        },
+        {
+            "from": "January 2022",
+            "to": "October 2022",
+            "title": "Backend Software Engineer",
+            "organization": "Canal+",
+            "location": "Paris, France",
+            "description": "Worked on a new live video streaming solution based on DASH and HLS.",
+            "skills": ["Go", "Kubernetes", "HLS", "DASH"]
+        },
+        {
+            "from": "September 2020",
+            "to": "January 2022",
+            "title": "Website Developer (Freelance)",
+            "organization": "Record Eye, Cyclic Studio, and others",
+            "location": "Paris, France",
+            "description": "Designed and developed websites for various SMBs.",
+            "skills": ["HTML/CSS/JS", "TypeScript", "Svelte", "React", "A11y"]
+        },
+        {
+            "from": "September 2018",
+            "to": "April 2020",
+            "title": "Chief Operations Officer",
+            "organization": "GreenOnline",
+            "location": "Amsterdam, Netherlands",
+            "description": "Managed the expansion and operation of our web application in 5 new European countries.",
+            "skills": ["People management", "Recruitment", "Project management"]
+        }
+    ],
+    "skills": [
+        {"title": "Software development", "tools": ["Go", "JavaScript", "TypeScript"]},
+        {"title": "Web development", "tools": ["HTML/CSS/JS", "DNS", "HTTP", "SMTP", "Svelte", "A11y"]},
+        {"title": "DevOps", "tools": ["CICD", "Containerization", "Ansible"]},
+        {"title": "Software engineering practices", "tools": ["TDD", "Pair (and mob) programming"]},
+        {"title": "Database", "tools": ["SQL", "Postgres", "BoltDB"]}
+    ],
+    "languages": [
+        {"label": "French",  "proficiency": "Native"},
+        {"label": "English", "proficiency": "Bilingual"},
+        {"label": "Spanish", "proficiency": "Working proficiency"},
+        {"label": "Dutch",   "proficiency": "Basic understanding"}
+    ],
+    "education": [
+        {
+            "from": "2016 (September)",
+            "to": "2019 (February)",
+            "title": "Bachelor of Business Administration (Hospitality Management)",
+            "organization": "HTH (Amsterdam)"
+        }
+    ],
+    "interests": [
+        "Web-related protocols (HTTP, TLS, TCP, DNS, SMTP)",
+        "Esoteric programming languages (Forth, Brainf*ck and others)"
+    ],
+    "hobbies": [
+        "Coding",
+        "Playing guitar",
+        "Cooking (and eating)",
+        "Climbing (bouldering)"
+    ],
+    "links": [
+        {"label": "Github","url": "https://github.com/ejuju"},
+        {"label": "Website", "url": "https://mysite.example"}
+    ],
+    "contact": {
+        "email_address": "admin@mailer.example",
+        "url": "https://mysite.example/contact"
+    }
+}

@@ -1,4 +1,4 @@
-# Nuage: Tools for developers
+# Nuage: Self-hosted personal website for developers
 
 ## Installation guide
 

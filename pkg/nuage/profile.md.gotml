@@ -1,0 +1,53 @@
+# {{ .Name }}
+
+## Work experiences
+{{ range .Experiences }}
+|              |   |
+|--------------|---|
+| Title        | {{ .Title }} |
+| Organization | {{ .Organization }} |
+| Location     | {{ .Location }} |
+| Duration     | {{ .From }} to {{ .To }} |
+| Description  | {{ .Description }} |
+| Skills       | {{ range $i, $v := .Skills }}{{ if $i }}, {{ end }}{{ $v }}{{ end }} |
+{{ end }}
+
+## Skills
+{{ range .Skills }}
+- {{ .Title }} ({{ range $i, $v := .Tools }}{{ if $i }}, {{ end }}{{ $v }}{{ end }})
+{{- end }}
+
+## Education
+{{ range .Education }}
+|              |   |
+|--------------|---|
+| From         | {{ .From }} |
+| To           | {{ .To }} |
+| Title        | {{ .Title }} |
+| Organization | {{ .Organization }} |
+{{ end }}
+
+## Languages
+{{ range .Languages }}
+- {{ .Label }} ({{ .Proficiency }})
+{{- end }}
+
+## Interests
+{{ range .Interests }}
+- {{ . }}
+{{- end }}
+
+## Hobbies
+{{ range .Hobbies }}
+- {{ . }}
+{{- end }}
+
+## Links
+{{ range .Links }}
+- {{ .Label }}: {{ .URL }}
+{{- end }}
+
+## Contact
+
+- Email address: {{ .Contact.EmailAddress }}
+- Web page:      {{ .Contact.URL }}
