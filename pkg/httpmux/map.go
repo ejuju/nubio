@@ -4,8 +4,8 @@ import "net/http"
 
 type Map map[string]map[string]http.Handler
 
-func (m Map) Handler(fallback http.Handler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func (m Map) Handler(fallback http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		handlers, ok := m[r.URL.Path]
 		if !ok {
 			fallback.ServeHTTP(w, r)
@@ -17,5 +17,5 @@ func (m Map) Handler(fallback http.Handler) http.HandlerFunc {
 			return
 		}
 		handler.ServeHTTP(w, r)
-	}
+	})
 }

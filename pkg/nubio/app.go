@@ -86,11 +86,10 @@ func RunApp(args ...string) (exitcode int) {
 
 	router := endpoints.Handler(http.NotFoundHandler())
 
-	// TODO: Wrap global middleware.
-	// - Panic recovery
-	// - Logging
-	// - IP ban (rate limiting + blocklist)
-	// - Auth
+	// Wrap global middleware.
+	router = httpmux.Wrap(router,
+		httpmux.NewPanicRecoveryMiddleware(handlePanic(logger)),
+	)
 
 	// Run HTTP server.
 	// TODO: Setup TLS and use HTTPS in prod.
@@ -127,6 +126,12 @@ func RunApp(args ...string) (exitcode int) {
 
 	logger.Debug("shutdown successful")
 	return 0
+}
+
+func handlePanic(logger *slog.Logger) httpmux.PanicRecoveryHandler {
+	return func(w http.ResponseWriter, r *http.Request, err any) {
+		logger.Error("handler panicked", "error", err, "path", r.URL.Path, "address", r.RemoteAddr)
+	}
 }
 
 func serveFaviconSVG() http.HandlerFunc {
