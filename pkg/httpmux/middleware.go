@@ -31,10 +31,12 @@ func NewPanicRecoveryMiddleware(onPanic PanicRecoveryHandler) Middleware {
 
 type LoggingHandlerFunc func(w *ResponseRecorderWriter, r *http.Request)
 
+// Note: Response recorder's status code is initialized to -1 to allow for
+// checking if a header has already been written.
 func NewLoggingMiddleware(onHandled LoggingHandlerFunc) Middleware {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			resrec := &ResponseRecorderWriter{w, 200, 0} // Note: 200 by default to reflect http.Server's behavior.
+			resrec := &ResponseRecorderWriter{ResponseWriter: w, StatusCode: -1}
 			h.ServeHTTP(resrec, r)
 			onHandled(resrec, r)
 		})

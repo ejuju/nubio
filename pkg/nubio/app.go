@@ -91,10 +91,15 @@ func RunApp(args ...string) (exitcode int) {
 	router := endpoints.Handler(http.NotFoundHandler())
 
 	// Wrap global middleware.
+	// Note: the panic recovery middleware relies on the:
+	//	- True IP middleware
+	//	- Request ID middleware
+	//	- Logging middleware (to know if a response has been sent).
 	router = httpmux.Wrap(router,
 		httpmux.NewTrueIPMiddleware(config.TrueIPHeader, trueIPHTTPHeader),
-		httpmux.NewPanicRecoveryMiddleware(handlePanic(logger)),
+		httpmux.NewRequestIDMiddleware(),
 		httpmux.NewLoggingMiddleware(handleAccessLog(logger)),
+		httpmux.NewPanicRecoveryMiddleware(handlePanic(logger)),
 	)
 
 	// Run HTTP server.
@@ -134,21 +139,35 @@ func RunApp(args ...string) (exitcode int) {
 	return 0
 }
 
-func handlePanic(logger *slog.Logger) httpmux.PanicRecoveryHandler {
-	return func(w http.ResponseWriter, r *http.Request, err any) {
-		logger.Error("handler panicked", "error", err, "path", r.URL.Path, "address", r.RemoteAddr)
-	}
-}
-
 func handleAccessLog(logger *slog.Logger) httpmux.LoggingHandlerFunc {
 	return func(w *httpmux.ResponseRecorderWriter, r *http.Request) {
 		logger.Info("handled HTTP",
 			"status", w.StatusCode,
 			"path", r.URL.Path,
 			"written", w.Written,
-			"request_id", r.Header.Get("X-Request-ID"),
+			"request_id", httpmux.GetRequestID(r.Context()),
 			"ip_address", httpmux.GetTrueIP(r.Context()),
 		)
+	}
+}
+
+func handlePanic(logger *slog.Logger) httpmux.PanicRecoveryHandler {
+	return func(w http.ResponseWriter, r *http.Request, err any) {
+		// Write response to client if none has been written yet.
+		rrw, ok := w.(*httpmux.ResponseRecorderWriter)
+		panicBeforeResponse := ok && rrw.StatusCode == -1
+		if panicBeforeResponse {
+			http.Error(w, "Critical failure", http.StatusInternalServerError)
+		}
+
+		// Logger error.
+		logger.Error("handler panicked",
+			"error", err,
+			"path", r.URL.Path,
+			"request_id", httpmux.GetRequestID(r.Context()),
+		)
+
+		// TODO: Notify admin.
 	}
 }
 
