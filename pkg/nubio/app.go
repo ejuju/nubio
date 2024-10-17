@@ -1,4 +1,4 @@
-package nuage
+package nubio
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/ejuju/nuage/pkg/httpmux"
+	"github.com/ejuju/nubio/pkg/httpmux"
 )
 
 func RunApp(args ...string) (exitcode int) {

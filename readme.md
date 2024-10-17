@@ -1,9 +1,9 @@
-# Nuage: Self-hosted personal website for developers
+# Nubio: Self-hosted online resume for developers
 
 ## Installation guide
 
 ```bash
-go install github.com/ejuju/nuage
+go install github.com/ejuju/nubio
 ```
 
 Or build from source
@@ -15,5 +15,5 @@ go build
 
 Start web server:
 ```bash
-nuage serve
+nubio serve
 ```

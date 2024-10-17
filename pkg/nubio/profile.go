@@ -1,4 +1,4 @@
-package nuage
+package nubio
 
 type Profile struct {
 	Name        string       `json:"name"`

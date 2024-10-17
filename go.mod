@@ -1,4 +1,4 @@
-module github.com/ejuju/nuage
+module github.com/ejuju/nubio
 
 go 1.21.4
 

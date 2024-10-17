@@ -1,4 +1,4 @@
-package nuage
+package nubio
 
 type Config struct {
 	Address string `json:"address"` // Local HTTP server address.
