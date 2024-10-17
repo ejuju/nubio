@@ -44,10 +44,10 @@
 
 ## Links
 {{ range .Links }}
-- {{ .Label }}: {{ .URL }}
+- {{ .Label }}: [{{ .URL }}](https://{{ .URL }})
 {{- end }}
 
 ## Contact
 
-- Email address: {{ .Contact.EmailAddress }}
-- Web page:      {{ .Contact.URL }}
+- Email address: [{{ .Contact.EmailAddress }}](mailto:{{ .Contact.EmailAddress }})
+- Web page:      [{{ .Contact.URL }}](https://{{ .Contact.URL }})

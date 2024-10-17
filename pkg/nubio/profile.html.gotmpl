@@ -43,6 +43,7 @@
                 display: flex;
                 flex-wrap: wrap;
                 gap: 8px;
+                justify-content: center;
             }
 
             #top > nav a {
@@ -105,7 +106,21 @@
                 background-color: #303030;
             }
 
-            footer { margin-top: 16px; }
+            #interests > ul, #hobbies > ul, #links > ul {
+                list-style-type: circle;
+                list-style-position: inside;
+            }
+
+            footer { 
+                margin-top: 16px; 
+            }
+
+            footer nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: center;
+            }
         </style>
     </head>
 
@@ -115,14 +130,9 @@
                 <h1>{{ .Name }}</h1>
                 <hr>
                 <ul>
-                    <li><a href="mailto:{{ .Contact.EmailAddress }}">{{ .Contact.EmailAddress }}</a></li>
-                    <li><a href="{{ .Contact.URL }}">{{ .Contact.URL }}</a></li>
+                    <li>💌 <a href="mailto:{{ .Contact.EmailAddress }}">{{ .Contact.EmailAddress }}</a></li>
+                    <li>🔗 <a href="https://{{ .Contact.URL }}">{{ .Contact.URL }}</a></li>
                 </ul>
-                <nav>
-                    <a href="#experiences">Experiences</a>
-                    <a href="#skills">Skills</a>
-                    <a href="#languages">Languages</a>
-                </nav>
             </section>
 
         	<section id="experiences">
@@ -211,7 +221,7 @@
         		<hr>
         		<ul>
                     {{ range .Links }}
-                    <li><a href={{ .URL }}>{{ .Label }}</a></li>
+                    <li><a href="https://{{ .URL }}">{{ .Label }}</a></li>
                     {{ end }}
                 <ul>
         	</section>

@@ -204,7 +204,7 @@ func ExportPDF(w io.Writer, p *Profile) error {
 		pdf.SetFontStyle("B")
 		pdf.CellFormat(50, fontSize, v.Label, "", 0, "", false, 0, "")
 		pdf.SetFontStyle("U")
-		pdf.CellFormat(0, fontSize, v.URL, "", 2, "", false, 0, v.URL)
+		pdf.CellFormat(0, fontSize, v.URL, "", 2, "", false, 0, "https://"+v.URL)
 	}
 
 	// Append contact.
@@ -220,7 +220,7 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	pdf.SetFontStyle("B")
 	pdf.CellFormat(100, fontSize, "Web URL", "", 0, "", false, 0, "")
 	pdf.SetFontStyle("U")
-	pdf.CellFormat(0, fontSize, p.Contact.URL, "", 2, "", false, 0, p.Contact.URL)
+	pdf.CellFormat(0, fontSize, p.Contact.URL, "", 2, "", false, 0, "https://"+p.Contact.URL)
 
 	// Write whole PDF.
 	return pdf.Output(w)

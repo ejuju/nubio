@@ -46,5 +46,5 @@ type Link struct {
 
 type Contact struct {
 	EmailAddress string `json:"email_address"`
-	URL          string `json:"url"`
+	URL          string `json:"url"` // Web URL without leading "https://".
 }

@@ -79,11 +79,11 @@
         "Climbing (bouldering)"
     ],
     "links": [
-        {"label": "Github","url": "https://github.com/ejuju"},
-        {"label": "Website", "url": "https://mysite.example"}
+        {"label": "Github","url": "github.com/ejuju"},
+        {"label": "Website", "url": "mysite.example"}
     ],
     "contact": {
         "email_address": "admin@mailer.example",
-        "url": "https://mysite.example/contact"
+        "url": "mysite.example/contact"
     }
 }
