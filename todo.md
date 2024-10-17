@@ -1,6 +1,6 @@
 # Todo
 
-- [ ] Add robots.txt
-- [ ] Add sitemap.xml
-- [ ] Add favicon.ico
+- [ ] Add 404 page
 - [ ] Add JSON+LD and OG tags for SEO
+- [ ] Support serving PGP key
+- [ ] Support blogging

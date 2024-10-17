@@ -1,4 +1,4 @@
-# Nubio: Self-hosted online resume for developers
+# Nubio: Self-hosted personal website for developers
 
 ## Installation guide
 
