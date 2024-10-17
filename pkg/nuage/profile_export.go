@@ -94,6 +94,9 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	// Define footer.
 	pdf.AliasNbPages("{max_page}")
 	pdf.SetFooterFuncLpi(func(isLastPage bool) {
+		pdf.SetFontStyle("")
+		pdf.SetFontSize(fontSize)
+		pdf.SetTextColor(50, 50, 50)
 		txt := fmt.Sprintf("Page %d/{max_page}", pdf.PageCount())
 		pdf.Text(marginSide, a4HeightPt-3*fontSize, txt)
 	})

@@ -10,9 +10,7 @@
     	<meta name="author" content="{{ .Name }}" />
 
         <style>
-            *,
-            *::before,
-            *::after {
+            *, *::before, *::after {
                 box-sizing: border-box;
                 margin: 0;
                 padding: 0;
@@ -39,9 +37,7 @@
                 font-size: 133%;
             }
 
-            ul {
-                list-style-type: none;
-            }
+            ul { list-style-type: none; }
 
             #top > nav {
                 display: flex;
@@ -75,7 +71,41 @@
             #experiences section {
                 padding: 16px;
                 background-color: #303030;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
             }
+
+            #experiences > section > div {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                gap: 8px;
+                align-items: center;
+            }
+
+            #experiences ul {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            #experiences li {
+                padding: 4px 8px;
+                background-color: #404040;
+            }
+
+            #skills ul {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            #skills li {
+                padding: 4px 8px;
+                background-color: #303030;
+            }
+
+            footer { margin-top: 16px; }
         </style>
     </head>
 
@@ -84,18 +114,14 @@
             <section id="top">
                 <h1>{{ .Name }}</h1>
                 <hr>
+                <ul>
+                    <li><a href="mailto:{{ .Contact.EmailAddress }}">{{ .Contact.EmailAddress }}</a></li>
+                    <li><a href="{{ .Contact.URL }}">{{ .Contact.URL }}</a></li>
+                </ul>
                 <nav>
-                    <a href="#contact">Contact</a>
                     <a href="#experiences">Experiences</a>
                     <a href="#skills">Skills</a>
                     <a href="#languages">Languages</a>
-                </nav>
-                <hr>
-                <nav>
-                    <a href="/profile.pdf">View as PDF</a>
-                    <a href="/profile.txt">View as text</a>
-                    <a href="/profile.md">View as Markdown</a>
-                    <a href="/profile.json">View as JSON</a>
                 </nav>
             </section>
 
@@ -105,18 +131,17 @@
         		{{ range .Experiences }}
         		<section>
         			<h3>{{ .Title }}</h3>
-        			<p><span>🏢</span>{{ .Organization }}</p>
-        			<p><span>🗓️</span>{{ .From }} - {{ .To }}</p>
-        			<div>
-        				<span>🦾</span>
+        			<div><span>🏢</span>{{ .Organization }}</div>
+        			<div><span>🗓️</span>{{ .From }} - {{ .To }}</div>
+        			<div><span>🦾</span>
         				<ul>
         					{{ range .Skills }}
         					<li>{{ . }}</li>
         					{{ end }}
         				</ul>
         			</div>
-        			<p><span>🌍</span>{{ .Location }}</p>
-        			<p><span>ℹ️</span>{{ .Description }}</p>
+        			<div><span>🌍</span>{{ .Location }}</div>
+        			<div><span>ℹ️</span>{{ .Description }}</div>
         		</section>
         		{{ end }}
         	</section>
@@ -148,6 +173,57 @@
         		</section>
         		{{ end }}
         	</section>
+
+            <section id="education">
+        		<h2>Education</h2>
+        		<hr>
+        		{{ range .Education }}
+        		<section>
+        			<h3>{{ .Title }}</h3>
+        			<div><span>🏢</span>{{ .Organization }}</div>
+        			<div><span>🗓️</span>{{ .From }} - {{ .To }}</div>
+        		</section>
+        		{{ end }}
+        	</section>
+
+            <section id="interests">
+        		<h2>Interests</h2>
+        		<hr>
+        		<ul>
+                    {{ range .Interests }}
+                    <li>{{ . }}</li>
+                    {{ end }}
+                <ul>
+        	</section>
+
+            <section id="hobbies">
+        		<h2>Hobbies</h2>
+        		<hr>
+        		<ul>
+                    {{ range .Hobbies }}
+                    <li>{{ . }}</li>
+                    {{ end }}
+                <ul>
+        	</section>
+
+            <section id="links">
+        		<h2>Links</h2>
+        		<hr>
+        		<ul>
+                    {{ range .Links }}
+                    <li><a href={{ .URL }}>{{ .Label }}</a></li>
+                    {{ end }}
+                <ul>
+        	</section>
         </main>
+
+        <footer>
+            <nav>
+                <a href="/profile.pdf">View as PDF</a>
+                <a href="/profile.txt">View as text</a>
+                <a href="/profile.md">View as Markdown</a>
+                <a href="/profile.json">View as JSON</a>
+            </nav>
+        </footer>
     </body>
 </html>
