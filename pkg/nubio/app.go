@@ -91,10 +91,16 @@ func RunApp(args ...string) (exitcode int) {
 	router := endpoints.Handler(http.NotFoundHandler())
 
 	// Wrap global middleware.
+	//
 	// Note: the panic recovery middleware relies on the:
 	//	- True IP middleware
 	//	- Request ID middleware
 	//	- Logging middleware (to know if a response has been sent).
+	//
+	// This also means that any panic occuring in one of the above mentioned
+	// middlewares propagates up and will cause the program to exit.
+	//
+	// TODO?: Maybe handle this case.
 	router = httpmux.Wrap(router,
 		httpmux.NewTrueIPMiddleware(config.TrueIPHeader, trueIPHTTPHeader),
 		httpmux.NewRequestIDMiddleware(),
@@ -102,8 +108,8 @@ func RunApp(args ...string) (exitcode int) {
 		httpmux.NewPanicRecoveryMiddleware(handlePanic(logger)),
 	)
 
-	// Run HTTP server.
-	// TODO: Setup TLS and use HTTPS in prod.
+	// Run HTTP server in separate Goroutine.
+	// TODO: Support HTTPS.
 	s := &http.Server{
 		Addr:              config.Address,
 		Handler:           router,
