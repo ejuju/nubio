@@ -26,6 +26,10 @@ const (
 	PathPGPKey      = "/pgp.asc"
 )
 
+const (
+	trueIPHTTPHeader = "X-True-IP"
+)
+
 func RunApp(args ...string) (exitcode int) {
 	// Init logger.
 	slogh := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
@@ -88,7 +92,9 @@ func RunApp(args ...string) (exitcode int) {
 
 	// Wrap global middleware.
 	router = httpmux.Wrap(router,
+		httpmux.NewTrueIPMiddleware(config.TrueIPHeader, trueIPHTTPHeader),
 		httpmux.NewPanicRecoveryMiddleware(handlePanic(logger)),
+		httpmux.NewLoggingMiddleware(handleAccessLog(logger)),
 	)
 
 	// Run HTTP server.
@@ -131,6 +137,18 @@ func RunApp(args ...string) (exitcode int) {
 func handlePanic(logger *slog.Logger) httpmux.PanicRecoveryHandler {
 	return func(w http.ResponseWriter, r *http.Request, err any) {
 		logger.Error("handler panicked", "error", err, "path", r.URL.Path, "address", r.RemoteAddr)
+	}
+}
+
+func handleAccessLog(logger *slog.Logger) httpmux.LoggingHandlerFunc {
+	return func(w *httpmux.ResponseRecorderWriter, r *http.Request) {
+		logger.Info("handled HTTP",
+			"status", w.StatusCode,
+			"path", r.URL.Path,
+			"written", w.Written,
+			"request_id", r.Header.Get("X-Request-ID"),
+			"ip_address", httpmux.GetTrueIP(r.Context()),
+		)
 	}
 }
 

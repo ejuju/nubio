@@ -1,7 +1,8 @@
 # Todo
 
 - [ ] Add contact form with email notification
-- [ ] Add panic recovery middleware
+- [ ] Add request ID middleware
+- [ ] Add true IP middleware
 - [ ] Add logging middleware
 - [ ] Add rate limiting middleware
 - [ ] Add 404 page

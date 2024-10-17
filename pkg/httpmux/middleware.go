@@ -28,3 +28,15 @@ func NewPanicRecoveryMiddleware(onPanic PanicRecoveryHandler) Middleware {
 		})
 	}
 }
+
+type LoggingHandlerFunc func(w *ResponseRecorderWriter, r *http.Request)
+
+func NewLoggingMiddleware(onHandled LoggingHandlerFunc) Middleware {
+	return func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			resrec := &ResponseRecorderWriter{w, 200, 0} // Note: 200 by default to reflect http.Server's behavior.
+			h.ServeHTTP(resrec, r)
+			onHandled(resrec, r)
+		})
+	}
+}
