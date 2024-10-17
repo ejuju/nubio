@@ -1,239 +1,281 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-    	<meta charset="UTF-8">
-    	<link rel="icon" href="/favicon.ico" />
-    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    	<title>{{ .Name }}</title>
-    	<meta name="description" content="Welcome to my public web profile!">
-    	<meta name="robots" content="index, follow" />
-    	<meta name="author" content="{{ .Name }}" />
 
-        <style>
-            *, *::before, *::after {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Name }}</title>
+    <meta name="description" content="Welcome to my public web profile!">
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="{{ .Name }}" />
 
-            body {
-                color: white;
-                padding: 16px;
-                background-color: #101010;
-                max-width: 600px;
-                margin: 0 auto;
-            }
+    <style>
+        :root {
+            --color-fg-0: hsl(0, 0%, 95%);
+            --color-fg-1: hsl(0, 0%, 80%);
+            --color-fg-2: hsl(0, 0%, 65%);
+            --color-bg-0: hsl(0, 0%, 10%);
+            --color-bg-1: hsl(0, 0%, 15%);
+            --color-bg-2: hsl(0, 0%, 25%);
+        }
 
-            a {
-                color: currentColor;
-            }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-            h1 {
-                text-align: center;
-            }
+        body {
+            background-color: var(--color-bg-0);
+            color: var(--color-fg-1);
+        }
 
-            h2 {
-                color: #cacaca;
-                font-size: 133%;
-            }
+        main {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-            ul { list-style-type: none; }
+        a {
+            color: currentColor;
+        }
 
-            #top > nav {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 8px;
-                justify-content: center;
-            }
+        h1 {
+            text-align: center;
+            font-size: 150%;
+            color: var(--color-fg-0);
+        }
 
-            #top > nav a {
-                background-color: #303030;
-                padding: 8px 12px;
-                border-radius: 8px;
-            }
+        h2 {
+            color: var(--color-fg-1);
+            font-size: 125%;
+        }
 
-            hr {
-                width: 100%;
-                background-color: grey;
-                height: 1px;
-                border: none;
-            }
+        h3 {
+            color: var(--color-fg-1);
+            font-size: 100%;
+        }
 
-            main > section {
-                margin-top: 16px;
-                padding: 16px;
-                background-color: #202020;
-                border-radius: 8px;
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-            }
+        ul {
+            list-style-type: none;
+        }
 
-            #experiences section {
-                padding: 16px;
-                background-color: #303030;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
+        #top>ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
 
-            #experiences > section > div {
-                display: grid;
-                grid-template-columns: auto 1fr;
-                gap: 8px;
-                align-items: center;
-            }
+        #top>ul>li {
+            background-color: var(--color-bg-2);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
 
-            #experiences ul {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 8px;
-            }
+        hr {
+            width: 100%;
+            background-color: var(--color-bg-2);
+            height: 1px;
+            border: none;
+        }
 
-            #experiences li {
-                padding: 4px 8px;
-                background-color: #404040;
-            }
+        main>section {
+            margin-top: 16px;
+            padding: 24px 16px;
+            background-color: var(--color-bg-1);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
 
-            #skills ul {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 8px;
-            }
+        #experiences>section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
 
-            #skills li {
-                padding: 4px 8px;
-                background-color: #303030;
-            }
+        #experiences>section>div {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 8px;
+            align-items: baseline;
+        }
 
-            #interests > ul, #hobbies > ul, #links > ul {
-                list-style-type: circle;
-                list-style-position: inside;
-            }
+        #experiences ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
 
-            footer { 
-                margin-top: 16px; 
-            }
+        #experiences li {
+            padding: 4px 8px;
+            background-color: var(--color-bg-2);
+        }
 
-            footer nav {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 8px;
-                justify-content: center;
-            }
-        </style>
-    </head>
+        #skills ul {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
 
-    <body>
-        <main>
-            <section id="top">
-                <h1>{{ .Name }}</h1>
-                <hr>
+        #skills li {
+            padding: 4px 8px;
+            background-color: var(--color-bg-2);
+        }
+
+        #languages>section {
+            display: grid;
+            gap: 8px;
+        }
+
+        #languages p {
+            color: var(--color-fg-2);
+        }
+
+        #education>section {
+            display: grid;
+            gap: 8px;
+        }
+
+        #education p {
+            color: var(--color-fg-2);
+        }
+
+        #interests>ul,
+        #hobbies>ul,
+        #links>ul {
+            list-style-type: circle;
+            list-style-position: inside;
+            display: grid;
+            gap: 6px;
+        }
+
+        footer {
+            padding: 16px;
+        }
+
+        footer nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            color: var(--color-fg-2);
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <section id="top">
+            <h1>{{ .Name }}</h1>
+            <ul>
+                <li>💌 <a href="mailto:{{ .Contact.EmailAddress }}">{{ .Contact.EmailAddress }}</a></li>
+                <li>🔗 <a href="https://{{ .Contact.URL }}">{{ .Contact.URL }}</a></li>
+            </ul>
+        </section>
+
+        <section id="experiences">
+            <h2>Work experiences</h2>
+            {{ range .Experiences }}
+            <hr>
+            <section>
+                <h3>{{ .Title }} at {{ .Organization }}</h3>
+                <div><span>🗓️</span>{{ .From }} - {{ .To }}</div>
+                <div><span>🌍</span>{{ .Location }}</div>
+                <div>
+                    <span>🦾</span>
+                    <ul>{{ range .Skills }}<li>{{ . }}</li>{{ end }}</ul>
+                </div>
+                <div>
+                    <span>ℹ️</span>
+                    <p>{{ .Description }}</p>
+                </div>
+            </section>
+            {{ end }}
+        </section>
+
+        <section id="skills">
+            <h2>Skills</h2>
+            <hr>
+            {{ range .Skills }}
+            <section>
+                <h3>{{ .Title }}</h3>
                 <ul>
-                    <li>💌 <a href="mailto:{{ .Contact.EmailAddress }}">{{ .Contact.EmailAddress }}</a></li>
-                    <li>🔗 <a href="https://{{ .Contact.URL }}">{{ .Contact.URL }}</a></li>
+                    {{ range .Tools }}
+                    <li>{{ . }}</li>
+                    {{ end }}
                 </ul>
             </section>
+            {{ end }}
+        </section>
 
-        	<section id="experiences">
-        		<h2>Experiences</h2>
-        		<hr>
-        		{{ range .Experiences }}
-        		<section>
-        			<h3>{{ .Title }}</h3>
-        			<div><span>🏢</span>{{ .Organization }}</div>
-        			<div><span>🗓️</span>{{ .From }} - {{ .To }}</div>
-        			<div><span>🦾</span>
-        				<ul>
-        					{{ range .Skills }}
-        					<li>{{ . }}</li>
-        					{{ end }}
-        				</ul>
-        			</div>
-        			<div><span>🌍</span>{{ .Location }}</div>
-        			<div><span>ℹ️</span>{{ .Description }}</div>
-        		</section>
-        		{{ end }}
-        	</section>
+        <section id="languages">
+            <h2>Languages</h2>
+            <hr>
+            {{ range .Languages }}
+            <section>
+                <h3>{{ .Label }}</h3>
+                <p>{{ .Proficiency }}</p>
+            </section>
+            {{ end }}
+        </section>
 
-        	<section id="skills">
-        		<h2>Skills</h2>
-        		<hr>
-        		{{ range .Skills }}
-        		<section>
-        			<h3>{{ .Title }}</h3>
-        			<ul>
-        				{{ range .Tools }}
-        				<li>{{ . }}</li>
-        				{{ end }}
-        			</ul>
-        		</section>
-        		{{ end }}
-        	</section>
+        <section id="education">
+            <h2>Education</h2>
+            <hr>
+            {{ range .Education }}
+            <section>
+                <h3>{{ .Title }}</h3>
+                <p>At {{ .Organization }} ({{ .From }} - {{ .To }})</p>
+            </section>
+            {{ end }}
+        </section>
 
-        	<section id="languages">
-        		<h2>Languages</h2>
-        		<hr>
-        		{{ range .Languages }}
-        		<section>
-        			<div>
-        				<h3>{{ .Label }}</h3>
-        				<p>{{ .Proficiency }}</p>
-        			</div>
-        		</section>
-        		{{ end }}
-        	</section>
-
-            <section id="education">
-        		<h2>Education</h2>
-        		<hr>
-        		{{ range .Education }}
-        		<section>
-        			<h3>{{ .Title }}</h3>
-        			<div><span>🏢</span>{{ .Organization }}</div>
-        			<div><span>🗓️</span>{{ .From }} - {{ .To }}</div>
-        		</section>
-        		{{ end }}
-        	</section>
-
-            <section id="interests">
-        		<h2>Interests</h2>
-        		<hr>
-        		<ul>
-                    {{ range .Interests }}
-                    <li>{{ . }}</li>
-                    {{ end }}
+        <section id="interests">
+            <h2>Interests</h2>
+            <hr>
+            <ul>
+                {{ range .Interests }}
+                <li>{{ . }}</li>
+                {{ end }}
                 <ul>
-        	</section>
+        </section>
 
-            <section id="hobbies">
-        		<h2>Hobbies</h2>
-        		<hr>
-        		<ul>
-                    {{ range .Hobbies }}
-                    <li>{{ . }}</li>
-                    {{ end }}
+        <section id="hobbies">
+            <h2>Hobbies</h2>
+            <hr>
+            <ul>
+                {{ range .Hobbies }}
+                <li>{{ . }}</li>
+                {{ end }}
                 <ul>
-        	</section>
+        </section>
 
-            <section id="links">
-        		<h2>Links</h2>
-        		<hr>
-        		<ul>
-                    {{ range .Links }}
-                    <li><a href="https://{{ .URL }}">{{ .Label }}</a></li>
-                    {{ end }}
+        <section id="links">
+            <h2>Links</h2>
+            <hr>
+            <ul>
+                {{ range .Links }}
+                <li><a href="https://{{ .URL }}">{{ .Label }}</a></li>
+                {{ end }}
                 <ul>
-        	</section>
-        </main>
+        </section>
+    </main>
 
-        <footer>
-            <nav>
-                <a href="/profile.pdf">View as PDF</a>
-                <a href="/profile.txt">View as text</a>
-                <a href="/profile.md">View as Markdown</a>
-                <a href="/profile.json">View as JSON</a>
-            </nav>
-        </footer>
-    </body>
+    <footer>
+        <nav>
+            <a href="/profile.pdf">View as PDF</a>
+            <a href="/profile.txt">View as text</a>
+            <a href="/profile.md">View as Markdown</a>
+            <a href="/profile.json">View as JSON</a>
+        </nav>
+    </footer>
+</body>
+
 </html>

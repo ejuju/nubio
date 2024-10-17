@@ -43,7 +43,7 @@
             "title": "Chief Operations Officer",
             "organization": "GreenOnline",
             "location": "Amsterdam, Netherlands",
-            "description": "Managed the expansion and operation of our web application in 5 new European countries.",
+            "description": "Managed the expansion and operation of our web app in 5 new countries.",
             "skills": ["People management", "Recruitment", "Project management"]
         }
     ],
@@ -62,8 +62,14 @@
     ],
     "education": [
         {
-            "from": "2016 (September)",
-            "to": "2019 (February)",
+            "from": "September 2020",
+            "to": "February 2021",
+            "title": "Bachelor in Computer Science",
+            "organization": "Home (Paris)"
+        },
+        {
+            "from": "September 2016",
+            "to": "February 2019",
             "title": "Bachelor of Business Administration (Hospitality Management)",
             "organization": "HTH (Amsterdam)"
         }
