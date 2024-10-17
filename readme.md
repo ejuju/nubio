@@ -13,7 +13,6 @@ go build
 
 ## Usage
 
-Start web server:
-```bash
-nubio serve
-```
+1. Create your `profile.json` file (see [example](/example.profile.json)).
+1. Create your `config.json` file (see [example](/local.config.json)).
+1. Start web server (`nubio config.json`).

@@ -2,12 +2,12 @@ Hi, I'm {{ .Name }}!
 
 Work experiences:
 {{ range .Experiences }}
-- Title        : {{ .Title }}
-- Organization : {{ .Organization }}
-- Location     : {{ .Location }}
-- Duration     : {{ .From }} to {{ .To }}
-- Description  : {{ .Description }}
-- Skills       : {{ range $i, $v := .Skills }}{{ if $i }}, {{ end }}{{ $v }}{{ end }}
+- Title: {{ .Title }}
+- Organization: {{ .Organization }}
+- Location: {{ .Location }}
+- Duration: {{ .From }} to {{ .To }}
+- Description: {{ .Description }}
+- Skills: {{ range $i, $v := .Skills }}{{ if $i }}, {{ end }}{{ $v }}{{ end }}
 {{ end }}
 
 Skills:
@@ -17,10 +17,10 @@ Skills:
 
 Education:
 {{ range .Education }}
-- From         : {{ .From }}
-- To           : {{ .To }}
-- Title        : {{ .Title }}
-- Organization : {{ .Organization }}
+- From: {{ .From }}
+- To: {{ .To }}
+- Title: {{ .Title }}
+- Organization: {{ .Organization }}
 {{ end }}
 
 Languages:
@@ -40,9 +40,10 @@ Hobbies:
 
 Links:
 {{ range .Links }}
-- {{ .Label }}: {{ .URL }}
+- {{ .Label }}: https://{{ .URL }}
 {{- end }}
 
 Contact:
 - Email address: {{ .Contact.EmailAddress }}
-- Web page:      {{ .Contact.URL }}
+- Web page: https://{{ .Contact.URL }}
+- PGP key: {{ if .Contact.PGP }}https://{{ .Domain }}/pgp.asc{{ else }}Not provided{{ end }}

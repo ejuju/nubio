@@ -23,6 +23,7 @@ const (
 	PathProfilePDF  = "/profile.pdf"
 	PathProfileTXT  = "/profile.txt"
 	PathProfileMD   = "/profile.md"
+	PathPGPKey      = "/pgp.asc"
 )
 
 func RunApp(args ...string) (exitcode int) {
@@ -61,19 +62,28 @@ func RunApp(args ...string) (exitcode int) {
 		return 1
 	}
 
-	// Generate exports.
-
 	// Init and register HTTP endpoints.
 	endpoints := httpmux.Map{
 		PathHome:        {"GET": ExportAndServeHTML(profile)},
 		PathFaviconSVG:  {"GET": serveFaviconSVG()},
-		PathSitemapXML:  {"GET": serveSitemapXML(config.Domain)},
+		PathSitemapXML:  {"GET": serveSitemapXML(profile.Domain)},
 		PathRobotsTXT:   {"GET": serveRobotsTXT()},
 		PathProfileJSON: {"GET": ExportAndServeJSON(profile)},
 		PathProfilePDF:  {"GET": ExportAndServePDF(profile)},
 		PathProfileTXT:  {"GET": ExportAndServeText(profile)},
 		PathProfileMD:   {"GET": ExportAndServeMarkdown(profile)},
 	}
+
+	// If provided, load PGP key and register endpoint to serve it.
+	if profile.Contact.PGP != "" {
+		pgpKey, err := os.ReadFile(profile.Contact.PGP)
+		if err != nil {
+			logger.Error("read PGP public key file", "error", err)
+			return 1
+		}
+		endpoints[PathPGPKey] = map[string]http.Handler{"GET": servePGPKey(pgpKey)}
+	}
+
 	router := endpoints.Handler(http.NotFoundHandler())
 
 	// TODO: Wrap global middleware.
@@ -179,5 +189,13 @@ func serveSitemapXML(domain string) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		w.Write(b.Bytes())
+	}
+}
+
+func servePGPKey(key []byte) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(key)
 	}
 }

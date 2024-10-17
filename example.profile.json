@@ -1,5 +1,6 @@
 {
     "name": "Julien Sellier",
+    "domain": "juliensellier.example",
     "experiences": [
         {
             "from": "September 2023",
@@ -76,7 +77,8 @@
     ],
     "interests": [
         "Web-related protocols (HTTP, TLS, TCP, DNS, SMTP)",
-        "Esoteric programming languages (Forth, Brainf*ck and others)"
+        "Esoteric programming languages (Forth, Brainf*ck and others)",
+        "Creative coding"
     ],
     "hobbies": [
         "Coding",
@@ -86,10 +88,11 @@
     ],
     "links": [
         {"label": "Github","url": "github.com/ejuju"},
-        {"label": "Website", "url": "mysite.example"}
+        {"label": "Website", "url": "juliensellier.example"}
     ],
     "contact": {
         "email_address": "admin@mailer.example",
-        "url": "mysite.example/contact"
+        "url": "juliensellier.example/contact",
+        "pgp": "example.pgp.asc"
     }
 }

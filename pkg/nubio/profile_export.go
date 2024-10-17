@@ -53,15 +53,15 @@ func exportAndServe(p *Profile, f exportFunc, typ string) http.HandlerFunc {
 var (
 	//go:embed profile.html.gotmpl
 	DefaultHTMLExportTemplate string
-	tmplHTML                  = template.Must(template.New("").Parse(DefaultHTMLExportTemplate))
+	tmplHTML                  = template.Must(template.New("html").Parse(DefaultHTMLExportTemplate))
 
 	//go:embed profile.md.gotml
 	DefaultMarkdownExportTemplate string
-	tmplMarkdown                  = template.Must(template.New("").Parse(DefaultMarkdownExportTemplate))
+	tmplMarkdown                  = template.Must(template.New("md").Parse(DefaultMarkdownExportTemplate))
 
 	//go:embed profile.txt.gotmpl
 	DefaultTextExportTemplate string
-	tmplText                  = template.Must(template.New("").Parse(DefaultTextExportTemplate))
+	tmplText                  = template.Must(template.New("txt").Parse(DefaultTextExportTemplate))
 )
 
 func ExportHTML(w io.Writer, p *Profile) error     { return tmplHTML.Execute(w, p) }
@@ -210,17 +210,11 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	// Append contact.
 	pdf.Ln(24)
 	writeHeading(pdf, "Contact")
-	pdf.Ln(8)
-	pdf.SetFontSize(fontSize)
-	pdf.SetFontStyle("B")
-	pdf.CellFormat(100, fontSize, "Email address", "", 0, "", false, 0, "")
-	pdf.SetFontStyle("U")
-	pdf.CellFormat(0, fontSize, p.Contact.EmailAddress, "", 2, "", false, 0, "mailto:"+p.Contact.EmailAddress)
-	pdf.Ln(8)
-	pdf.SetFontStyle("B")
-	pdf.CellFormat(100, fontSize, "Web URL", "", 0, "", false, 0, "")
-	pdf.SetFontStyle("U")
-	pdf.CellFormat(0, fontSize, p.Contact.URL, "", 2, "", false, 0, "https://"+p.Contact.URL)
+	addContactLink(pdf, "Email address", p.Contact.EmailAddress, "mailto:"+p.Contact.EmailAddress)
+	addContactLink(pdf, "Web URL", p.Contact.URL, "https://"+p.Contact.URL)
+	if p.Contact.PGP != "" {
+		addContactLink(pdf, "PGP key", p.Domain+PathPGPKey, "https://"+p.Domain+PathPGPKey)
+	}
 
 	// Write whole PDF.
 	return pdf.Output(w)
@@ -242,4 +236,13 @@ func writeKV(pdf fpdf.Pdf, k, v string) {
 	pdf.SetTextColor(100, 100, 100)
 	pdf.MultiCell(0, fontSize, v, "", "", false)
 	pdf.Ln(4)
+}
+
+func addContactLink(pdf fpdf.Pdf, k, v, url string) {
+	pdf.Ln(8)
+	pdf.SetFontSize(fontSize)
+	pdf.SetFontStyle("B")
+	pdf.CellFormat(100, fontSize, k, "", 0, "", false, 0, "")
+	pdf.SetFontStyle("U")
+	pdf.CellFormat(0, fontSize, v, "", 2, "", false, 0, url)
 }

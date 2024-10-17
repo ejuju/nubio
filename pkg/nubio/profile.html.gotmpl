@@ -45,7 +45,6 @@
         }
 
         h1 {
-            text-align: center;
             font-size: 150%;
             color: var(--color-fg-0);
         }
@@ -68,7 +67,6 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            justify-content: center;
         }
 
         #top>ul>li {
@@ -157,16 +155,14 @@
             gap: 6px;
         }
 
-        footer {
-            padding: 16px;
-        }
-
-        footer nav {
+        #exports {
+            margin-top: 16px;
+            padding: 24px 16px;
+            background-color: var(--color-bg-1);
+            border-radius: 8px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-            color: var(--color-fg-2);
+            flex-direction: column;
+            gap: 24px;
         }
     </style>
 </head>
@@ -176,8 +172,10 @@
         <section id="top">
             <h1>{{ .Name }}</h1>
             <ul>
+                {{ if .Contact.PGP }}<li>🔑 <a href="/pgp.asc">PGP key</a></li>{{ end }}
                 <li>💌 <a href="mailto:{{ .Contact.EmailAddress }}">{{ .Contact.EmailAddress }}</a></li>
-                <li>🔗 <a href="https://{{ .Contact.URL }}">{{ .Contact.URL }}</a></li>
+                <li>🔗 <a href="https://{{ .Contact.URL }}">Contact</a></li>
+                {{ range .Links }}<li>🔗 <a href="https://{{ .URL }}">{{ .Label }}</a></li>{{ end }}
             </ul>
         </section>
 
@@ -258,23 +256,16 @@
                 <ul>
         </section>
 
-        <section id="links">
-            <h2>Links</h2>
-            <hr>
-            <ul>
-                {{ range .Links }}
-                <li><a href="https://{{ .URL }}">{{ .Label }}</a></li>
-                {{ end }}
-                <ul>
-        </section>
-    </main>
-
-    <footer>
-        <nav>
+        <nav id="exports">
             <a href="/profile.pdf">View as PDF</a>
             <a href="/profile.txt">View as text</a>
             <a href="/profile.md">View as Markdown</a>
             <a href="/profile.json">View as JSON</a>
+        </nav>
+    </main>
+
+    <footer>
+        <nav>
         </nav>
     </footer>
 </body>

@@ -1,5 +1,4 @@
 {
     "address": ":8080",
-    "profile": "example.profile.json",
-    "domain": "mysite.example"
+    "profile": "example.profile.json"
 }
