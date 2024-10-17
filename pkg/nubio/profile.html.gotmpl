@@ -73,6 +73,13 @@
             background-color: var(--color-bg-2);
             padding: 8px 12px;
             border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #top>ul>li>span {
+            font-size: 110%;
         }
 
         hr {
@@ -172,10 +179,10 @@
         <section id="top">
             <h1>{{ .Name }}</h1>
             <ul>
-                {{ if .Contact.PGP }}<li>🔑 <a href="/pgp.asc">PGP key</a></li>{{ end }}
-                <li>💌 <a href="mailto:{{ .Contact.EmailAddress }}">{{ .Contact.EmailAddress }}</a></li>
-                <li>🔗 <a href="https://{{ .Contact.URL }}">Contact</a></li>
-                {{ range .Links }}<li>🔗 <a href="https://{{ .URL }}">{{ .Label }}</a></li>{{ end }}
+                <li><span>👋</span><a href="https://{{ .Contact.URL }}">Contact</a></li>
+                <li><span style="font-weight: bold; color: #ffcb4c;">@</span><a href="mailto:{{ .Contact.EmailAddress }}">{{ .Contact.EmailAddress }}</a></li>
+                {{ if .Contact.PGP }}<li><span>🔑</span><a href="/pgp.asc">PGP key</a></li>{{ end }}
+                {{ range .Links }}<li><span>🔗</span><a href="https://{{ .URL }}">{{ .Label }}</a></li>{{ end }}
             </ul>
         </section>
 
