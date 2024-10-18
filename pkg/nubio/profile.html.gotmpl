@@ -128,7 +128,13 @@
             <ul class="hlist">
                 <li><a class="button" href="mailto:{{ .Contact.EmailAddress }}"><span class="emoji">@</span>{{ .Contact.EmailAddress }}</a></li>
                 {{ if .Contact.PGP }}<li><a class="button" href="/pgp.asc"><span class="emoji">🔑</span>PGP key</a></li>{{ end }}
-                {{ range .Links }}<li><a class="button" href="https://{{ .URL }}"><span class="emoji">🔗</span>{{ .Label }}</a></li>{{ end }}
+                {{ range .Links }}
+                <li>
+                    <a target="_blank" rel="noopener noreferrer" class="button" href="https://{{ .URL }}">
+                        <span class="emoji">🔗</span>{{ .Label }}
+                    </a>
+                </li>
+                {{ end }}
             </ul>
         </section>
 
@@ -195,10 +201,10 @@
         </section>
 
         <section id="exports" class="card">
-            <a class="button" href="/profile.pdf">Open as <strong>PDF</strong></a>
-            <a class="button" href="/profile.json">Open as <strong>JSON</strong></a>
-            <a class="button" href="/profile.txt">Open as <strong>TXT</strong></a>
-            <a class="button" href="/profile.md">Open as <strong>Markdown</strong></a>
+            <a target="_blank" class="button" href="/profile.pdf">Open as <strong>PDF</strong></a>
+            <a target="_blank" class="button" href="/profile.json">Open as <strong>JSON</strong></a>
+            <a target="_blank" class="button" href="/profile.txt">Open as <strong>TXT</strong></a>
+            <a target="_blank" class="button" href="/profile.md">Open as <strong>Markdown</strong></a>
         </section>
     </main>
 </body>
