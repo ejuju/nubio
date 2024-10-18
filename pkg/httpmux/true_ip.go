@@ -22,7 +22,7 @@ func GetTrueIP(ctx context.Context) string {
 	return v
 }
 
-func NewTrueIPMiddleware(xForwardedFor, internalHeader string) Middleware {
+func NewTrueIPMiddleware(xForwardedFor string) Middleware {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Get remote address from http.Server,

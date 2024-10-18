@@ -1,5 +1,7 @@
 {
     "address": ":8080",
     "profile": "example.profile.json",
-    "true_ip_header": ""
+    "true_ip_header": "",
+    "smtp_relay": null,
+    "admin_email_address": "contact@juliensellier.example"
 }

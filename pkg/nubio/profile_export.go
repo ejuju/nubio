@@ -14,26 +14,6 @@ import (
 	"github.com/go-pdf/fpdf"
 )
 
-func ExportAndServeMarkdown(p *Profile) http.HandlerFunc {
-	return exportAndServe(p, ExportMarkdown, "text/markdown")
-}
-
-func ExportAndServeText(p *Profile) http.HandlerFunc {
-	return exportAndServe(p, ExportText, "text/plain")
-}
-
-func ExportAndServeJSON(p *Profile) http.HandlerFunc {
-	return exportAndServe(p, ExportJSON, "application/json")
-}
-
-func ExportAndServePDF(p *Profile) http.HandlerFunc {
-	return exportAndServe(p, ExportPDF, "application/pdf")
-}
-
-func ExportAndServeHTML(p *Profile) http.HandlerFunc {
-	return exportAndServe(p, ExportHTML, "text/html; charset=utf-8")
-}
-
 type exportFunc func(w io.Writer, p *Profile) error
 
 func exportAndServe(p *Profile, f exportFunc, typ string) http.HandlerFunc {

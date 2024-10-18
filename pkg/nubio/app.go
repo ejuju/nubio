@@ -1,10 +1,8 @@
 package nubio
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
-	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -14,22 +12,13 @@ import (
 	"github.com/ejuju/nubio/pkg/httpmux"
 )
 
-const (
-	PathHome        = "/"
-	PathFaviconSVG  = "/favicon.svg"
-	PathSitemapXML  = "/sitemap.xml"
-	PathRobotsTXT   = "/robots.txt"
-	PathProfileJSON = "/profile.json"
-	PathProfilePDF  = "/profile.pdf"
-	PathProfileTXT  = "/profile.txt"
-	PathProfileMD   = "/profile.md"
-)
+type Config struct {
+	Address      string `json:"address"`        // Local HTTP server address.
+	Profile      string `json:"profile"`        // Path to JSON file where profile data is stored.
+	TrueIPHeader string `json:"true_ip_header"` // Ex: "X-Forwarded-For", useful when reverse proxying.
+}
 
-const (
-	trueIPHTTPHeader = "X-True-IP"
-)
-
-func RunApp(args ...string) (exitcode int) {
+func Run(args ...string) (exitcode int) {
 	// Init logger.
 	slogh := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
 	logger := slog.New(slogh)
@@ -67,10 +56,11 @@ func RunApp(args ...string) (exitcode int) {
 
 	// Init and register HTTP endpoints.
 	endpoints := httpmux.Map{
-		PathHome:        {"GET": ExportAndServeHTML(profile)},
-		PathFaviconSVG:  {"GET": serveFaviconSVG()},
+		PathPing:        {"GET": http.HandlerFunc(servePing)},
+		PathFaviconSVG:  {"GET": http.HandlerFunc(serveFaviconSVG)},
+		PathRobotsTXT:   {"GET": http.HandlerFunc(serveRobotsTXT)},
 		PathSitemapXML:  {"GET": serveSitemapXML(profile.Domain)},
-		PathRobotsTXT:   {"GET": serveRobotsTXT()},
+		PathHome:        {"GET": ExportAndServeHTML(profile)},
 		PathProfileJSON: {"GET": ExportAndServeJSON(profile)},
 		PathProfilePDF:  {"GET": ExportAndServePDF(profile)},
 		PathProfileTXT:  {"GET": ExportAndServeText(profile)},
@@ -89,7 +79,7 @@ func RunApp(args ...string) (exitcode int) {
 	// This also means that any panic occuring in one of the above mentioned
 	// middlewares propagates up and will cause the program to exit.
 	router = httpmux.Wrap(router,
-		httpmux.NewTrueIPMiddleware(config.TrueIPHeader, trueIPHTTPHeader),
+		httpmux.NewTrueIPMiddleware(config.TrueIPHeader),
 		httpmux.NewRequestIDMiddleware(),
 		httpmux.NewLoggingMiddleware(handleAccessLog(logger)),
 		httpmux.NewPanicRecoveryMiddleware(handlePanic(logger)),
@@ -119,110 +109,16 @@ func RunApp(args ...string) (exitcode int) {
 	case sig := <-interrupt:
 		logger.Debug("shutting down", "signal", sig.String())
 	}
-
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
+	// Shutdown HTTP server gracefully.
 	err = s.Shutdown(ctx)
 	if err != nil {
 		logger.Error("shutdown HTTP server", "error", err)
 	}
 
+	// Done.
 	logger.Debug("shutdown successful")
 	return 0
-}
-
-func handleAccessLog(logger *slog.Logger) httpmux.LoggingHandlerFunc {
-	return func(w *httpmux.ResponseRecorderWriter, r *http.Request) {
-		logger.Info("handled HTTP",
-			"status", w.StatusCode,
-			"path", r.URL.Path,
-			"written", w.Written,
-			"request_id", httpmux.GetRequestID(r.Context()),
-			"ip_address", httpmux.GetTrueIP(r.Context()),
-		)
-	}
-}
-
-func handlePanic(logger *slog.Logger) httpmux.PanicRecoveryHandler {
-	return func(w http.ResponseWriter, r *http.Request, err any) {
-		// Write response to client if none has been written yet.
-		rrw, ok := w.(*httpmux.ResponseRecorderWriter)
-		panicBeforeResponse := ok && rrw.StatusCode == -1
-		if panicBeforeResponse {
-			http.Error(w, "Critical failure", http.StatusInternalServerError)
-		}
-
-		// Logger error.
-		logger.Error("handler panicked",
-			"error", err,
-			"path", r.URL.Path,
-			"request_id", httpmux.GetRequestID(r.Context()),
-		)
-
-		// TODO: Notify admin.
-	}
-}
-
-func serveFaviconSVG() http.HandlerFunc {
-	const content = `<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 13 11" shape-rendering="crispEdges">
-    <rect width="1" height="11" x="0" y="0" fill="#cacaca" />
-    <rect width="1" height="11" x="12" y="0" fill="#cacaca" />
-    <rect width="3" height="1" x="1" y="0" fill="#cacaca" />
-    <rect width="3" height="1" x="9" y="0" fill="#cacaca" />
-    <rect width="3" height="1" x="9" y="10" fill="#cacaca" />
-    <rect width="3" height="1" x="1" y="10" fill="#cacaca" />
-    <rect width="2" height="1" x="3" y="2" fill="#cacaca" />
-    <rect width="2" height="1" x="8" y="2" fill="#cacaca" />
-    <rect width="4" height="1" x="2" y="3" fill="#cacaca" />
-    <rect width="4" height="1" x="7" y="3" fill="#cacaca" />
-    <rect width="9" height="1" x="2" y="4" fill="#cacaca" />
-    <rect width="7" height="1" x="3" y="5" fill="#cacaca" />
-    <rect width="5" height="1" x="4" y="6" fill="#cacaca" />
-    <rect width="3" height="1" x="5" y="7" fill="#cacaca" />
-    <rect width="1" height="1" x="6" y="8" fill="#cacaca" />
-</svg>
-`
-
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "image/svg+xml")
-		w.WriteHeader(http.StatusOK)
-		io.WriteString(w, content)
-	}
-}
-
-func serveRobotsTXT() http.HandlerFunc {
-	const content = `User-Agent: *
-Allow: /
-`
-
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		w.WriteHeader(http.StatusOK)
-		io.WriteString(w, content)
-	}
-}
-
-func serveSitemapXML(domain string) http.HandlerFunc {
-	paths := []string{
-		PathHome,
-		PathProfileJSON,
-		PathProfilePDF,
-		PathProfileTXT,
-		PathProfileMD,
-	}
-
-	b := &bytes.Buffer{}
-	b.WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-	b.WriteString("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">")
-	for _, path := range paths {
-		b.WriteString("<url><loc>https://" + domain + path + "/</loc></url>")
-	}
-	b.WriteString("</urlset>")
-
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
-		w.WriteHeader(http.StatusOK)
-		w.Write(b.Bytes())
-	}
 }
