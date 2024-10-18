@@ -17,6 +17,10 @@ func Wrap(h http.Handler, v ...Middleware) http.Handler {
 type PanicRecoveryHandler func(w http.ResponseWriter, r *http.Request, err any)
 
 func NewPanicRecoveryMiddleware(onPanic PanicRecoveryHandler) Middleware {
+	if onPanic == nil {
+		onPanic = func(_ http.ResponseWriter, _ *http.Request, err any) { panic(err) }
+	}
+
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			defer func() {
