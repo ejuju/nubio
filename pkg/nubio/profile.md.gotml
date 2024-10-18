@@ -51,5 +51,3 @@
 
 - Email address: [{{ .Contact.EmailAddress }}](mailto:{{ .Contact.EmailAddress }})
 - Web page:      [{{ .Contact.URL }}](https://{{ .Contact.URL }})
-
-{{ if .Contact.PGP }}[PGP key available here](https://{{ .Domain }}/pgp.asc){{ end }}

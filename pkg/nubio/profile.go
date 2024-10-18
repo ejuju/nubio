@@ -48,5 +48,4 @@ type Link struct {
 type Contact struct {
 	EmailAddress string `json:"email_address"`
 	URL          string `json:"url"` // Web URL without leading "https://".
-	PGP          string `json:"pgp"` // Local PGP public key path (loaded on startup).
 }

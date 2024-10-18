@@ -67,10 +67,7 @@ var (
 func ExportHTML(w io.Writer, p *Profile) error     { return tmplHTML.Execute(w, p) }
 func ExportMarkdown(w io.Writer, p *Profile) error { return tmplMarkdown.Execute(w, p) }
 func ExportText(w io.Writer, p *Profile) error     { return tmplText.Execute(w, p) }
-func ExportJSON(w io.Writer, p *Profile) error {
-	// TODO: Dont expose PGP key path here.
-	return json.NewEncoder(w).Encode(p)
-}
+func ExportJSON(w io.Writer, p *Profile) error     { return json.NewEncoder(w).Encode(p) }
 
 const (
 	marginSide            = 50
@@ -215,9 +212,6 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	writeHeading(pdf, "Contact")
 	addContactLink(pdf, "Email address", p.Contact.EmailAddress, "mailto:"+p.Contact.EmailAddress)
 	addContactLink(pdf, "Web URL", p.Contact.URL, "https://"+p.Contact.URL)
-	if p.Contact.PGP != "" {
-		addContactLink(pdf, "PGP key", p.Domain+PathPGPKey, "https://"+p.Domain+PathPGPKey)
-	}
 
 	// Write whole PDF.
 	return pdf.Output(w)

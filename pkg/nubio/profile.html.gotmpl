@@ -181,7 +181,6 @@
             <ul>
                 <li><span>👋</span><a href="https://{{ .Contact.URL }}">Contact</a></li>
                 <li><span style="font-weight: bold; color: #ffcb4c;">@</span><a href="mailto:{{ .Contact.EmailAddress }}">{{ .Contact.EmailAddress }}</a></li>
-                {{ if .Contact.PGP }}<li><span>🔑</span><a href="/pgp.asc">PGP key</a></li>{{ end }}
                 {{ range .Links }}<li><span>🔗</span><a href="https://{{ .URL }}">{{ .Label }}</a></li>{{ end }}
             </ul>
         </section>
@@ -270,11 +269,6 @@
             <a href="/profile.json">View as JSON</a>
         </nav>
     </main>
-
-    <footer>
-        <nav>
-        </nav>
-    </footer>
 </body>
 
 </html>

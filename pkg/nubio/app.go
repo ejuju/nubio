@@ -23,7 +23,6 @@ const (
 	PathProfilePDF  = "/profile.pdf"
 	PathProfileTXT  = "/profile.txt"
 	PathProfileMD   = "/profile.md"
-	PathPGPKey      = "/pgp.asc"
 )
 
 const (
@@ -78,16 +77,6 @@ func RunApp(args ...string) (exitcode int) {
 		PathProfileMD:   {"GET": ExportAndServeMarkdown(profile)},
 	}
 
-	// If provided, load PGP key and register endpoint to serve it.
-	if profile.Contact.PGP != "" {
-		pgpKey, err := os.ReadFile(profile.Contact.PGP)
-		if err != nil {
-			logger.Error("read PGP public key file", "error", err)
-			return 1
-		}
-		endpoints[PathPGPKey] = map[string]http.Handler{"GET": servePGPKey(pgpKey)}
-	}
-
 	router := endpoints.Handler(http.NotFoundHandler())
 
 	// Wrap global middleware.
@@ -99,8 +88,6 @@ func RunApp(args ...string) (exitcode int) {
 	//
 	// This also means that any panic occuring in one of the above mentioned
 	// middlewares propagates up and will cause the program to exit.
-	//
-	// TODO?: Maybe handle this case.
 	router = httpmux.Wrap(router,
 		httpmux.NewTrueIPMiddleware(config.TrueIPHeader, trueIPHTTPHeader),
 		httpmux.NewRequestIDMiddleware(),
@@ -237,13 +224,5 @@ func serveSitemapXML(domain string) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		w.Write(b.Bytes())
-	}
-}
-
-func servePGPKey(key []byte) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		w.WriteHeader(http.StatusOK)
-		w.Write(key)
 	}
 }

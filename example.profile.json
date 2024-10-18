@@ -92,7 +92,6 @@
     ],
     "contact": {
         "email_address": "admin@mailer.example",
-        "url": "juliensellier.example/contact",
-        "pgp": "example.pgp.asc"
+        "url": "juliensellier.example/contact"
     }
 }
