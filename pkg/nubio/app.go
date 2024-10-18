@@ -87,6 +87,8 @@ func Run(args ...string) (exitcode int) {
 
 	// Run HTTP server in separate Goroutine.
 	// TODO: Support HTTPS.
+	httpServerErrLogger := slog.NewLogLogger(logger.Handler(), slog.LevelError)
+	httpServerErrLogger.SetPrefix("http server: ")
 	s := &http.Server{
 		Addr:              config.Address,
 		Handler:           router,
@@ -95,6 +97,7 @@ func Run(args ...string) (exitcode int) {
 		WriteTimeout:      10 * time.Second,
 		IdleTimeout:       10 * time.Second,
 		MaxHeaderBytes:    50_000,
+		ErrorLog:          httpServerErrLogger,
 	}
 	errc := make(chan error, 1)
 	go func() { errc <- s.ListenAndServe() }()
