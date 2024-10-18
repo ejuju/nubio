@@ -6,10 +6,10 @@ For v1:
 - [ ] Add HTTPS with ACME / autocert
 - [ ] Support notifying admin by email on internal server error (panic, etc.)
 - [ ] Support simple analytics (number of visits) (sent weekly by email to admin)
-- [ ] Support IP blocklist in config / or dedicated file.
-- [ ] Support logging to file (and rotate file)
 
 Nice-to-haves:
+- [ ] Support logging to file (and rotate file)
+- [ ] Support IP blocklist in config / or dedicated file.
 - [ ] Add global rate limiting middleware
 - [ ] Support contact form with email notification (on dedicated page `/contact`)
 - [ ] Add JSON+LD and OG tags for SEO
