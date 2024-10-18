@@ -3,6 +3,7 @@ package nubio
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"time"
 
 	"github.com/ejuju/nubio/pkg/httpmux"
+	"golang.org/x/crypto/acme/autocert"
 )
 
 type Config struct {
@@ -104,9 +106,21 @@ func Run(args ...string) (exitcode int) {
 		httpmux.NewPanicRecoveryMiddleware(handlePanic(logger)),
 	)
 
-	// Run HTTP server in separate Goroutine.
-	s := httpmux.NewDefaultHTTPServer(config.Address, router, logger)
+	// Run HTTP(S) server(s).
+	if config.TLSDirpath != "" {
+		exitcode = runHTTPS(router, config, logger)
+	} else {
+		exitcode = runHTTP(router, config, logger)
+	}
+
+	// Done.
+	logger.Info("exiting", "code", exitcode)
+	return exitcode
+}
+
+func runHTTP(h http.Handler, config *Config, logger *slog.Logger) (exitcode int) {
 	errc := make(chan error, 1)
+	s := httpmux.NewDefaultHTTPServer(config.Address, h, logger)
 	go func() {
 		err := s.ListenAndServe()
 		if err != nil {
@@ -120,20 +134,85 @@ func Run(args ...string) (exitcode int) {
 	select {
 	case err := <-errc:
 		logger.Error("critical failure", "error", err)
-		return
+		return 1
 	case sig := <-interrupt:
 		logger.Debug("shutting down", "signal", sig.String())
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
 
 	// Shutdown HTTP server gracefully.
-	err = s.Shutdown(ctx)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	err := s.Shutdown(ctx)
 	if err != nil {
 		logger.Error("shutdown HTTP server", "error", err)
+		exitcode = 1
 	}
 
-	// Done.
-	logger.Debug("shutdown successful")
-	return 0
+	return exitcode
+}
+
+func runHTTPS(h http.Handler, config *Config, logger *slog.Logger) (exitcode int) {
+	// Configure autocert.
+	tlsCertManager := autocert.Manager{
+		Prompt:     autocert.AcceptTOS,
+		HostPolicy: autocert.HostWhitelist(config.Domain),
+		Cache:      autocert.DirCache(config.TLSDirpath),
+		Email:      config.TLSEmailAddress,
+	}
+	autocertServer := httpmux.NewDefaultHTTPServer(":80", tlsCertManager.HTTPHandler(nil), logger)
+	httpsServer := httpmux.NewDefaultHTTPServer(":443", h, logger)
+	errc := make(chan error, 1)
+
+	// Serve autocert on port :80.
+	go func() {
+		err := autocertServer.ListenAndServe()
+		if err != nil {
+			errc <- fmt.Errorf("run HTTP server: %w", err)
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+			httpsServer.Shutdown(ctx)
+		}
+	}()
+
+	// Serve app on port :443.
+	go func() {
+		err := httpsServer.ListenAndServeTLS("", "")
+		if err != nil {
+			errc <- fmt.Errorf("run HTTPS server: %w", err)
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			autocertServer.Shutdown(ctx)
+		}
+	}()
+
+	// Wait for interrupt or server error.
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
+	select {
+	case err := <-errc:
+		logger.Error("critical failure", "error", err)
+		return 1
+	case sig := <-interrupt:
+		logger.Debug("shutting down", "signal", sig.String())
+	}
+
+	// Shutdown HTTP server gracefully.
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	err := autocertServer.Shutdown(ctx)
+	if err != nil {
+		logger.Error("shutdown HTTP server", "error", err)
+		exitcode = 1
+	}
+
+	// Shutdown HTTPS server gracefully.
+	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = httpsServer.Shutdown(ctx)
+	if err != nil {
+		logger.Error("shutdown HTTP server", "error", err)
+		exitcode = 1
+	}
+
+	return exitcode
 }

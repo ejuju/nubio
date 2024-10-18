@@ -1,7 +1,6 @@
 # Todo
 
 For v1:
-- [ ] Add HTTPS with ACME / autocert
 - [ ] CI/CD doc (script for deployment over SSH, systemd daemon file template)
 
 Nice-to-haves:
