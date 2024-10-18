@@ -127,7 +127,7 @@
             <h1>{{ .Name }}</h1>
             <ul class="hlist">
                 <li><a class="button" href="mailto:{{ .Contact.EmailAddress }}"><span class="emoji">@</span>{{ .Contact.EmailAddress }}</a></li>
-                {{ if .Contact.PGP }}<li><a class="button" href="/pgp.asc"><span class="emoji">🔑</span>PGP key</a></li>{{ end }}
+                {{ if .Contact.PGP }}<li><a target="_blank" class="button" href="/pgp.asc"><span class="emoji">🔑</span>PGP key</a></li>{{ end }}
                 {{ range .Links }}
                 <li>
                     <a target="_blank" rel="noopener noreferrer" class="button" href="https://{{ .URL }}">
