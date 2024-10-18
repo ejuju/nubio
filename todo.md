@@ -9,7 +9,7 @@ For v1:
 - [ ] Support simple analytics (number of visits) (sent weekly by email to admin)
 
 Nice-to-haves:
-- [ ] Add contact form with email notification
+- [ ] Support contact form with email notification (on dedicated page `/contact`)
 - [ ] Add JSON+LD and OG tags for SEO
 - [ ] Support blogging / documentation (with Markdown-like files directory)
 - [ ] Support serving static files from directory (on `/static/*`) (do we want to use stdlib static file server?)
