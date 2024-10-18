@@ -20,3 +20,5 @@ Nice-to-haves:
 - [ ] Support notifying admin by email on internal server error (panic, etc.)
 - [ ] Support simple analytics (number of visits) (sent weekly by email to admin)
 - [ ] Support providing HTTP redirects in config (for URL shortener like capabilities)
+- [ ] Add more builtin HTML and PDF templates
+- [ ] Support custom templates (HTML/MD/TXT)
