@@ -1,4 +1,4 @@
-package nubio
+package nuage
 
 import (
 	"context"
@@ -10,12 +10,14 @@ import (
 	"time"
 
 	"github.com/ejuju/nubio/pkg/httpmux"
+	"github.com/ejuju/nubio/pkg/nubio"
 )
 
 type Config struct {
 	Address      string `json:"address"`        // Local HTTP server address.
 	Profile      string `json:"profile"`        // Path to JSON file where profile data is stored.
 	TrueIPHeader string `json:"true_ip_header"` // Ex: "X-Forwarded-For", useful when reverse proxying.
+	PGPKey       string `json:"pgp_key"`        // Path to PGP public key file.
 }
 
 func Run(args ...string) (exitcode int) {
@@ -47,11 +49,22 @@ func Run(args ...string) (exitcode int) {
 		logger.Error("read profile", "error", err)
 		return 1
 	}
-	profile := &Profile{}
+	profile := &nubio.Profile{}
 	err = json.Unmarshal(rawProfile, profile)
 	if err != nil {
 		logger.Error("parse profile", "error", err)
 		return 1
+	}
+
+	// Load PGP key if provided.
+	var pgpKey []byte
+	if config.PGPKey != "" {
+		pgpKey, err = os.ReadFile(config.PGPKey)
+		if err != nil {
+			logger.Error("read PGP public key file", "error", err)
+			return 1
+		}
+		profile.Contact.PGP = profile.Domain + PathPGPKey
 	}
 
 	// Init and register HTTP endpoints.
@@ -60,11 +73,12 @@ func Run(args ...string) (exitcode int) {
 		PathFaviconSVG:  {"GET": http.HandlerFunc(serveFaviconSVG)},
 		PathRobotsTXT:   {"GET": http.HandlerFunc(serveRobotsTXT)},
 		PathSitemapXML:  {"GET": serveSitemapXML(profile.Domain)},
-		PathHome:        {"GET": ExportAndServeHTML(profile)},
-		PathProfileJSON: {"GET": ExportAndServeJSON(profile)},
-		PathProfilePDF:  {"GET": ExportAndServePDF(profile)},
-		PathProfileTXT:  {"GET": ExportAndServeText(profile)},
-		PathProfileMD:   {"GET": ExportAndServeMarkdown(profile)},
+		PathHome:        {"GET": nubio.ExportAndServeHTML(profile)},
+		PathProfileJSON: {"GET": nubio.ExportAndServeJSON(profile)},
+		PathProfilePDF:  {"GET": nubio.ExportAndServePDF(profile)},
+		PathProfileTXT:  {"GET": nubio.ExportAndServeText(profile)},
+		PathProfileMD:   {"GET": nubio.ExportAndServeMarkdown(profile)},
+		PathPGPKey:      {"GET": servePGPKey(pgpKey)},
 	}
 
 	router := endpoints.Handler(http.NotFoundHandler())

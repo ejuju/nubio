@@ -1,53 +1,13 @@
 package nubio
 
 import (
-	"bytes"
-	_ "embed"
-	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"strings"
-	"text/template"
 	"time"
 
 	"github.com/go-pdf/fpdf"
 )
-
-type exportFunc func(w io.Writer, p *Profile) error
-
-func exportAndServe(p *Profile, f exportFunc, typ string) http.HandlerFunc {
-	buf := &bytes.Buffer{}
-	err := f(buf, p)
-	if err != nil {
-		panic(err)
-	}
-
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", typ)
-		w.WriteHeader(http.StatusOK)
-		w.Write(buf.Bytes())
-	}
-}
-
-var (
-	//go:embed profile.html.gotmpl
-	DefaultHTMLExportTemplate string
-	tmplHTML                  = template.Must(template.New("html").Parse(DefaultHTMLExportTemplate))
-
-	//go:embed profile.md.gotml
-	DefaultMarkdownExportTemplate string
-	tmplMarkdown                  = template.Must(template.New("md").Parse(DefaultMarkdownExportTemplate))
-
-	//go:embed profile.txt.gotmpl
-	DefaultTextExportTemplate string
-	tmplText                  = template.Must(template.New("txt").Parse(DefaultTextExportTemplate))
-)
-
-func ExportHTML(w io.Writer, p *Profile) error     { return tmplHTML.Execute(w, p) }
-func ExportMarkdown(w io.Writer, p *Profile) error { return tmplMarkdown.Execute(w, p) }
-func ExportText(w io.Writer, p *Profile) error     { return tmplText.Execute(w, p) }
-func ExportJSON(w io.Writer, p *Profile) error     { return json.NewEncoder(w).Encode(p) }
 
 const (
 	marginSide            = 50
@@ -191,8 +151,9 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	pdf.Ln(24)
 	writeHeading(pdf, "Contact")
 	addContactLink(pdf, "Email address", p.Contact.EmailAddress, "mailto:"+p.Contact.EmailAddress)
-	addContactLink(pdf, "Web URL", p.Contact.URL, "https://"+p.Contact.URL)
-
+	if p.Contact.PGP != "" {
+		addContactLink(pdf, "PGP key", p.Contact.PGP, "https://"+p.Contact.PGP)
+	}
 	// Write whole PDF.
 	return pdf.Output(w)
 }

@@ -1,4 +1,4 @@
-package nubio
+package nuage
 
 import (
 	"bytes"
@@ -19,6 +19,7 @@ const (
 	PathProfilePDF  = "/profile.pdf"
 	PathProfileTXT  = "/profile.txt"
 	PathProfileMD   = "/profile.md"
+	PathPGPKey      = "/pgp.asc"
 )
 
 func handleAccessLog(logger *slog.Logger) httpmux.LoggingHandlerFunc {
@@ -114,22 +115,10 @@ func serveSitemapXML(domain string) http.HandlerFunc {
 	}
 }
 
-func ExportAndServeMarkdown(p *Profile) http.HandlerFunc {
-	return exportAndServe(p, ExportMarkdown, "text/markdown")
-}
-
-func ExportAndServeText(p *Profile) http.HandlerFunc {
-	return exportAndServe(p, ExportText, "text/plain")
-}
-
-func ExportAndServeJSON(p *Profile) http.HandlerFunc {
-	return exportAndServe(p, ExportJSON, "application/json")
-}
-
-func ExportAndServePDF(p *Profile) http.HandlerFunc {
-	return exportAndServe(p, ExportPDF, "application/pdf")
-}
-
-func ExportAndServeHTML(p *Profile) http.HandlerFunc {
-	return exportAndServe(p, ExportHTML, "text/html; charset=utf-8")
+func servePGPKey(key []byte) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(key)
+	}
 }

@@ -3,10 +3,10 @@ package main
 import (
 	"os"
 
-	"github.com/ejuju/nubio/pkg/nubio"
+	"github.com/ejuju/nubio/pkg/nuage"
 )
 
 func main() {
-	exitcode := nubio.Run(os.Args[1:]...)
+	exitcode := nuage.Run(os.Args[1:]...)
 	os.Exit(exitcode)
 }

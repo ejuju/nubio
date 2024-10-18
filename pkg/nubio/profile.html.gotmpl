@@ -29,7 +29,9 @@
             padding: 0;
         }
 
+        html { height: 100%; }
         body {
+            min-height: 100%;
             background-color: var(--color-bg-0);
             color: var(--color-fg-1);
         }
@@ -38,50 +40,16 @@
             padding: 16px;
             max-width: 600px;
             margin: 0 auto;
-        }
-
-        a {
-            color: currentColor;
-        }
-
-        h1 {
-            font-size: 150%;
-            color: var(--color-fg-0);
-        }
-
-        h2 {
-            color: var(--color-fg-1);
-            font-size: 125%;
-        }
-
-        h3 {
-            color: var(--color-fg-1);
-            font-size: 100%;
-        }
-
-        ul {
-            list-style-type: none;
-        }
-
-        #top>ul {
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            flex-direction: column;
+            gap: 24px;
         }
 
-        #top>ul>li {
-            background-color: var(--color-bg-2);
-            padding: 8px 12px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        #top>ul>li>span {
-            font-size: 110%;
-        }
-
+        a { color: currentColor; font-weight: bold; }
+        h1 { font-size: 150%; color: var(--color-fg-0); }
+        h2 { color: var(--color-fg-1); font-size: 125%; }
+        h3 { color: var(--color-fg-1); font-size: 100%; }
+        ul { list-style-type: none; }
         hr {
             width: 100%;
             background-color: var(--color-bg-2);
@@ -89,8 +57,7 @@
             border: none;
         }
 
-        main>section {
-            margin-top: 16px;
+        section.card {
             padding: 24px 16px;
             background-color: var(--color-bg-1);
             border-radius: 8px;
@@ -99,175 +66,143 @@
             gap: 24px;
         }
 
-        #experiences>section {
+        ul.hlist {
             display: flex;
-            flex-direction: column;
-            gap: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+            list-style-type: none;
         }
 
-        #experiences>section>div {
+        ul.hlist .tag {
+            padding: 4px 8px;
+            background-color: var(--color-bg-2);
+        }
+
+        ul.vlist {
+            list-style-type: circle;
+            list-style-position: inside;
+            display: grid;
+            gap: 8px;
+        }
+
+        a.button {
+            background-color: var(--color-bg-2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        span.emoji {
+            font-size: 110%;
+            font-weight: bold; 
+            color: #ffcb4c;
+        }
+
+        div.kv {
             display: grid;
             grid-template-columns: auto 1fr;
             gap: 8px;
             align-items: baseline;
         }
 
-        #experiences ul {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+        .grid-8px { display: grid; gap: 8px; }
+        .grid-12px { display: grid; gap: 12px; }
 
-        #experiences li {
-            padding: 4px 8px;
-            background-color: var(--color-bg-2);
-        }
-
-        #skills ul {
-            margin-top: 8px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        #skills li {
-            padding: 4px 8px;
-            background-color: var(--color-bg-2);
-        }
-
-        #languages>section {
-            display: grid;
-            gap: 8px;
-        }
-
-        #languages p {
-            color: var(--color-fg-2);
-        }
-
-        #education>section {
-            display: grid;
-            gap: 8px;
-        }
-
-        #education p {
-            color: var(--color-fg-2);
-        }
-
-        #interests>ul,
-        #hobbies>ul,
-        #links>ul {
-            list-style-type: circle;
-            list-style-position: inside;
-            display: grid;
-            gap: 6px;
-        }
+        #languages p { color: var(--color-fg-2); }
+        #education p { color: var(--color-fg-2); }
 
         #exports {
-            margin-top: 16px;
-            padding: 24px 16px;
-            background-color: var(--color-bg-1);
-            border-radius: 8px;
             display: flex;
-            flex-direction: column;
-            gap: 24px;
+            flex-wrap: wrap;
+            flex-direction: row;
+            gap: 12px;
         }
     </style>
 </head>
 
 <body>
     <main>
-        <section id="top">
+        <section id="top" class="card">
             <h1>{{ .Name }}</h1>
-            <ul>
-                {{ if .Contact.URL }}<li><span>👋</span><a href="https://{{ .Contact.URL }}">Contact</a></li>{{ end }}
-                <li><span style="font-weight: bold; color: #ffcb4c;">@</span><a href="mailto:{{ .Contact.EmailAddress }}">{{ .Contact.EmailAddress }}</a></li>
-                {{ range .Links }}<li><span>🔗</span><a href="https://{{ .URL }}">{{ .Label }}</a></li>{{ end }}
+            <ul class="hlist">
+                <li><a class="button" href="mailto:{{ .Contact.EmailAddress }}"><span class="emoji">@</span>{{ .Contact.EmailAddress }}</a></li>
+                {{ if .Contact.PGP }}<li><a class="button" href="/pgp.asc"><span class="emoji">🔑</span>PGP key</a></li>{{ end }}
+                {{ range .Links }}<li><a class="button" href="https://{{ .URL }}"><span class="emoji">🔗</span>{{ .Label }}</a></li>{{ end }}
             </ul>
         </section>
 
-        <section id="experiences">
+        <section id="experiences" class="card">
             <h2>Work experiences</h2>
             {{ range .Experiences }}
             <hr>
-            <section>
+            <section class="grid-12px">
                 <h3>{{ .Title }} at {{ .Organization }}</h3>
-                <div><span>🗓️</span>{{ .From }} - {{ .To }}</div>
-                <div><span>🌍</span>{{ .Location }}</div>
-                <div>
-                    <span>🦾</span>
-                    <ul>{{ range .Skills }}<li>{{ . }}</li>{{ end }}</ul>
-                </div>
-                <div>
-                    <span>ℹ️</span>
-                    <p>{{ .Description }}</p>
-                </div>
+                <div class="kv"><span class="emoji">🗓️</span>{{ .From }} - {{ .To }}</div>
+                <div class="kv"><span class="emoji">🌍</span>{{ .Location }}</div>
+                <div class="kv"><span class="emoji">🦾</span><ul class="hlist">{{ range .Skills }}<li class="tag">{{ . }}</li>{{ end }}</ul></div>
+                <div class="kv"><span class="emoji">ℹ️</span><p>{{ .Description }}</p></div>
             </section>
             {{ end }}
         </section>
 
-        <section id="skills">
+        <section id="skills" class="card">
             <h2>Skills</h2>
             <hr>
             {{ range .Skills }}
-            <section>
+            <section class="grid-8px">
                 <h3>{{ .Title }}</h3>
-                <ul>
-                    {{ range .Tools }}
-                    <li>{{ . }}</li>
-                    {{ end }}
-                </ul>
+                <ul class="hlist">{{ range .Tools }}<li class="tag">{{ . }}</li>{{ end }}</ul>
             </section>
             {{ end }}
         </section>
 
-        <section id="languages">
+        <section id="languages" class="card">
             <h2>Languages</h2>
             <hr>
             {{ range .Languages }}
-            <section>
+            <section class="grid-8px">
                 <h3>{{ .Label }}</h3>
                 <p>{{ .Proficiency }}</p>
             </section>
             {{ end }}
         </section>
 
-        <section id="education">
+        <section id="education" class="card">
             <h2>Education</h2>
             <hr>
             {{ range .Education }}
-            <section>
+            <section class="grid-8px">
                 <h3>{{ .Title }}</h3>
                 <p>At {{ .Organization }} ({{ .From }} - {{ .To }})</p>
             </section>
             {{ end }}
         </section>
 
-        <section id="interests">
+        <section id="interests" class="card">
             <h2>Interests</h2>
             <hr>
+            <ul class="vlist">
+                {{ range .Interests }}<li>{{ . }}</li>{{ end }}
             <ul>
-                {{ range .Interests }}
-                <li>{{ . }}</li>
-                {{ end }}
-                <ul>
         </section>
 
-        <section id="hobbies">
+        <section id="hobbies" class="card">
             <h2>Hobbies</h2>
             <hr>
+            <ul class="vlist">
+                {{ range .Hobbies }}<li>{{ . }}</li>{{ end }}
             <ul>
-                {{ range .Hobbies }}
-                <li>{{ . }}</li>
-                {{ end }}
-                <ul>
         </section>
 
-        <nav id="exports">
-            <a href="/profile.pdf">View as PDF</a>
-            <a href="/profile.txt">View as text</a>
-            <a href="/profile.md">View as Markdown</a>
-            <a href="/profile.json">View as JSON</a>
-        </nav>
+        <section id="exports" class="card">
+            <a class="button" href="/profile.pdf">Open as <strong>PDF</strong></a>
+            <a class="button" href="/profile.json">Open as <strong>JSON</strong></a>
+            <a class="button" href="/profile.txt">Open as <strong>TXT</strong></a>
+            <a class="button" href="/profile.md">Open as <strong>Markdown</strong></a>
+        </section>
     </main>
 </body>
 

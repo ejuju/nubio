@@ -49,5 +49,6 @@
 
 ## Contact
 
-- Email address: [{{ .Contact.EmailAddress }}](mailto:{{ .Contact.EmailAddress }})
-- Web page:      [{{ .Contact.URL }}](https://{{ .Contact.URL }})
+You can reach me via email: [{{ .Contact.EmailAddress }}](mailto:{{ .Contact.EmailAddress }}).
+
+{{ if .Contact.PGP }}[PGP key available here](https://{{ .Contact.PGP }}){{ end }}

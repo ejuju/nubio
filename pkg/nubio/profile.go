@@ -13,6 +13,11 @@ type Profile struct {
 	Hobbies     []string     `json:"hobbies"`
 }
 
+type Contact struct {
+	EmailAddress string `json:"email_address"`
+	PGP          string `json:"pgp"` // Public PGP key URL (without leading "https://").
+}
+
 type Experience struct {
 	From         string   `json:"from"`
 	To           string   `json:"to"`
@@ -43,9 +48,4 @@ type Language struct {
 type Link struct {
 	Label string `json:"label"`
 	URL   string `json:"url"`
-}
-
-type Contact struct {
-	EmailAddress string `json:"email_address"`
-	URL          string `json:"url"` // Web URL without leading "https://".
 }

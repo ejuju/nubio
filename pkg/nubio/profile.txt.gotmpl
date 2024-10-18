@@ -44,5 +44,6 @@ Links:
 {{- end }}
 
 Contact:
-- Email address: {{ .Contact.EmailAddress }}
-- Web page: https://{{ .Contact.URL }}
+
+You can reach me by email: {{ .Contact.EmailAddress }}
+{{ if .Contact.PGP }}PGP key available here: https://{{ .Contact.PGP }}{{ end }}
