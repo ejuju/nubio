@@ -1,4 +1,4 @@
-package nuage
+package nubio
 
 import (
 	"context"
@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/ejuju/nubio/pkg/httpmux"
-	"github.com/ejuju/nubio/pkg/nubio"
 )
 
 type Config struct {
@@ -49,7 +48,7 @@ func Run(args ...string) (exitcode int) {
 		logger.Error("read profile", "error", err)
 		return 1
 	}
-	profile := &nubio.Profile{}
+	profile := &Profile{}
 	err = json.Unmarshal(rawProfile, profile)
 	if err != nil {
 		logger.Error("parse profile", "error", err)
@@ -73,11 +72,11 @@ func Run(args ...string) (exitcode int) {
 		PathFaviconSVG:  {"GET": http.HandlerFunc(serveFaviconSVG)},
 		PathRobotsTXT:   {"GET": http.HandlerFunc(serveRobotsTXT)},
 		PathSitemapXML:  {"GET": serveSitemapXML(profile.Domain)},
-		PathHome:        {"GET": nubio.ExportAndServeHTML(profile)},
-		PathProfileJSON: {"GET": nubio.ExportAndServeJSON(profile)},
-		PathProfilePDF:  {"GET": nubio.ExportAndServePDF(profile)},
-		PathProfileTXT:  {"GET": nubio.ExportAndServeText(profile)},
-		PathProfileMD:   {"GET": nubio.ExportAndServeMarkdown(profile)},
+		PathHome:        {"GET": ExportAndServeHTML(profile)},
+		PathProfileJSON: {"GET": ExportAndServeJSON(profile)},
+		PathProfilePDF:  {"GET": ExportAndServePDF(profile)},
+		PathProfileTXT:  {"GET": ExportAndServeText(profile)},
+		PathProfileMD:   {"GET": ExportAndServeMarkdown(profile)},
 		PathPGPKey:      {"GET": servePGPKey(pgpKey)},
 	}
 
