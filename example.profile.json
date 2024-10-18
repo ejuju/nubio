@@ -1,6 +1,14 @@
 {
     "name": "Julien Sellier",
     "domain": "juliensellier.example",
+    "contact": {
+        "email_address": "admin@mailer.example",
+        "url": "juliensellier.example/contact"
+    },
+    "links": [
+        {"label": "Github","url": "github.com/ejuju"},
+        {"label": "Website", "url": "juliensellier.example"}
+    ],
     "experiences": [
         {
             "from": "September 2023",
@@ -85,13 +93,5 @@
         "Playing guitar",
         "Cooking (and eating)",
         "Climbing (bouldering)"
-    ],
-    "links": [
-        {"label": "Github","url": "github.com/ejuju"},
-        {"label": "Website", "url": "juliensellier.example"}
-    ],
-    "contact": {
-        "email_address": "admin@mailer.example",
-        "url": "juliensellier.example/contact"
-    }
+    ]
 }

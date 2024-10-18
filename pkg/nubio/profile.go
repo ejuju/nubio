@@ -2,6 +2,8 @@ package nubio
 
 type Profile struct {
 	Name        string       `json:"name"`
+	Contact     Contact      `json:"contact"`
+	Links       []Link       `json:"links"`
 	Domain      string       `json:"domain"` // Public domain name used to host the site.
 	Experiences []Experience `json:"experiences"`
 	Skills      []Skill      `json:"skills"`
@@ -9,8 +11,6 @@ type Profile struct {
 	Education   []Education  `json:"education"`
 	Interests   []string     `json:"interests"`
 	Hobbies     []string     `json:"hobbies"`
-	Links       []Link       `json:"links"`
-	Contact     Contact      `json:"contact"`
 }
 
 type Experience struct {
