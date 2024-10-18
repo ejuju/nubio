@@ -4,9 +4,9 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
+	"html/template"
 	"io"
 	"net/http"
-	"text/template"
 )
 
 var (
