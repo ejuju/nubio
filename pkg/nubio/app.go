@@ -18,7 +18,7 @@ type Config struct {
 	Address         string `json:"address"`        // Local HTTP server address.
 	Domain          string `json:"domain"`         // Public domain name used to host the site.
 	TrueIPHeader    string `json:"true_ip_header"` // Ex: "X-Forwarded-For", useful when reverse proxying.
-	TLSDirpath      string `json:"tls_dir"`        // Path to TLS certificate directory.
+	TLSDirpath      string `json:"tls_dirpath"`    // Path to TLS certificate directory.
 	TLSEmailAddress string `json:"tls_email_addr"` // Email address in TLS certificate.
 	Profile         string `json:"profile"`        // Path to JSON file where profile data is stored.
 	PGPKey          string `json:"pgp_key"`        // Path to PGP public key file.
@@ -161,6 +161,7 @@ func runHTTPS(h http.Handler, config *Config, logger *slog.Logger) (exitcode int
 	}
 	autocertServer := httpmux.NewDefaultHTTPServer(":80", tlsCertManager.HTTPHandler(nil), logger)
 	httpsServer := httpmux.NewDefaultHTTPServer(":443", h, logger)
+	httpsServer.TLSConfig = tlsCertManager.TLSConfig()
 	errc := make(chan error, 1)
 
 	// Serve autocert on port :80.
