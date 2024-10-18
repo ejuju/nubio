@@ -3,7 +3,7 @@
     "domain": "juliensellier.example",
     "contact": {
         "email_address": "admin@mailer.example",
-        "url": "juliensellier.example/contact"
+        "url": ""
     },
     "links": [
         {"label": "Github","url": "github.com/ejuju"},

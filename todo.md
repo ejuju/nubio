@@ -10,8 +10,8 @@ For v1:
 Nice-to-haves:
 - [ ] Support logging to file (and rotate file)
 - [ ] Support IP blocklist in config / or dedicated file.
-- [ ] Add global rate limiting middleware
 - [ ] Support contact form with email notification (on dedicated page `/contact`)
+- [ ] Add global rate limiting middleware
 - [ ] Add JSON+LD and OG tags for SEO
 - [ ] Support blogging / documentation (with Markdown-like files directory)
 - [ ] Support serving static files from directory (on `/static/*`) (do we want to use stdlib static file server?)
