@@ -4,18 +4,24 @@ type Profile struct {
 	Name        string       `json:"name"`
 	Contact     Contact      `json:"contact"`
 	Links       []Link       `json:"links"`
-	Domain      string       `json:"domain"` // Public domain name used to host the site.
 	Experiences []Experience `json:"experiences"`
 	Skills      []Skill      `json:"skills"`
 	Languages   []Language   `json:"languages"`
 	Education   []Education  `json:"education"`
 	Interests   []string     `json:"interests"`
 	Hobbies     []string     `json:"hobbies"`
+
+	// This field is copied from the corresponding app config field.
+	// It is not exported in JSON but used here to be used in the templates.
+	Domain string `json:"-"`
 }
 
 type Contact struct {
 	EmailAddress string `json:"email_address"`
-	PGP          string `json:"pgp"` // Public PGP key URL (without leading "https://").
+
+	// Public PGP key URL (without leading "https://").
+	// This field is overwritten on startup if a PGP key is provided in the app config.
+	PGP string `json:"pgp"`
 }
 
 type Experience struct {

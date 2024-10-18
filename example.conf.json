@@ -1,6 +1,6 @@
 {
     "address": ":8080",
+    "domain": "localhost",
     "profile": "example.profile.json",
-    "true_ip_header": "",
-    "pgp_key": "example.pgp.asc"
+    "pgp_key": "pgp.example.asc"
 }

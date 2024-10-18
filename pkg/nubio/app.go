@@ -13,10 +13,13 @@ import (
 )
 
 type Config struct {
-	Address      string `json:"address"`        // Local HTTP server address.
-	Profile      string `json:"profile"`        // Path to JSON file where profile data is stored.
-	TrueIPHeader string `json:"true_ip_header"` // Ex: "X-Forwarded-For", useful when reverse proxying.
-	PGPKey       string `json:"pgp_key"`        // Path to PGP public key file.
+	Address         string `json:"address"`        // Local HTTP server address.
+	Domain          string `json:"domain"`         // Public domain name used to host the site.
+	TrueIPHeader    string `json:"true_ip_header"` // Ex: "X-Forwarded-For", useful when reverse proxying.
+	TLSDirpath      string `json:"tls_dir"`        // Path to TLS certificate directory.
+	TLSEmailAddress string `json:"tls_email_addr"` // Email address in TLS certificate.
+	Profile         string `json:"profile"`        // Path to JSON file where profile data is stored.
+	PGPKey          string `json:"pgp_key"`        // Path to PGP public key file.
 }
 
 func Run(args ...string) (exitcode int) {
@@ -26,7 +29,7 @@ func Run(args ...string) (exitcode int) {
 	logger.Debug("logger ready")
 
 	// Load config.
-	configPath := "local.config.json"
+	configPath := "config.json"
 	if len(args) > 0 {
 		configPath = args[0]
 	}
@@ -54,6 +57,7 @@ func Run(args ...string) (exitcode int) {
 		logger.Error("parse profile", "error", err)
 		return 1
 	}
+	profile.Domain = config.Domain
 
 	// Load PGP key if provided.
 	var pgpKey []byte
@@ -85,12 +89,14 @@ func Run(args ...string) (exitcode int) {
 	// Wrap global middleware.
 	//
 	// Note: the panic recovery middleware relies on the:
-	//	- True IP middleware
-	//	- Request ID middleware
-	//	- Logging middleware (to know if a response has been sent).
+	//	- True IP middleware (for debugging purposes).
+	//	- Request ID middleware (for debugging purposes).
+	//	- Logging middleware (to respond to the client if the panic occured before write).
 	//
 	// This also means that any panic occuring in one of the above mentioned
 	// middlewares propagates up and will cause the program to exit.
+	//
+	// Other middlewares should be put below the panic recovery middleware.
 	router = httpmux.Wrap(router,
 		httpmux.NewTrueIPMiddleware(config.TrueIPHeader),
 		httpmux.NewRequestIDMiddleware(),
@@ -99,21 +105,14 @@ func Run(args ...string) (exitcode int) {
 	)
 
 	// Run HTTP server in separate Goroutine.
-	// TODO: Support HTTPS.
-	httpServerErrLogger := slog.NewLogLogger(logger.Handler(), slog.LevelError)
-	httpServerErrLogger.SetPrefix("http server: ")
-	s := &http.Server{
-		Addr:              config.Address,
-		Handler:           router,
-		ReadHeaderTimeout: 5 * time.Second,
-		ReadTimeout:       10 * time.Second,
-		WriteTimeout:      10 * time.Second,
-		IdleTimeout:       10 * time.Second,
-		MaxHeaderBytes:    50_000,
-		ErrorLog:          httpServerErrLogger,
-	}
+	s := httpmux.NewDefaultHTTPServer(config.Address, router, logger)
 	errc := make(chan error, 1)
-	go func() { errc <- s.ListenAndServe() }()
+	go func() {
+		err := s.ListenAndServe()
+		if err != nil {
+			errc <- err
+		}
+	}()
 
 	// Wait for interrupt or server error.
 	interrupt := make(chan os.Signal, 1)

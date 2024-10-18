@@ -1,10 +1,6 @@
 {
     "name": "Julien Sellier",
-    "domain": "localhost",
-    "contact": {
-        "email_address": "admin@mailer.example",
-        "url": ""
-    },
+    "contact": {"email_address": "admin@mailer.example"},
     "links": [
         {"label": "Website", "url": "localhost"},
         {"label": "Github","url": "github.com/ejuju"},
