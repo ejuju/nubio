@@ -3,6 +3,7 @@ package httpmux
 import (
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -39,4 +40,22 @@ func NewDefaultHTTPServer(addr string, h http.Handler, logger *slog.Logger) *htt
 		MaxHeaderBytes:    100_000,
 		ErrorLog:          errLogger,
 	}
+}
+
+// Intercepts requests on "www." subdomain and redirects them to the non-www equivalent.
+// Otherwise, just forwards request to the next handler.
+func RedirectToNonWWW(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasPrefix(r.Host, "www.") {
+			scheme := "https://"
+			if r.TLS == nil {
+				scheme = "http://"
+			}
+			url := scheme + strings.TrimPrefix(r.Host, "www.") + r.URL.Path
+			http.Redirect(w, r, url, http.StatusPermanentRedirect)
+			return
+		}
+
+		h.ServeHTTP(w, r)
+	})
 }
