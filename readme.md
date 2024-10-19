@@ -9,7 +9,7 @@ Features:
 
 Check out a live demo here: [juliensellier.com](https://juliensellier.com)
 
-## Install
+## Installation
 
 ```bash
 go install github.com/ejuju/nubio@latest
@@ -24,3 +24,7 @@ Serve over HTTP(S):
 
 Generate a static website (SSG):
 - Run: `nubio ssg profile.json static/`
+
+Use as a library, for example:
+- Export profile to PDF: `nubio.ExportPDF(w, profile)`
+- Make a HTTP handler that serves the PDF export: `httpHandler := nubio.ExportAndServePDF(profile)`
