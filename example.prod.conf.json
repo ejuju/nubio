@@ -1,0 +1,7 @@
+{
+    "domain": "mysite.example",
+    "tls_dirpath": "my-tls-certs-dir",
+    "tls_email_addr": "admin@mysite.example",
+    "profile": "my.profile.json",
+    "pgp_key": "my.pgp.asc"
+}
