@@ -25,11 +25,11 @@ type Config struct {
 }
 
 func (v *Config) Check() (errs []error) {
-	if v.Address == "" {
-		errs = append(errs, errors.New("missing address"))
-	}
 	if v.Domain == "" {
 		errs = append(errs, errors.New("missing domain"))
+	}
+	if v.Address == "" && v.TLSDirpath == "" {
+		errs = append(errs, errors.New("missing address (or set TLS dirpath for HTTPS)"))
 	}
 	if v.TLSDirpath != "" && v.TLSEmailAddress == "" {
 		errs = append(errs, errors.New("missing TLS email address"))
@@ -72,6 +72,7 @@ func RunServer(args ...string) (exitcode int) {
 		logger.Error("load profile config", "error", err)
 		return 1
 	}
+	profile.Domain = config.Domain
 	errs = profile.Check()
 	if len(errs) > 0 {
 		for _, err := range errs {
@@ -79,7 +80,6 @@ func RunServer(args ...string) (exitcode int) {
 		}
 		return 1
 	}
-	profile.Domain = config.Domain
 
 	// Load PGP key if provided.
 	var pgpKey []byte
