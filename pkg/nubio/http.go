@@ -83,13 +83,14 @@ func serveFaviconSVG(w http.ResponseWriter, r *http.Request) {
 	w.Write(faviconSVG)
 }
 
-func serveRobotsTXT(w http.ResponseWriter, r *http.Request) {
-	const content = `User-Agent: *
+const robotsTXT = `User-Agent: *
 Disallow:
 `
+
+func serveRobotsTXT(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, content)
+	io.WriteString(w, robotsTXT)
 }
 
 func generateSitemapXML(domain string) []byte {
