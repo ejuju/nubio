@@ -139,10 +139,11 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	writeHeading(pdf, "Links")
 	pdf.Ln(8)
 	for _, v := range p.Links {
-		pdf.Ln(8)
+		pdf.Ln(12)
 		pdf.SetFontSize(fontSize)
 		pdf.SetFontStyle("B")
-		pdf.CellFormat(50, fontSize, v.Label, "", 0, "", false, 0, "")
+		pdf.CellFormat(0, fontSize, v.Label, "", 1, "", false, 0, "")
+		pdf.Ln(4)
 		pdf.SetFontStyle("U")
 		pdf.CellFormat(0, fontSize, v.URL, "", 2, "", false, 0, "https://"+v.URL)
 	}
