@@ -4,8 +4,7 @@ import "log"
 
 func Run(args ...string) (exitcode int) {
 	if len(args) == 0 {
-		log.Fatal("missing command")
-		return 1
+		return RunServer()
 	}
 
 	switch cmd := args[0]; cmd {

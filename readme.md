@@ -22,6 +22,6 @@ Run server:
 - Add your `config.json` file.
 - Then start the server: `nubio run config.json`
 
-Generate a static website (SSG): 
+Generate a static website (SSG):
 - Create output directory: `mkdir static`
 - Then generate the files: `nubio ssg profile.json static`
