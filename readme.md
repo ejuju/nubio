@@ -70,9 +70,11 @@ Here's a JSON template you can fill in with your information:
 
 Note: See `example.profile.json` for a realistic example.
 
-### HTTP server
+### Run as HTTP(S) server
 
-Example of config.json for production server with HTTPS:
+First, you'll need to configure your `server.json` file.
+
+Example for a HTTPS server:
 ```json
 {
     "domain": "mysite.example",
@@ -82,16 +84,17 @@ Example of config.json for production server with HTTPS:
 }
 ```
 
-Example of config.json for production server behind reverse proxy:
+Example for a HTTP server behind a reverse proxy:
 ```json
 {
     "domain": "mysite.example",
+    "address": ":8080",
     "true_ip_header": "X-Forwarded-For",
     "profile": "profile.json"
 }
 ```
 
-Example of config.json for local development server:
+Example for a local development server:
 ```json
 {
     "address": ":8080",
@@ -100,17 +103,15 @@ Example of config.json for local development server:
 }
 ```
 
-Make sure the `config.json` and `profile.json` are readable.
-
 To start the server, run:
 ```bash
-nubio run config.json
+nubio run server.json
 ```
 
 Notes:
 - You can also simply run `nubio run` which by default will look 
-  for `config.json` in its current working directory.
-- The `config.json` indicates where the `profile.json` file can be found.
+  for `server.json` in its current working directory.
+- The `server.json` indicates where the `profile.json` file can be found.
 
 ### Generate a static website (SSG)
 
@@ -120,7 +121,12 @@ nubio ssg profile.json static/
 
 Note: Make sure to fill in the `domain` field in your `profile.json` for SSG.
 
-### Use as a library, for example
+### Embed in your Go program
 
 - Export profile to PDF: `nubio.ExportPDF(w, profile)`
-- Make a HTTP handler that serves the PDF export: `httpHandler := nubio.ExportAndServePDF(profile)`
+- Export profile to HTML: `nubio.ExportHTML(w, profile)`
+- Profile type definition: see `nubio.Profile`
+- And more...
+
+Official package documentation is available here:
+[pkg.go.dev/github.com/ejuju/nubio](https://pkg.go.dev/github.com/ejuju/nubio)
