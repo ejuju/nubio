@@ -11,11 +11,11 @@ import (
 )
 
 const (
-	PathHome        = "/"
 	PathPing        = "/ping"
 	PathFaviconSVG  = "/favicon.svg"
 	PathSitemapXML  = "/sitemap.xml"
 	PathRobotsTXT   = "/robots.txt"
+	PathProfileHTML = "/"
 	PathProfileJSON = "/profile.json"
 	PathProfilePDF  = "/profile.pdf"
 	PathProfileTXT  = "/profile.txt"
@@ -79,7 +79,7 @@ Disallow:
 
 func serveSitemapXML(domain string) http.HandlerFunc {
 	paths := []string{
-		PathHome,
+		PathProfileHTML,
 		PathProfileJSON,
 		PathProfilePDF,
 		PathProfileTXT,
