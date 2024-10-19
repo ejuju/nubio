@@ -59,7 +59,7 @@ func handlePanic(logger *slog.Logger) httpmux.PanicRecoveryHandler {
 			http.Error(w, "Critical failure", http.StatusInternalServerError)
 		}
 
-		// Logger error.
+		// Log error.
 		logger.Error("handler panicked",
 			"error", err,
 			"path", r.URL.Path,
