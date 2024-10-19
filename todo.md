@@ -1,14 +1,14 @@
 # Todo
 
 For v1:
-- [ ] Add doc: setup, usage, maintenance (updates/monitoring), systemd daemon file template)
+- [ ] Add doc: setup, usage, maintenance (updates/monitoring), systemd daemon file template
 
 Nice-to-haves:
 - [ ] Support logging to file (support file rotation / auto-delete after retention period)
 - [ ] Support IP blocklist in config / or dedicated file.
 - [ ] Support contact form with email notification (on dedicated page `/contact`)
 - [ ] Add global rate limiting middleware
-- [ ] Add JSON+LD and OG tags for SEO
+- [ ] Add meta tags (JSON+LD / OG)
 - [ ] Support blogging / documentation (with Markdown-like files directory)
 - [ ] Support serving static files from directory (on `/static/*`) (using file that list file paths, URI and corresponding MIME-type)
 - [ ] Support i18n
