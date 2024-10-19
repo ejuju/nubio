@@ -1,6 +1,7 @@
 package nubio
 
 import (
+	_ "embed"
 	"fmt"
 	"io"
 	"strings"
@@ -18,13 +19,26 @@ const (
 	a4WidthPt, a4HeightPt = 595.28, 842.89
 )
 
+var (
+	//go:embed NotoSans-Regular.ttf
+	notoRegularTTF []byte
+
+	//go:embed NotoSans-Bold.ttf
+	notoBoldTTF []byte
+)
+
 func ExportPDF(w io.Writer, p *Profile) error {
 	pdf := fpdf.New("P", "pt", "A4", "")
 	pdf.SetCreationDate(time.Now())
 	pdf.SetLang("en")
 	pdf.SetAuthor(p.Name, true)
 	pdf.SetTitle("Curriculum Vitae - "+p.Name, true)
-	pdf.SetFont("Arial", "", fontSize)
+
+	// Use custom font because standard fonts use cp1252 encoding.
+	font := "NotoSans"
+	pdf.AddUTF8FontFromBytes(font, "", notoRegularTTF)
+	pdf.AddUTF8FontFromBytes(font, "B", notoBoldTTF)
+	pdf.SetFont(font, "", fontSize)
 
 	pdf.SetTopMargin(50)
 	pdf.SetLeftMargin(marginSide)
