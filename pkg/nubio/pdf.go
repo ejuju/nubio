@@ -124,32 +124,8 @@ func ExportPDF(w io.Writer, p *Profile) error {
 		writeKV(pdf, "Duration", v.From+" to "+v.To)
 	}
 
-	// Append interests.
-	pdf.Ln(24)
-	writeHeading(pdf, "Interests")
-	pdf.Ln(8)
-	for _, v := range p.Interests {
-		pdf.Ln(6)
-		pdf.SetFontSize(fontSize)
-		pdf.SetFontStyle("")
-		pdf.SetTextColor(50, 50, 50)
-		pdf.MultiCell(0, fontSize, "- "+v, "", "", false)
-	}
-
-	// Append hobbies.
-	pdf.AddPage()
-	pdf.Ln(24)
-	writeHeading(pdf, "Hobbies")
-	pdf.Ln(8)
-	for _, v := range p.Hobbies {
-		pdf.Ln(6)
-		pdf.SetFontSize(fontSize)
-		pdf.SetFontStyle("")
-		pdf.SetTextColor(50, 50, 50)
-		pdf.MultiCell(0, fontSize, "- "+v, "", "", false)
-	}
-
 	// Append links.
+	pdf.AddPage()
 	pdf.Ln(24)
 	writeHeading(pdf, "Links")
 	pdf.Ln(8)
@@ -162,6 +138,30 @@ func ExportPDF(w io.Writer, p *Profile) error {
 		pdf.SetFontStyle("U")
 		pdf.CellFormat(0, fontSize, v.URL, "", 2, "", false, 0, "https://"+v.URL)
 	}
+
+	// Append interests.
+	// pdf.Ln(24)
+	// writeHeading(pdf, "Interests")
+	// pdf.Ln(8)
+	// for _, v := range p.Interests {
+	// 	pdf.Ln(6)
+	// 	pdf.SetFontSize(fontSize)
+	// 	pdf.SetFontStyle("")
+	// 	pdf.SetTextColor(50, 50, 50)
+	// 	pdf.MultiCell(0, fontSize, "- "+v, "", "", false)
+	// }
+
+	// Append hobbies.
+	// pdf.Ln(24)
+	// writeHeading(pdf, "Hobbies")
+	// pdf.Ln(8)
+	// for _, v := range p.Hobbies {
+	// 	pdf.Ln(6)
+	// 	pdf.SetFontSize(fontSize)
+	// 	pdf.SetFontStyle("")
+	// 	pdf.SetTextColor(50, 50, 50)
+	// 	pdf.MultiCell(0, fontSize, "- "+v, "", "", false)
+	// }
 
 	// Append contact.
 	pdf.Ln(24)
