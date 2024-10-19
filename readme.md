@@ -8,3 +8,16 @@ Features:
 - Auto HTTPS (using `golang.org/x/crypto/acme/autocert`)
 
 Check out a live demo here: [juliensellier.com](https://juliensellier.com)
+
+## Usage
+
+### Install
+
+Install `go install github.com/ejuju/nubio@latest`
+
+### Run
+
+Create a config.json guide
+```
+
+```

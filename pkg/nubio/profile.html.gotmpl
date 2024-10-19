@@ -29,7 +29,10 @@
             padding: 0;
         }
 
-        html { height: 100%; }
+        html {
+            height: 100%;
+        }
+
         body {
             min-height: 100%;
             background-color: var(--color-bg-0);
@@ -46,11 +49,30 @@
             gap: 24px;
         }
 
-        a { color: currentColor; font-weight: bold; }
-        h1 { font-size: 150%; color: var(--color-fg-0); }
-        h2 { color: var(--color-fg-1); font-size: 125%; }
-        h3 { color: var(--color-fg-1); font-size: 100%; }
-        ul { list-style-type: none; }
+        a {
+            color: currentColor;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 150%;
+            color: var(--color-fg-0);
+        }
+
+        h2 {
+            color: var(--color-fg-1);
+            font-size: 125%;
+        }
+
+        h3 {
+            color: var(--color-fg-1);
+            font-size: 100%;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
         hr {
             width: 100%;
             background-color: var(--color-bg-2);
@@ -98,7 +120,7 @@
 
         span.emoji {
             font-size: 110%;
-            font-weight: bold; 
+            font-weight: bold;
             color: #ffcb4c;
         }
 
@@ -109,9 +131,19 @@
             align-items: baseline;
         }
 
-        .grid-8px { display: grid; gap: 8px; }
-        .grid-12px { display: grid; gap: 12px; }
-        .color-fg-2 { color: var(--color-fg-2); }
+        .grid-8px {
+            display: grid;
+            gap: 8px;
+        }
+
+        .grid-12px {
+            display: grid;
+            gap: 12px;
+        }
+
+        .color-fg-2 {
+            color: var(--color-fg-2);
+        }
 
         #exports {
             display: flex;
@@ -127,8 +159,16 @@
         <section id="top" class="card">
             <h1>{{ .Name }}</h1>
             <ul class="hlist">
-                <li><a class="button" href="mailto:{{ .Contact.EmailAddress }}"><span class="emoji">@</span>{{ .Contact.EmailAddress }}</a></li>
-                {{ if .Contact.PGP }}<li><a target="_blank" class="button" href="/pgp.asc"><span class="emoji">🔑</span>PGP key</a></li>{{ end }}
+                <li>
+                    <a class="button" href="mailto:{{ .Contact.EmailAddress }}">
+                        <span class="emoji">@</span>{{.Contact.EmailAddress }}
+                    </a>
+                </li>
+                {{ if .Contact.PGP }}
+                <li>
+                    <a target="_blank" class="button" href="/pgp.asc"><span class="emoji">🔑</span>PGP key</a>
+                </li>{{
+                end }}
                 {{ range .Links }}
                 <li>
                     <a target="_blank" rel="noopener noreferrer" class="button" href="https://{{ .URL }}">
@@ -190,7 +230,7 @@
             <hr>
             <ul class="vlist">
                 {{ range .Interests }}<li>{{ . }}</li>{{ end }}
-            <ul>
+            </ul>
         </section>
 
         <section id="hobbies" class="card">
@@ -198,7 +238,7 @@
             <hr>
             <ul class="vlist">
                 {{ range .Hobbies }}<li>{{ . }}</li>{{ end }}
-            <ul>
+            </ul>
         </section>
 
         <section id="exports" class="card">
