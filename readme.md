@@ -78,8 +78,7 @@ Example of config.json for production server with HTTPS:
     "domain": "mysite.example",
     "tls_dirpath": "tls",
     "tls_email_addr": "contact@mysite.example",
-    "profile": "profile.json",
-    "pgp_key": "pgp.asc"
+    "profile": "profile.json"
 }
 ```
 
@@ -88,8 +87,7 @@ Example of config.json for production server behind reverse proxy:
 {
     "domain": "mysite.example",
     "true_ip_header": "X-Forwarded-For",
-    "profile": "profile.json",
-    "pgp_key": "pgp.asc"
+    "profile": "profile.json"
 }
 ```
 
@@ -98,8 +96,7 @@ Example of config.json for local development server:
 {
     "address": ":8080",
     "domain": "localhost",
-    "profile": "profile.json",
-    "pgp_key": "pgp.asc"
+    "profile": "profile.json"
 }
 ```
 
