@@ -2,6 +2,7 @@
 
 For v1:
 - [ ] CI/CD doc (script for deployment over SSH, systemd daemon file template)
+- [ ] Redirect `www` subdomain to non-www
 
 Nice-to-haves:
 - [ ] Support logging to file (and rotate file)
