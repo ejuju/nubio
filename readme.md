@@ -6,3 +6,5 @@ Features:
 - Visitors can download your resume as PDF, JSON, Markdown or plain-text
 - Single executable
 - Auto HTTPS (using `golang.org/x/crypto/acme/autocert`)
+
+Check out a live demo here: [juliensellier.com](https://juliensellier.com)
