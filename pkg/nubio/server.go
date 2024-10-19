@@ -25,11 +25,11 @@ type Config struct {
 }
 
 func (v *Config) Check() (errs []error) {
-	if v.Address == "" {
-		errs = append(errs, errors.New("missing address"))
-	}
 	if v.Domain == "" {
 		errs = append(errs, errors.New("missing domain"))
+	}
+	if v.Address == "" && v.TLSDirpath == "" {
+		errs = append(errs, errors.New("missing address (or set TLS dirpath for HTTPS)"))
 	}
 	if v.TLSDirpath != "" && v.TLSEmailAddress == "" {
 		errs = append(errs, errors.New("missing TLS email address"))
