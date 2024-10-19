@@ -35,11 +35,11 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	pdf.SetAuthor(p.Name, true)
 	pdf.SetTitle("Curriculum Vitae - "+p.Name, true)
 
-	// Use custom font because standard fonts use cp1252 encoding.
-	font := "NotoSans"
-	pdf.AddUTF8FontFromBytes(font, "", notoRegularTTF)
-	pdf.AddUTF8FontFromBytes(font, "B", notoBoldTTF)
-	pdf.SetFont(font, "", fontSize)
+	// Use custom fontFamily because standard fonts use cp1252 encoding.
+	fontFamily := "sans-serif"
+	pdf.AddUTF8FontFromBytes(fontFamily, "", notoRegularTTF)
+	pdf.AddUTF8FontFromBytes(fontFamily, "B", notoBoldTTF)
+	pdf.SetFont(fontFamily, "", fontSize)
 
 	pdf.SetTopMargin(50)
 	pdf.SetLeftMargin(marginSide)
