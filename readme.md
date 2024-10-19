@@ -20,7 +20,7 @@ go install github.com/ejuju/nubio@latest
 Run server:
 - Add your `profile.json` file.
 - Add your `config.json` file.
-- Then start the server: `nubio run`
+- Then start the server: `nubio run config.json`
 
 Generate a static website (SSG): 
 - Create output directory: `mkdir static`
