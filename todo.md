@@ -1,10 +1,9 @@
 # Todo
 
 For v1:
-- [ ] Add command to generate static file export (for self-hosting with static file server)
-- [ ] Add doc: setup, usage, maintenance (updates/monitoring), systemd daemon file template
+- [ ] Add complete setup examples: SSG with Caddy and HTTPS server with Systemd/Debian.
 - [ ] Smart page breaks for PDF export (to avoid breaking within content for long profiles)
-- [ ] Validate config and profile.json
+- [ ] Validate server.json and profile.json on start, provide CLI command for it
 
 Nice-to-haves:
 - [ ] Support logging to file (support file rotation / auto-delete after retention period)

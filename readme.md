@@ -12,11 +12,11 @@
 
 ### Live demo
 
-- HTML: [juliensellier.com](https://juliensellier.com/)
-- PDF [juliensellier.com/profile.pdf](https://juliensellier.com/profile.pdf)
-- JSON [juliensellier.com/profile.json](https://juliensellier.com/profile.pdf)
-- TXT [juliensellier.com/profile.txt](https://juliensellier.com/profile.pdf)
-- Markdown [juliensellier.com/profile.md](https://juliensellier.com/profile.pdf)
+- Website: [juliensellier.com](https://juliensellier.com/)
+- PDF export: [juliensellier.com/profile.pdf](https://juliensellier.com/profile.pdf)
+- JSON export: [juliensellier.com/profile.json](https://juliensellier.com/profile.pdf)
+- Plain-text export: [juliensellier.com/profile.txt](https://juliensellier.com/profile.pdf)
+- Markdown export: [juliensellier.com/profile.md](https://juliensellier.com/profile.pdf)
 
 ### 3rd-party Go dependencies
 
