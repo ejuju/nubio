@@ -13,6 +13,7 @@ import (
 const (
 	marginSide            = 50
 	fontSize              = 10
+	lineHeight            = fontSize + 6 // Only for regular lines.
 	fontSizeHeading       = 15
 	fontSizeTitle         = 20
 	colLeftSize           = 60
@@ -94,10 +95,10 @@ func ExportPDF(w io.Writer, p *Profile) error {
 		pdf.SetFontStyle("B")
 		pdf.SetTextColor(10, 10, 10)
 		pdf.MultiCell(0, fontSize, v.Title, "", "", false)
-		pdf.Ln(8)
+		pdf.Ln(4)
 		pdf.SetFontStyle("")
 		pdf.SetTextColor(80, 80, 80)
-		pdf.MultiCell(0, fontSize, strings.Join(v.Tools, ", "), "", "", false)
+		pdf.MultiCell(0, lineHeight, strings.Join(v.Tools, ", "), "", "", false)
 	}
 
 	// Append languages.
@@ -136,6 +137,7 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	}
 
 	// Append hobbies.
+	pdf.AddPage()
 	pdf.Ln(24)
 	writeHeading(pdf, "Hobbies")
 	pdf.Ln(8)
@@ -148,7 +150,6 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	}
 
 	// Append links.
-	pdf.AddPage()
 	pdf.Ln(24)
 	writeHeading(pdf, "Links")
 	pdf.Ln(8)

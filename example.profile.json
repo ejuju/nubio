@@ -55,7 +55,7 @@
     ],
     "skills": [
         {"title": "Software development", "tools": ["Go", "JavaScript", "TypeScript"]},
-        {"title": "Web development", "tools": ["HTML/CSS/JS", "DNS", "HTTP", "SMTP", "Svelte", "A11y"]},
+        {"title": "Web development", "tools": ["HTML", "CSS", "JavaScript", "TypeScript", "DNS", "HTTP", "SMTP", "Svelte", "A11y"]},
         {"title": "DevOps", "tools": ["CICD", "Containerization", "Ansible"]},
         {"title": "Software engineering practices", "tools": ["TDD", "Pair (and mob) programming"]},
         {"title": "Database", "tools": ["SQL", "Postgres", "BoltDB"]}
