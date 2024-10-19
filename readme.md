@@ -5,15 +5,25 @@ Features:
 - Export your resume as PDF, JSON, plain text, Markdown, or HTML page
 - Serve your resume as a website (or generate static website files).
 - Single executable
-- Auto HTTPS (using `golang.org/x/crypto/acme/autocert`)
+- Auto HTTPS (get and renew certs using ACME)
 
 Check out a live demo here: [juliensellier.com](https://juliensellier.com)
+
+Note, some 3rd-party Go dependencies are used
+for PDF generation and HTTPS/ACME support:
+- [github.com/go-pdf/fpdf](https://github.com/go-pdf/fpdf)
+- [golang.org/x/crypto](https://golang.org/x/crypto)
+- [golang.org/x/net](https://golang.org/x/net)
+- [golang.org/x/text](https://golang.org/x/text)
+
+Apart from that, it's just using Go's standard library.
 
 ## Installation
 
 ```bash
 go install github.com/ejuju/nubio@latest
 ```
+
 
 ## Usage
 
