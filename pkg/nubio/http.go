@@ -87,12 +87,12 @@ func generateSitemapXML(domain string) []byte {
 	}
 
 	b := &bytes.Buffer{}
-	b.WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-	b.WriteString("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">")
+	b.WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+	b.WriteString("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n")
 	for _, path := range paths {
-		b.WriteString("<url><loc>https://" + domain + path + "/</loc></url>")
+		b.WriteString("<url><loc>https://" + domain + path + "/</loc></url>\n")
 	}
-	b.WriteString("</urlset>")
+	b.WriteString("</urlset>\n")
 
 	return b.Bytes()
 }
