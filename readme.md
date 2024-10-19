@@ -1,18 +1,8 @@
-# Nubio: Self-hosted personal website for developers
+# Nubio: Self-hosted resume for developers
 
-## Installation guide
-
-```bash
-go install github.com/ejuju/nubio
-```
-
-Or build from source
-```bash
-go build
-```
-
-## Usage
-
-1. Create your `profile.json` file (see [example](/example.profile.json)).
-1. Create your `config.json` file (see [example](/local.config.json)).
-1. Start web server (`nubio config.json`).
+Features:
+- Define your resume as JSON
+- Serve your resume as a web page
+- Visitors can download your resume as PDF, JSON, Markdown or plain-text
+- Single executable
+- Auto HTTPS (using `golang.org/x/crypto/acme/autocert`)
