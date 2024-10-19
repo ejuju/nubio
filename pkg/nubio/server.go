@@ -2,7 +2,7 @@ package nubio
 
 import (
 	"context"
-	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -17,11 +17,27 @@ import (
 type Config struct {
 	Address         string `json:"address"`        // Local HTTP server address.
 	Domain          string `json:"domain"`         // Public domain name used to host the site.
-	TrueIPHeader    string `json:"true_ip_header"` // Ex: "X-Forwarded-For", useful when reverse proxying.
+	TrueIPHeader    string `json:"true_ip_header"` // Optional: (ex: "X-Forwarded-For", use when reverse proxying).
 	TLSDirpath      string `json:"tls_dirpath"`    // Path to TLS certificate directory.
 	TLSEmailAddress string `json:"tls_email_addr"` // Email address in TLS certificate.
 	Profile         string `json:"profile"`        // Path to JSON file where profile data is stored.
 	PGPKey          string `json:"pgp_key"`        // Path to PGP public key file.
+}
+
+func (v *Config) Check() (errs []error) {
+	if v.Address == "" {
+		errs = append(errs, errors.New("missing address"))
+	}
+	if v.Domain == "" {
+		errs = append(errs, errors.New("missing domain"))
+	}
+	if v.TLSDirpath != "" && v.TLSEmailAddress == "" {
+		errs = append(errs, errors.New("missing TLS email address"))
+	}
+	if v.Profile == "" {
+		errs = append(errs, errors.New("missing profile path"))
+	}
+	return errs
 }
 
 func RunServer(args ...string) (exitcode int) {
@@ -35,28 +51,32 @@ func RunServer(args ...string) (exitcode int) {
 	if len(args) > 0 {
 		configPath = args[0]
 	}
-	rawConfig, err := os.ReadFile(configPath)
+	config := &Config{}
+	err := loadJSONFile(configPath, config)
 	if err != nil {
-		logger.Error("read config", "error", err)
+		logger.Error("load server config", "error", err)
 		return 1
 	}
-	config := &Config{}
-	err = json.Unmarshal(rawConfig, config)
-	if err != nil {
-		logger.Error("parse config", "error", err)
+	errs := config.Check()
+	if len(errs) > 0 {
+		for _, err := range errs {
+			logger.Error("bad server config", "error", err)
+		}
 		return 1
 	}
 
 	// Load user profile.
-	rawProfile, err := os.ReadFile(config.Profile)
+	profile := &Profile{}
+	err = loadJSONFile(config.Profile, profile)
 	if err != nil {
-		logger.Error("read profile", "error", err)
+		logger.Error("load profile config", "error", err)
 		return 1
 	}
-	profile := &Profile{}
-	err = json.Unmarshal(rawProfile, profile)
-	if err != nil {
-		logger.Error("parse profile", "error", err)
+	errs = profile.Check()
+	if len(errs) > 0 {
+		for _, err := range errs {
+			logger.Error("bad profile config", "error", err)
+		}
 		return 1
 	}
 	profile.Domain = config.Domain

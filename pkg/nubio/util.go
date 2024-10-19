@@ -1,23 +1,19 @@
 package nubio
 
-import "net/http"
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+)
 
-func ExportAndServePDF(p *Profile) http.HandlerFunc {
-	return ExportAndServe(p, ExportPDF, "application/pdf")
-}
-
-func ExportAndServeHTML(p *Profile) http.HandlerFunc {
-	return ExportAndServe(p, ExportHTML, "text/html; charset=utf-8")
-}
-
-func ExportAndServeJSON(p *Profile) http.HandlerFunc {
-	return ExportAndServe(p, ExportJSON, "application/json")
-}
-
-func ExportAndServeText(p *Profile) http.HandlerFunc {
-	return ExportAndServe(p, ExportText, "text/plain")
-}
-
-func ExportAndServeMarkdown(p *Profile) http.HandlerFunc {
-	return ExportAndServe(p, ExportMarkdown, "text/markdown")
+func loadJSONFile(path string, v any) error {
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return fmt.Errorf("read whole file: %w", err)
+	}
+	err = json.Unmarshal(b, v)
+	if err != nil {
+		return fmt.Errorf("unmarshal JSON: %w", err)
+	}
+	return nil
 }

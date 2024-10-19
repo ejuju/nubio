@@ -3,7 +3,6 @@
 For v1:
 - [ ] Add complete setup examples: SSG with Caddy and HTTPS server with Systemd/Debian.
 - [ ] Smart page breaks for PDF export (to avoid breaking within content for long profiles)
-- [ ] Validate server.json and profile.json on start, provide CLI command for it
 
 Nice-to-haves:
 - [ ] Support logging to file (support file rotation / auto-delete after retention period)
