@@ -104,6 +104,7 @@ func Run(args ...string) (exitcode int) {
 		httpmux.NewRequestIDMiddleware(),
 		httpmux.NewLoggingMiddleware(handleAccessLog(logger)),
 		httpmux.NewPanicRecoveryMiddleware(handlePanic(logger)),
+		httpmux.RedirectToNonWWW,
 	)
 
 	// Run HTTP(S) server(s).
@@ -155,7 +156,7 @@ func runHTTPS(h http.Handler, config *Config, logger *slog.Logger) (exitcode int
 	// Configure autocert.
 	tlsCertManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist(config.Domain),
+		HostPolicy: autocert.HostWhitelist(config.Domain, "www."+config.Domain),
 		Cache:      autocert.DirCache(config.TLSDirpath),
 		Email:      config.TLSEmailAddress,
 	}
