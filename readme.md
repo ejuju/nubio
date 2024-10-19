@@ -1,6 +1,8 @@
 # Nubio: Online profile for developers
 
-## Features
+## Introduction
+
+### Features
 
 - Define your profile as JSON
 - Export your profile as PDF, JSON, plain text, Markdown, or HTML page
@@ -8,12 +10,7 @@
 - Single executable
 - Auto HTTPS (get and renew certs using ACME)
 
-## 3rd-party Go dependencies
-
-- For PDF generation: [github.com/go-pdf/fpdf](https://github.com/go-pdf/fpdf)
-- For HTTPS/ACME support: [golang.org/x/crypto](https://golang.org/x/crypto)
-
-## Live demo
+### Live demo
 
 - HTML: [juliensellier.com](https://juliensellier.com/)
 - PDF [juliensellier.com/profile.pdf](https://juliensellier.com/profile.pdf)
@@ -21,19 +18,29 @@
 - TXT [juliensellier.com/profile.txt](https://juliensellier.com/profile.pdf)
 - Markdown [juliensellier.com/profile.md](https://juliensellier.com/profile.pdf)
 
-## Installation
+### 3rd-party Go dependencies
 
+- For PDF generation: [github.com/go-pdf/fpdf](https://github.com/go-pdf/fpdf)
+- For HTTPS/ACME support: [golang.org/x/crypto](https://golang.org/x/crypto)
+
+---
+
+## Usage
+
+### Installation
+
+An executable can be built from source using
+and installed locally using:
 ```bash
 go install github.com/ejuju/nubio@latest
 ```
 
+### Configuring your profile
 
-## Usage
+Your profile's information is stored in a single JSON file,
+usually named `profile.json`.
 
-### Create your `profile.json` file
-
-Your `profile.json` groups relevant information for your public profile.
-This includes:
+Your `profile.json` can include:
 - Contact details
 - External links
 - Work experiences
