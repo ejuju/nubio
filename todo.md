@@ -1,7 +1,7 @@
 # Todo
 
 For v1:
-- [ ] CI/CD doc (script for deployment over SSH, systemd daemon file template)
+- [ ] Add doc: setup, usage, maintenance (updates/monitoring), systemd daemon file template)
 
 Nice-to-haves:
 - [ ] Support logging to file (support file rotation / auto-delete after retention period)
