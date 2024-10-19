@@ -1,6 +1,0 @@
-{
-    "address": ":8080",
-    "domain": "localhost",
-    "profile": "example.profile.json",
-    "pgp_key": "example.pgp.asc"
-}

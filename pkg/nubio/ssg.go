@@ -47,7 +47,7 @@ func RunSSG(args ...string) (exitcode int) {
 	//
 	// Note that PGP key is not included here
 	// since we only rely on the profile.json,
-	// and the local PGP key is specified in the config.json.
+	// and the local PGP key is specified in the server.json.
 	files := map[string][]byte{
 		strings.TrimPrefix(PathFaviconSVG, "/"): faviconSVG,
 		strings.TrimPrefix(PathSitemapXML, "/"): generateSitemapXML(profile.Domain),

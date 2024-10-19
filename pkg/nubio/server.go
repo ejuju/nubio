@@ -31,7 +31,7 @@ func RunServer(args ...string) (exitcode int) {
 	logger.Debug("logger ready")
 
 	// Load config.
-	configPath := "config.json"
+	configPath := "server.json"
 	if len(args) > 0 {
 		configPath = args[0]
 	}
