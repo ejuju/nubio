@@ -23,6 +23,21 @@ const (
 	PathPGPKey      = "/pgp.asc"
 )
 
+func NewHTTPHandler(fallback http.Handler, profile *Profile, pgpKey []byte) http.Handler {
+	return httpmux.Map{
+		PathPing:        {"GET": http.HandlerFunc(servePing)},
+		PathFaviconSVG:  {"GET": http.HandlerFunc(serveFaviconSVG)},
+		PathRobotsTXT:   {"GET": http.HandlerFunc(serveRobotsTXT)},
+		PathSitemapXML:  {"GET": serveSitemapXML(profile.Domain)},
+		PathProfileHTML: {"GET": ExportAndServeHTML(profile)},
+		PathProfilePDF:  {"GET": ExportAndServePDF(profile)},
+		PathProfileJSON: {"GET": ExportAndServeJSON(profile)},
+		PathProfileTXT:  {"GET": ExportAndServeText(profile)},
+		PathProfileMD:   {"GET": ExportAndServeMarkdown(profile)},
+		PathPGPKey:      {"GET": servePGPKey(pgpKey)},
+	}.Handler(fallback)
+}
+
 func handleAccessLog(logger *slog.Logger) httpmux.LoggingHandlerFunc {
 	return func(w *httpmux.ResponseRecorderWriter, r *http.Request) {
 		logger.Info("handled HTTP",

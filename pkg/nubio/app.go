@@ -72,23 +72,7 @@ func RunServer(args ...string) (exitcode int) {
 		profile.Contact.PGP = profile.Domain + PathPGPKey
 	}
 
-	// Init and register HTTP endpoints.
-	endpoints := httpmux.Map{
-		PathPing:        {"GET": http.HandlerFunc(servePing)},
-		PathFaviconSVG:  {"GET": http.HandlerFunc(serveFaviconSVG)},
-		PathRobotsTXT:   {"GET": http.HandlerFunc(serveRobotsTXT)},
-		PathSitemapXML:  {"GET": serveSitemapXML(profile.Domain)},
-		PathProfileHTML: {"GET": ExportAndServeHTML(profile)},
-		PathProfilePDF:  {"GET": ExportAndServePDF(profile)},
-		PathProfileJSON: {"GET": ExportAndServeJSON(profile)},
-		PathProfileTXT:  {"GET": ExportAndServeText(profile)},
-		PathProfileMD:   {"GET": ExportAndServeMarkdown(profile)},
-		PathPGPKey:      {"GET": servePGPKey(pgpKey)},
-	}
-
-	router := endpoints.Handler(http.NotFoundHandler())
-
-	// Wrap global middleware.
+	// Init and register HTTP endpoints, wrap global middleware.
 	//
 	// Note: the panic recovery middleware relies on the:
 	//	- True IP middleware (for debugging purposes).
@@ -99,7 +83,7 @@ func RunServer(args ...string) (exitcode int) {
 	// middlewares propagates up and will cause the program to exit.
 	//
 	// Other middlewares should be put below the panic recovery middleware.
-	router = httpmux.Wrap(router,
+	h := httpmux.Wrap(NewHTTPHandler(nil, profile, pgpKey),
 		httpmux.NewTrueIPMiddleware(config.TrueIPHeader),
 		httpmux.NewRequestIDMiddleware(),
 		httpmux.NewLoggingMiddleware(handleAccessLog(logger)),
@@ -109,9 +93,9 @@ func RunServer(args ...string) (exitcode int) {
 
 	// Run HTTP(S) server(s).
 	if config.TLSDirpath != "" {
-		exitcode = runHTTPS(router, config, logger)
+		exitcode = runHTTPS(h, config, logger)
 	} else {
-		exitcode = runHTTP(router, config, logger)
+		exitcode = runHTTP(h, config, logger)
 	}
 
 	// Done.
