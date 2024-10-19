@@ -102,8 +102,6 @@
         }
 
         ul.vlist {
-            list-style-type: circle;
-            list-style-position: inside;
             display: grid;
             gap: 8px;
         }
@@ -118,13 +116,13 @@
             text-decoration: none;
         }
 
-        span.emoji {
+        .emoji {
             font-size: 110%;
             font-weight: bold;
             color: #ffcb4c;
         }
 
-        div.kv {
+        .kv {
             display: grid;
             grid-template-columns: auto 1fr;
             gap: 8px;
@@ -229,7 +227,7 @@
             <h2>Interests</h2>
             <hr>
             <ul class="vlist">
-                {{ range .Interests }}<li>{{ . }}</li>{{ end }}
+                {{ range .Interests }}<li class="kv"><span class="emoji color-fg-2">+</span>{{ . }}</li>{{ end }}
             </ul>
         </section>
 
@@ -237,7 +235,7 @@
             <h2>Hobbies</h2>
             <hr>
             <ul class="vlist">
-                {{ range .Hobbies }}<li>{{ . }}</li>{{ end }}
+                {{ range .Hobbies }}<li class="kv"><span class="emoji color-fg-2">+</span>{{ . }}</li>{{ end }}
             </ul>
         </section>
 
