@@ -1,22 +1,25 @@
-# Nubio: Self-hosted resume for developers
+# Nubio: Online profile for developers
 
-[Live demo](https://juliensellier.com)
+## Features
 
-Features:
-- Define your resume as JSON
-- Export your resume as PDF, JSON, plain text, Markdown, or HTML page
-- Serve your resume as a website (or generate static website files).
+- Define your profile as JSON
+- Export your profile as PDF, JSON, plain text, Markdown, or HTML page
+- Serve your profile as a website (or generate static website files).
 - Single executable
 - Auto HTTPS (get and renew certs using ACME)
 
-Some 3rd-party Go dependencies are used
-for PDF generation and HTTPS/ACME support:
-- [github.com/go-pdf/fpdf](https://github.com/go-pdf/fpdf)
-- [golang.org/x/crypto](https://golang.org/x/crypto)
-- [golang.org/x/net](https://golang.org/x/net)
-- [golang.org/x/text](https://golang.org/x/text)
+## 3rd-party Go dependencies
 
-Apart from that, it's just using Go's standard library.
+- For PDF generation: [github.com/go-pdf/fpdf](https://github.com/go-pdf/fpdf)
+- For HTTPS/ACME support: [golang.org/x/crypto](https://golang.org/x/crypto)
+
+## Live demo
+
+- HTML: [juliensellier.com](https://juliensellier.com/)
+- PDF [juliensellier.com/profile.pdf](https://juliensellier.com/profile.pdf)
+- JSON [juliensellier.com/profile.json](https://juliensellier.com/profile.pdf)
+- TXT [juliensellier.com/profile.txt](https://juliensellier.com/profile.pdf)
+- Markdown [juliensellier.com/profile.md](https://juliensellier.com/profile.pdf)
 
 ## Installation
 

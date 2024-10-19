@@ -3,7 +3,7 @@
 For v1:
 - [ ] Add command to generate static file export (for self-hosting with static file server)
 - [ ] Add doc: setup, usage, maintenance (updates/monitoring), systemd daemon file template
-- [ ] Smart page breaks for PDF export (to avoid breaking within content for long resumes)
+- [ ] Smart page breaks for PDF export (to avoid breaking within content for long profiles)
 - [ ] Validate config and profile.json
 
 Nice-to-haves:
