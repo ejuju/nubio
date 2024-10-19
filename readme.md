@@ -84,6 +84,10 @@ Example for a HTTPS server:
 }
 ```
 
+The field `tls_dirpath` indicates a directory where TLS certificates will be stored.
+When using HTTPS, the server uses ports `80` and `443` by default,
+there's no need to use the `address` field (it is ignored).
+
 Example for a HTTP server behind a reverse proxy:
 ```json
 {
@@ -129,4 +133,4 @@ Note: Make sure to fill in the `domain` field in your `profile.json` for SSG.
 - And more...
 
 Official package documentation is available here:
-[pkg.go.dev/github.com/ejuju/nubio](https://pkg.go.dev/github.com/ejuju/nubio)
+[pkg.go.dev/github.com/ejuju/nubio/pkg/nubio](https://pkg.go.dev/github.com/ejuju/nubio/pkg/nubio)
