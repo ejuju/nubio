@@ -2,6 +2,7 @@
 
 For v1:
 - [ ] Add doc: setup, usage, maintenance (updates/monitoring), systemd daemon file template
+- [ ] Smart page breaks for PDF export (to avoid breaking within content for long resumes)
 
 Nice-to-haves:
 - [ ] Support logging to file (support file rotation / auto-delete after retention period)
