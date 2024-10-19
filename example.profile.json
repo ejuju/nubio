@@ -1,6 +1,7 @@
 {
     "name": "Julien Sellier",
-    "contact": {"email_address": "admin@mailer.example"},
+    "domain": "mysite.example",
+    "contact": {"email_address": "admin@mysite.example"},
     "links": [
         {"label": "Website", "url": "localhost"},
         {"label": "Github","url": "github.com/ejuju"},
