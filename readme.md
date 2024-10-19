@@ -1,5 +1,7 @@
 # Nubio: Self-hosted resume for developers
 
+[Live demo](https://juliensellier.com)
+
 Features:
 - Define your resume as JSON
 - Export your resume as PDF, JSON, plain text, Markdown, or HTML page
@@ -7,9 +9,7 @@ Features:
 - Single executable
 - Auto HTTPS (get and renew certs using ACME)
 
-Check out a live demo here: [juliensellier.com](https://juliensellier.com)
-
-Note, some 3rd-party Go dependencies are used
+Some 3rd-party Go dependencies are used
 for PDF generation and HTTPS/ACME support:
 - [github.com/go-pdf/fpdf](https://github.com/go-pdf/fpdf)
 - [golang.org/x/crypto](https://golang.org/x/crypto)
