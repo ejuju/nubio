@@ -2,9 +2,9 @@
 
 For v1:
 - [ ] Add complete setup examples: SSG with Caddy and HTTPS server with Systemd/Debian.
-- [ ] Smart page breaks for PDF export (to avoid breaking within content for long profiles)
 
 Nice-to-haves:
+- [ ] Smart page breaks for PDF export (to avoid breaking within content for long profiles)
 - [ ] Support logging to file (support file rotation / auto-delete after retention period)
 - [ ] Support IP blocklist in config / or dedicated file.
 - [ ] Support contact form with email notification (on dedicated page `/contact`)
