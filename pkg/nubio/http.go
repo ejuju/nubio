@@ -77,7 +77,7 @@ Disallow:
 	io.WriteString(w, content)
 }
 
-func serveSitemapXML(domain string) http.HandlerFunc {
+func generateSitemapXML(domain string) []byte {
 	paths := []string{
 		PathProfileHTML,
 		PathProfileJSON,
@@ -94,10 +94,15 @@ func serveSitemapXML(domain string) http.HandlerFunc {
 	}
 	b.WriteString("</urlset>")
 
+	return b.Bytes()
+}
+
+func serveSitemapXML(domain string) http.HandlerFunc {
+	content := generateSitemapXML(domain)
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
-		w.Write(b.Bytes())
+		w.Write(content)
 	}
 }
 

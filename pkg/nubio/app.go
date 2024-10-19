@@ -24,7 +24,7 @@ type Config struct {
 	PGPKey          string `json:"pgp_key"`        // Path to PGP public key file.
 }
 
-func Run(args ...string) (exitcode int) {
+func RunServer(args ...string) (exitcode int) {
 	// Init logger.
 	slogh := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
 	logger := slog.New(slogh)

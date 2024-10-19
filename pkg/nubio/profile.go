@@ -11,9 +11,10 @@ type Profile struct {
 	Interests   []string     `json:"interests"`
 	Hobbies     []string     `json:"hobbies"`
 
-	// This field is copied from the corresponding app config field.
-	// It is not exported in JSON but used here to be used in the templates.
-	Domain string `json:"-"`
+	// Note:
+	//	- For SSG: This field is required.
+	//	- For server: This field is overwritten by corresponding app config field.
+	Domain string `json:"domain"`
 }
 
 type Contact struct {

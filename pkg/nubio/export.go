@@ -25,6 +25,11 @@ var (
 
 type ExportFunc func(w io.Writer, p *Profile) error
 
+func ExportHTML(w io.Writer, p *Profile) error     { return HTMLTemplate.Execute(w, p) }
+func ExportJSON(w io.Writer, p *Profile) error     { return json.NewEncoder(w).Encode(p) }
+func ExportText(w io.Writer, p *Profile) error     { return TextTemplate.Execute(w, p) }
+func ExportMarkdown(w io.Writer, p *Profile) error { return MarkdownTemplate.Execute(w, p) }
+
 func ExportAndServe(p *Profile, f ExportFunc, typ string) http.HandlerFunc {
 	buf := &bytes.Buffer{}
 	err := f(buf, p)
@@ -38,8 +43,3 @@ func ExportAndServe(p *Profile, f ExportFunc, typ string) http.HandlerFunc {
 		w.Write(buf.Bytes())
 	}
 }
-
-func ExportHTML(w io.Writer, p *Profile) error     { return HTMLTemplate.Execute(w, p) }
-func ExportJSON(w io.Writer, p *Profile) error     { return json.NewEncoder(w).Encode(p) }
-func ExportText(w io.Writer, p *Profile) error     { return TextTemplate.Execute(w, p) }
-func ExportMarkdown(w io.Writer, p *Profile) error { return MarkdownTemplate.Execute(w, p) }

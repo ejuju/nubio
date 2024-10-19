@@ -168,24 +168,22 @@
                         <span class="emoji">@</span>{{.Contact.EmailAddress }}
                     </a>
                 </li>
-                {{ if .Contact.PGP }}
-                <li>
-                    <a target="_blank" class="button" href="/pgp.asc"><span class="emoji">🔑</span>PGP key</a>
-                </li>{{
-                end }}
-                {{ range .Links }}
+                {{- if .Contact.PGP }}
+                <li><a target="_blank" class="button" href="/pgp.asc"><span class="emoji">🔑</span>PGP key</a></li>
+                {{- end }}
+                {{- range .Links }}
                 <li>
                     <a target="_blank" rel="noopener noreferrer" class="button" href="https://{{ .URL }}">
                         <span class="emoji">🔗</span>{{ .Label }}
                     </a>
                 </li>
-                {{ end }}
+                {{- end }}
             </ul>
         </section>
 
         <section id="experiences" class="card">
             <h2>Work experiences</h2>
-            {{ range .Experiences }}
+            {{- range .Experiences }}
             <hr>
             <section class="grid-12px">
                 <h3>{{ .Title }} at {{ .Organization }}</h3>
@@ -193,40 +191,40 @@
                 <p class="color-fg-2">{{ .From }} - {{ .To }} ({{ .Location }})</p>
                 <ul class="hlist">{{ range .Skills }}<li class="tag">{{ . }}</li>{{ end }}</ul>
             </section>
-            {{ end }}
+            {{- end }}
         </section>
 
         <section id="skills" class="card">
             <h2>Skills</h2>
             <hr>
-            {{ range .Skills }}
+            {{- range .Skills }}
             <section class="grid-8px">
                 <h3>{{ .Title }}</h3>
                 <ul class="hlist">{{ range .Tools }}<li class="tag">{{ . }}</li>{{ end }}</ul>
             </section>
-            {{ end }}
+            {{- end }}
         </section>
 
         <section id="languages" class="card">
             <h2>Languages</h2>
             <hr>
-            {{ range .Languages }}
+            {{- range .Languages }}
             <section class="grid-8px">
                 <h3>{{ .Label }}</h3>
                 <p class="color-fg-2">{{ .Proficiency }}</p>
             </section>
-            {{ end }}
+            {{- end }}
         </section>
 
         <section id="education" class="card">
             <h2>Education</h2>
             <hr>
-            {{ range .Education }}
+            {{- range .Education }}
             <section class="grid-8px">
                 <h3>{{ .Title }}</h3>
                 <p class="color-fg-2">At {{ .Organization }} ({{ .From }} - {{ .To }})</p>
             </section>
-            {{ end }}
+            {{- end }}
         </section>
 
         <section id="interests" class="card">
@@ -254,7 +252,8 @@
     </main>
 
     <footer>
-        <p class="color-fg-2">Powered by <a target="_blank" rel="noopener noreferrer" href="https://github.com/ejuju/nubio">Nubio</a></p>
+        <p class="color-fg-2">Powered by <a target="_blank" rel="noopener noreferrer"
+                href="https://github.com/ejuju/nubio">Nubio</a></p>
     </footer>
 </body>
 
