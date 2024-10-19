@@ -153,6 +153,16 @@ func runHTTP(h http.Handler, config *Config, logger *slog.Logger) (exitcode int)
 }
 
 func runHTTPS(h http.Handler, config *Config, logger *slog.Logger) (exitcode int) {
+	// Ensure certs directory exists.
+	fstat, err := os.Stat(config.TLSDirpath)
+	if err != nil {
+		logger.Error("check certs directory", "error", err)
+		return 1
+	} else if !fstat.IsDir() {
+		logger.Error("check certs directory", "error", "not a directory")
+		return 1
+	}
+
 	// Configure autocert.
 	tlsCertManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
@@ -201,7 +211,7 @@ func runHTTPS(h http.Handler, config *Config, logger *slog.Logger) (exitcode int
 	// Shutdown HTTP server gracefully.
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	err := autocertServer.Shutdown(ctx)
+	err = autocertServer.Shutdown(ctx)
 	if err != nil {
 		logger.Error("shutdown HTTP server", "error", err)
 		exitcode = 1

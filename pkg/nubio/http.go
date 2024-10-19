@@ -56,7 +56,7 @@ func handlePanic(logger *slog.Logger) httpmux.PanicRecoveryHandler {
 func servePing(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, "pong")
+	io.WriteString(w, "pong\n")
 }
 
 //go:embed favicon.svg
