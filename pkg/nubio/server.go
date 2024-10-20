@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/ejuju/nubio/pkg/httpmux"
@@ -135,7 +136,7 @@ func runHTTP(h http.Handler, config *Config, logger *slog.Logger) (exitcode int)
 
 	// Wait for interrupt or server error.
 	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt)
+	signal.Notify(interrupt, syscall.SIGTERM, syscall.SIGINT)
 	select {
 	case err := <-errc:
 		logger.Error("critical failure", "error", err)
@@ -203,7 +204,7 @@ func runHTTPS(h http.Handler, config *Config, logger *slog.Logger) (exitcode int
 
 	// Wait for interrupt or server error.
 	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt)
+	signal.Notify(interrupt, syscall.SIGTERM, syscall.SIGINT)
 	select {
 	case err := <-errc:
 		logger.Error("critical failure", "error", err)
