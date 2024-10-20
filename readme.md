@@ -1,5 +1,7 @@
 # Nubio: Online profile for developers
 
+Nubio can be used as a static site generator, HTTP(S) server or Go library.
+
 ## Introduction
 
 ### Features
