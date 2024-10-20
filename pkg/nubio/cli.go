@@ -16,7 +16,7 @@ func Run(args ...string) (exitcode int) {
 		do = RunServer
 	case "ssg":
 		do = RunSSG
-	case "check-profile-config":
+	case "check-profile":
 		do = RunCheckProfile
 	case "check-server-config":
 		do = RunCheckServer
