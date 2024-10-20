@@ -3,6 +3,7 @@
 For v1:
 - [ ] Add complete setup examples: SSG with Caddy and HTTPS server with Systemd/Debian.
 - [ ] Serve version number on (`/version` / `$ nubio version`)
+- [ ] Support alt domains for HTTP(S) server (server config `"domain_alts": "mysite.fr"` redirecting to `"mysite.example"`)
 
 Nice-to-haves:
 - [ ] Smart page breaks for PDF export (to avoid breaking within content for long profiles)
