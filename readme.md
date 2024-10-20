@@ -1,6 +1,6 @@
 # Nubio: Online profile for developers
 
-Nubio can be used as a static site generator, HTTP(S) server or Go library.
+Nubio can be used as a static site generator, CLI, HTTP(S) server or Go library.
 
 ## Introduction
 
@@ -92,7 +92,7 @@ Here's a JSON template you can fill in with your information:
 
 Note: See `example.profile.json` for a realistic example.
 
-### Generate a static website (SSG)
+### Generating a static website (SSG)
 
 ```bash
 nubio ssg profile.json static/
@@ -103,7 +103,16 @@ Note: Make sure to fill in the `domain` field in your `profile.json` for SSG.
 For an example setup with Caddy on Debian, check out:
 [/doc/setup-ssg-caddy-debian.md](/doc/setup-ssg-caddy-debian.md)
 
-### Run as HTTP(S) server
+### Generating exports via CLI
+
+You can also use Nubio as a CLI to generate static file exports,
+for example, to export your profile as a PDF:
+
+```bash
+nubio pdf /path/to/profile.json /path/to/output.pdf
+```
+
+### Running as HTTP(S) server
 
 First, you'll need to configure your `server.json` file.
 
@@ -150,7 +159,7 @@ Notes:
   for `server.json` in its current working directory.
 - The `server.json` indicates where the `profile.json` file can be found.
 
-### Embed in your Go program
+### Embedding in your Go program
 
 - Export profile to PDF: `nubio.ExportPDF(w, profile)`
 - Export profile to HTML: `nubio.ExportHTML(w, profile)`
