@@ -2,7 +2,7 @@
 
 For v1:
 - [ ] Add complete setup examples: SSG with Caddy and HTTPS server with Systemd/Debian.
-- [ ] Serve version number on `/version`
+- [ ] Serve version number on (`/version` / `$ nubio version`)
 
 Nice-to-haves:
 - [ ] Smart page breaks for PDF export (to avoid breaking within content for long profiles)
