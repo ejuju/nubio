@@ -1,10 +1,14 @@
 # Setup for SSG with Caddy on Debian (with CI/CD)
 
-Done on a fresh Debian 11 install.
+In this guide, we will setup a self-hosted online profile
+using Caddy and Debian.
+
+We will use a fictional person named "Alex Doe" to illustrate our example.
+
+This was tested on a fresh Debian 12 install on 2024-10-20.
 
 Note:
 - We use the root user here, but in reality you should create a dedicated user on the server host.
-- Whenever you see `mysite` or `mysite.example`, you should replace that with your actual domain name.
 
 ## Install Go on your local machine
 
@@ -34,21 +38,21 @@ vim profile.json # Add your profile.json
 nubio ssg profile.json .out # Generate website files
 ```
 
-## Copy static files to remote server
-
-```bash
-scp -r .out/* root@mysite.example:/var/www/mysite
-```
-
 ## Update your DNS
 
 - Ensure your domain resolves to your server's IP address(es).
-- Ensure you have a CNAME on `www.` pointing to `www.mysite.example.`.
+- Ensure you have a CNAME on `www.` pointing to `www.alexdoe.example.`.
+
+## Copy static files to remote server
+
+```bash
+scp -r .out/* root@alexdoe.example:/var/www/alexdoe
+```
 
 ## Setup Caddy on the remote server
 
 ```bash
-ssh root@mysite.example
+ssh root@alexdoe.example
 ```
 
 Install and start the Caddy daemon:
@@ -71,18 +75,18 @@ systemctl status caddy
 
 Create working directory (where static files will be served from):
 ```bash
-mkdir -p /var/www/mysite # Create working directory
+mkdir -p /var/www/alexdoe # Create working directory
 ```
 
 Setup your Caddy file in `/etc/caddy/Caddyfile`:
 ```
-mysite.example {
-	root * /var/www/mysite
+alexdoe.example {
+	root * /var/www/alexdoe
 	file_server
 }
 
-www.mysite.example {
-	redir https://mysite.example{uri} permanent
+www.alexdoe.example {
+	redir https://alexdoe.example{uri} permanent
 }
 ```
 
@@ -103,7 +107,7 @@ Generate a new SSH key pair: `ssh-keygen`
 
 Copy the public key on the remote server (append to `authorized_keys file`):
 ```bash
-ssh root@mysite.example
+ssh root@alexdoe.example
 vim ~/.ssh/authorized_keys
 ```
 
@@ -147,7 +151,7 @@ jobs:
               -i "$SSH_KEY_PATH" \
               -o StrictHostKeyChecking=no \
               -o UserKnownHostsFile=/dev/null \
-              -r .out/* "$SSH_USERNAME"@mysite.example:/var/www/mysite
+              -r .out/* "$SSH_USERNAME"@alexdoe.example:/var/www/alexdoe
 ```
 
 Push the code:
