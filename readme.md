@@ -90,6 +90,17 @@ Here's a JSON template you can fill in with your information:
 
 Note: See `example.profile.json` for a realistic example.
 
+### Generate a static website (SSG)
+
+```bash
+nubio ssg profile.json static/
+```
+
+Note: Make sure to fill in the `domain` field in your `profile.json` for SSG.
+
+For an example setup with Caddy on Debian, check out:
+[/doc/ssg-debian-caddy.md](/doc/ssg-caddy-debian.md)
+
 ### Run as HTTP(S) server
 
 First, you'll need to configure your `server.json` file.
@@ -136,14 +147,6 @@ Notes:
 - You can also simply run `nubio run` which by default will look 
   for `server.json` in its current working directory.
 - The `server.json` indicates where the `profile.json` file can be found.
-
-### Generate a static website (SSG)
-
-```bash
-nubio ssg profile.json static/
-```
-
-Note: Make sure to fill in the `domain` field in your `profile.json` for SSG.
 
 ### Embed in your Go program
 
