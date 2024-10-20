@@ -1,4 +1,4 @@
-# Setup for SSG with Caddy on Debian (with CI/CD)
+# Setup guide for SSG with Caddy on Debian (with CI/CD)
 
 In this guide, we will setup a self-hosted online profile
 using Caddy and Debian.
@@ -7,8 +7,8 @@ We will use a fictional person named "Alex Doe" to illustrate our example.
 
 This was tested on a fresh Debian 12 install on 2024-10-20.
 
-Note:
-- We use the root user here, but in reality you should create a dedicated user on the server host.
+Note: We use the root user here, but in reality you should create a dedicated user on the server host.
+<!-- TODO: Create and use non-root user -->
 
 ## Install Go on your local machine
 
