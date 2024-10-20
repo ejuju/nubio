@@ -21,3 +21,4 @@ Nice-to-haves:
 - [ ] Support providing HTTP redirects in config (for URL shortener like capabilities)
 - [ ] Add more builtin HTML and PDF templates
 - [ ] Support custom templates (HTML/MD/TXT)
+- [ ] Support hot reload (= (re)generate HTML, PDF, etc. on each request) (useful for local dev)
