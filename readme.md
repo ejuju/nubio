@@ -99,7 +99,7 @@ nubio ssg profile.json static/
 Note: Make sure to fill in the `domain` field in your `profile.json` for SSG.
 
 For an example setup with Caddy on Debian, check out:
-[/doc/ssg-debian-caddy.md](/doc/ssg-caddy-debian.md)
+[/doc/setup-ssg-caddy-debian.md](/doc/setup-ssg-caddy-debian.md)
 
 ### Run as HTTP(S) server
 
