@@ -1,4 +1,4 @@
-# Nubio: Online profile for developers
+# Nubio: Self-hosted online profile/resume for developers
 
 Nubio can be used as a static site generator, CLI, HTTP(S) server or Go library.
 
