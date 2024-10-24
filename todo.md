@@ -5,21 +5,22 @@ For v1:
 - [ ] Support alt domains for HTTP(S) server (server config `"domain_alts": "mysite.fr"` redirecting to `"mysite.example"`)
 
 Nice-to-haves:
-- [ ] Smart page breaks for PDF export (to avoid breaking within content for long profiles)
-- [ ] Support logging to file (support file rotation / auto-delete after retention period)
-- [ ] Support IP blocklist in config / or dedicated file.
-- [ ] Support contact form with email notification (on dedicated page `/contact`)
-- [ ] Add global rate limiting middleware
-- [ ] Add meta tags (JSON+LD / OG)
-- [ ] Support blogging / documentation (with Markdown-like files directory)
-- [ ] Support serving static files from directory (on `/static/*`) (using file that list file paths, URI and corresponding MIME-type)
-- [ ] Support i18n
 - [ ] Add 404 page
 - [ ] Add panic recovery page
-- [ ] Support notifying admin by email on internal server error (panic, etc.)
-- [ ] Support simple analytics (number of visits) (sent weekly by email to admin)
+- [ ] Add meta tags (JSON+LD / OG)
 - [ ] Support providing HTTP redirects in config (for URL shortener like capabilities)
+
+Ideas:
+- [ ] Support i18n
+- [ ] Support notifying admin by email on internal server error (panic, etc.)
 - [ ] Add more builtin HTML and PDF templates
+- [ ] Support serving static files from directory (on `/static/*`) (using file that list file paths, URI and corresponding MIME-type)
+- [ ] Support blogging / documentation (with Markdown-like files directory)
 - [ ] Support custom templates (HTML/MD/TXT)
+- [ ] Support analytics reports (page visits / UI events?) sent by email
 - [ ] Support hot reload (= (re)generate HTML, PDF, etc. on each request) (useful for local dev)
-- [ ] Support analytics (page visits / UI events?)
+- [ ] Support contact form with email notification (on dedicated page `/contact`)
+- [ ] Support IP blocklist in config / or dedicated file.
+- [ ] Add global rate limiting middleware
+- [ ] Support logging to file (support file rotation / auto-delete after retention period)
+- [ ] Smart page breaks for PDF export (to avoid breaking within content for long profiles)
