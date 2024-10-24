@@ -52,6 +52,8 @@ func RunSSG(args ...string) (exitcode int) {
 		strings.TrimPrefix(PathFaviconSVG, "/"): faviconSVG,
 		strings.TrimPrefix(PathSitemapXML, "/"): generateSitemapXML(profile.Domain),
 		strings.TrimPrefix(PathRobotsTXT, "/"):  []byte(robotsTXT),
+		strings.TrimPrefix(PathPing, "/"):       []byte("ok\n"),
+		strings.TrimPrefix(PathVersion, "/"):    []byte(version + "\n"),
 	}
 	for path, export := range exports {
 		b := &bytes.Buffer{}
