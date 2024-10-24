@@ -67,13 +67,15 @@ func RunSSG(args ...string) (exitcode int) {
 
 	// Write files.
 	for path, f := range files {
-		err := os.WriteFile(filepath.Join(outputDirpath, path), f, 0666)
+		path = filepath.Join(outputDirpath, path)
+		err := os.WriteFile(path, f, 0666)
 		if err != nil {
 			logger.Error("write file", "path", path, "error", err)
 			return 1
 		}
+		logger.Info("wrote file", "path", path)
 	}
 
-	logger.Info("files written", "output_directory", outputDirpath)
+	logger.Info("all files written")
 	return 0
 }
