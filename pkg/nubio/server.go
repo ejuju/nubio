@@ -67,16 +67,12 @@ func RunServer(args ...string) (exitcode int) {
 	}
 
 	// Load user profile.
-	profile := &Profile{}
-	err = loadJSONFile(config.Profile, profile)
+	profile, err := LoadProfileFile(config.Profile)
 	if err != nil {
 		logger.Error("load profile config", "error", err)
 		return 1
 	}
 	profile.Domain = config.Domain
-	if profile.NameSlug == "" {
-		profile.NameSlug = httpmux.Slugify(profile.Name)
-	}
 	errs = profile.Check()
 	if len(errs) > 0 {
 		for _, err := range errs {

@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"time"
 	"unicode/utf8"
+
+	"github.com/ejuju/nubio/pkg/httpmux"
 )
 
 type Profile struct {
@@ -26,6 +28,18 @@ type Profile struct {
 	Education   []Education  `json:"education"`
 	Interests   []string     `json:"interests"`
 	Hobbies     []string     `json:"hobbies"`
+}
+
+func LoadProfileFile(path string) (p *Profile, err error) {
+	p = &Profile{}
+	err = loadJSONFile(path, p)
+	if err != nil {
+		return nil, err
+	}
+	if p.NameSlug == "" {
+		p.NameSlug = httpmux.Slugify(p.Name)
+	}
+	return p, nil
 }
 
 func (p *Profile) Check() (errs []error) {

@@ -2,7 +2,6 @@ package nubio
 
 import (
 	"bytes"
-	"encoding/json"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -22,15 +21,9 @@ func RunSSG(args ...string) (exitcode int) {
 	outputDirpath := args[1]
 
 	// Load profile.
-	rawProfile, err := os.ReadFile(profilePath)
+	profile, err := LoadProfileFile(profilePath)
 	if err != nil {
-		logger.Error("read profile", "error", err)
-		return 1
-	}
-	profile := &Profile{}
-	err = json.Unmarshal(rawProfile, profile)
-	if err != nil {
-		logger.Error("parse profile", "error", err)
+		logger.Error("load profile config", "error", err)
 		return 1
 	}
 
