@@ -35,7 +35,7 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	pdf.SetAuthor(p.Name, true)
 	pdf.SetTitle("Curriculum Vitae - "+p.Name, true)
 
-	// Use custom fontFamily because standard fonts use cp1252 encoding.
+	// Use custom font because standard fonts use cp1252 encoding.
 	fontFamily := "sans-serif"
 	pdf.AddUTF8FontFromBytes(fontFamily, "", notoRegularTTF)
 	pdf.AddUTF8FontFromBytes(fontFamily, "B", notoBoldTTF)

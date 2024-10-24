@@ -106,7 +106,7 @@
             gap: 8px;
         }
 
-        a.button {
+        .button {
             background-color: var(--color-bg-2);
             padding: 8px 12px;
             border-radius: 8px;
@@ -244,10 +244,10 @@
         </section>
 
         <section id="exports" class="card">
-            <a target="_blank" class="button" href="/profile.pdf">Open as <strong>PDF</strong></a>
-            <a target="_blank" class="button" href="/profile.json">Open as <strong>JSON</strong></a>
-            <a target="_blank" class="button" href="/profile.txt">Open as <strong>TXT</strong></a>
-            <a target="_blank" class="button" href="/profile.md">Open as <strong>Markdown</strong></a>
+            <a class="button" href="/profile.pdf" download="{{ .NameSlug }}.pdf">Download PDF</a>
+            <a class="button" href="/profile.txt" download="{{ .NameSlug }}.txt">Download TXT</a>
+            <a class="button" href="/profile.json" download="{{ .NameSlug }}.json">Download JSON</a>
+            <a class="button" href="/profile.md" download="{{ .NameSlug }}.md">Download Markdown</a>
         </section>
     </main>
 

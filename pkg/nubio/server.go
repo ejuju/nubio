@@ -74,6 +74,9 @@ func RunServer(args ...string) (exitcode int) {
 		return 1
 	}
 	profile.Domain = config.Domain
+	if profile.NameSlug == "" {
+		profile.NameSlug = httpmux.Slugify(profile.Name)
+	}
 	errs = profile.Check()
 	if len(errs) > 0 {
 		for _, err := range errs {

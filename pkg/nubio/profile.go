@@ -9,7 +9,8 @@ import (
 )
 
 type Profile struct {
-	Name string `json:"name"` // Full name (ex: "Alex Doe").
+	Name     string `json:"name"`      // Full name (ex: "Alex Doe").
+	NameSlug string `json:"name_slug"` // Optional: Name as a URI-compatible slug (ex: "alex-doe").
 
 	// Public domain name (ex: "alexdoe.example")
 	// Note:
