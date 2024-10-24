@@ -30,12 +30,12 @@ var subsitutions = map[rune]string{
 // it will be included "as is" in the output.
 //
 // Example: "Alizée Doe" -> "alizee-doe".
-func Slugify(v string) (out string) {
+func Slugify(raw string) (out string) {
 	// Trim leading and trailing spaces, Normalize characters, transform to lowercase, and subsitute characters.
-	v = strings.TrimSpace(v)
-	v = norm.NFKC.String(v)
-	v = strings.ToLower(v)
-	for _, c := range v {
+	raw = strings.TrimSpace(raw)
+	raw = norm.NFKC.String(raw)
+	raw = strings.ToLower(raw)
+	for _, c := range raw {
 		clean, ok := subsitutions[c]
 		if !ok {
 			clean = string(c)
