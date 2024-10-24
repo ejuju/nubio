@@ -107,7 +107,7 @@ func RunServer(args ...string) (exitcode int) {
 	// middlewares propagates up and will cause the program to exit.
 	//
 	// Other middlewares should be put below the panic recovery middleware.
-	h := httpmux.Wrap(NewHTTPHandler(nil, profile, pgpKey),
+	h := httpmux.Wrap(NewHTTPHandler(nil, profile, string(pgpKey)),
 		httpmux.NewTrueIPMiddleware(config.TrueIPHeader),
 		httpmux.NewRequestIDMiddleware(),
 		httpmux.NewLoggingMiddleware(handleAccessLog(logger)),

@@ -1,6 +1,7 @@
 package httpmux
 
 import (
+	"io"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -58,4 +59,28 @@ func RedirectToNonWWW(h http.Handler) http.Handler {
 
 		h.ServeHTTP(w, r)
 	})
+}
+
+func TextHandler(v string) http.HandlerFunc {
+	return func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		io.WriteString(w, v)
+	}
+}
+
+func SVGHandler(v []byte) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "image/svg+xml")
+		w.WriteHeader(http.StatusOK)
+		w.Write(v)
+	}
+}
+
+func XMLHandler(v []byte) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(v)
+	}
 }

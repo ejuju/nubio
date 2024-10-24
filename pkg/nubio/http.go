@@ -3,7 +3,6 @@ package nubio
 import (
 	"bytes"
 	_ "embed"
-	"io"
 	"log/slog"
 	"net/http"
 
@@ -12,6 +11,7 @@ import (
 
 const (
 	PathPing        = "/ping"
+	PathVersion     = "/version"
 	PathFaviconSVG  = "/favicon.svg"
 	PathSitemapXML  = "/sitemap.xml"
 	PathRobotsTXT   = "/robots.txt"
@@ -23,18 +23,19 @@ const (
 	PathPGPKey      = "/pgp.asc"
 )
 
-func NewHTTPHandler(fallback http.Handler, profile *Profile, pgpKey []byte) http.Handler {
+func NewHTTPHandler(fallback http.Handler, profile *Profile, pgpKey string) http.Handler {
 	return httpmux.Map{
-		PathPing:        {"GET": http.HandlerFunc(servePing)},
-		PathFaviconSVG:  {"GET": http.HandlerFunc(serveFaviconSVG)},
-		PathRobotsTXT:   {"GET": http.HandlerFunc(serveRobotsTXT)},
-		PathSitemapXML:  {"GET": serveSitemapXML(profile.Domain)},
+		PathPing:        {"GET": httpmux.TextHandler("ok\n")},
+		PathVersion:     {"GET": httpmux.TextHandler(version + "\n")},
+		PathFaviconSVG:  {"GET": httpmux.SVGHandler(faviconSVG)},
+		PathRobotsTXT:   {"GET": httpmux.TextHandler(robotsTXT)},
+		PathSitemapXML:  {"GET": httpmux.XMLHandler(generateSitemapXML(profile.Domain))},
 		PathProfileHTML: {"GET": ExportAndServeHTML(profile)},
 		PathProfilePDF:  {"GET": ExportAndServePDF(profile)},
 		PathProfileJSON: {"GET": ExportAndServeJSON(profile)},
 		PathProfileTXT:  {"GET": ExportAndServeText(profile)},
 		PathProfileMD:   {"GET": ExportAndServeMarkdown(profile)},
-		PathPGPKey:      {"GET": servePGPKey(pgpKey)},
+		PathPGPKey:      {"GET": httpmux.TextHandler(pgpKey)},
 	}.Handler(fallback)
 }
 
@@ -68,30 +69,12 @@ func handlePanic(logger *slog.Logger) httpmux.PanicRecoveryHandler {
 	}
 }
 
-func servePing(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, "pong\n")
-}
-
 //go:embed favicon.svg
 var faviconSVG []byte
-
-func serveFaviconSVG(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "image/svg+xml")
-	w.WriteHeader(http.StatusOK)
-	w.Write(faviconSVG)
-}
 
 const robotsTXT = `User-Agent: *
 Disallow:
 `
-
-func serveRobotsTXT(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, robotsTXT)
-}
 
 func generateSitemapXML(domain string) []byte {
 	paths := []string{
@@ -109,23 +92,5 @@ func generateSitemapXML(domain string) []byte {
 		b.WriteString("<url><loc>https://" + domain + path + "/</loc></url>\n")
 	}
 	b.WriteString("</urlset>\n")
-
 	return b.Bytes()
-}
-
-func serveSitemapXML(domain string) http.HandlerFunc {
-	content := generateSitemapXML(domain)
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
-		w.WriteHeader(http.StatusOK)
-		w.Write(content)
-	}
-}
-
-func servePGPKey(key []byte) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		w.WriteHeader(http.StatusOK)
-		w.Write(key)
-	}
 }

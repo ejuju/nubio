@@ -8,6 +8,8 @@ import (
 	"github.com/ejuju/nubio/pkg/cli"
 )
 
+const version = "v0"
+
 func Run(args ...string) (exitcode int) {
 	if len(args) == 0 {
 		return commandRunServer.Do()
@@ -23,6 +25,7 @@ func Run(args ...string) (exitcode int) {
 }
 
 var commands = []*cli.Command{
+	commandVersion,
 	commandRunServer,
 	commandRunSSG,
 	commandGeneratePDF,
@@ -46,6 +49,16 @@ var commandHelp = &cli.Command{
 			}
 			fmt.Print("\n")
 		}
+		return 0
+	},
+}
+
+var commandVersion = &cli.Command{
+	Keyword:     "version",
+	Aliases:     []string{"v", "-v", "--v", "-version", "--version"},
+	Description: "Print the version of this executable.",
+	Do: func(args ...string) (exitcode int) {
+		fmt.Printf("%s\n", version)
 		return 0
 	},
 }
