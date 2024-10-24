@@ -18,7 +18,7 @@ var (
 	TextRawTemplate string
 	TextTemplate    = template.Must(template.New("txt").Parse(TextRawTemplate))
 
-	//go:embed profile.md.gotml
+	//go:embed profile.md.gotmpl
 	MarkdownRawTemplate string
 	MarkdownTemplate    = template.Must(template.New("md").Parse(MarkdownRawTemplate))
 )
