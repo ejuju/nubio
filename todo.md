@@ -2,7 +2,6 @@
 
 For v1:
 - [ ] Add complete setup examples: SSG with Caddy and HTTPS server with Systemd/Debian.
-- [ ] Serve version number on (`/version` / `$ nubio version`)
 - [ ] Support alt domains for HTTP(S) server (server config `"domain_alts": "mysite.fr"` redirecting to `"mysite.example"`)
 
 Nice-to-haves:
@@ -23,3 +22,4 @@ Nice-to-haves:
 - [ ] Add more builtin HTML and PDF templates
 - [ ] Support custom templates (HTML/MD/TXT)
 - [ ] Support hot reload (= (re)generate HTML, PDF, etc. on each request) (useful for local dev)
+- [ ] Support analytics (page visits / UI events?)
