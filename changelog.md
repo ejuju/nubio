@@ -5,6 +5,7 @@
 - Breaking change: CLI command `check` is now split in `check-server-config` and `check-resume-config`
 - Breaking change: Resume website link is included by default in `pdf`, `json`, `txt` and `md` exports
   (not included in `html` export).
+- `contact` fields moved to the root of the JSON config.
 
 ## v0.5.0
 - Breaking change: Move config fields `custom_css`, `custom_css_path`, `pgp_key`, `pgp_key_path` inside `resume` object.
