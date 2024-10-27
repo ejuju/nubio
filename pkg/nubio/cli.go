@@ -152,6 +152,7 @@ var commandCheckResumeConfig = &cli.Command{
 		log.Printf("Checking file: %s", path)
 		conf, err := LoadResumeConfig(path)
 		if err != nil {
+			log.Print(err.Error())
 			return 1
 		}
 		errs := conf.Check()
@@ -181,6 +182,7 @@ var commandCheckServerConfig = &cli.Command{
 		log.Printf("Checking file: %s", path)
 		conf, err := LoadServerConfig(path)
 		if err != nil {
+			log.Print(err.Error())
 			return 1
 		}
 		errs := conf.Check()
