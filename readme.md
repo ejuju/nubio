@@ -45,7 +45,7 @@ usually named `profile.json`.
 Your `profile.json` can include:
 - Contact details
 - External links
-- Work experiences
+- Work Experience
 - Skills
 - Languages
 - Education
