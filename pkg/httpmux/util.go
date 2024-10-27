@@ -84,3 +84,11 @@ func XMLHandler(v []byte) http.HandlerFunc {
 		w.Write(v)
 	}
 }
+
+func CSSHandler(v []byte) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/css")
+		w.WriteHeader(http.StatusOK)
+		w.Write(v)
+	}
+}

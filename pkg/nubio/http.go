@@ -10,33 +10,41 @@ import (
 )
 
 const (
-	PathPing        = "/ping"
-	PathVersion     = "/version"
-	PathFaviconSVG  = "/favicon.svg"
-	PathSitemapXML  = "/sitemap.xml"
-	PathRobotsTXT   = "/robots.txt"
-	PathProfileHTML = "/"
-	PathProfileJSON = "/profile.json"
-	PathProfilePDF  = "/profile.pdf"
-	PathProfileTXT  = "/profile.txt"
-	PathProfileMD   = "/profile.md"
-	PathPGPKey      = "/pgp.asc"
+	PathPing       = "/ping"
+	PathVersion    = "/version"
+	PathFaviconSVG = "/favicon.svg"
+	PathSitemapXML = "/sitemap.xml"
+	PathRobotsTXT  = "/robots.txt"
+	PathResumeHTML = "/"
+	PathResumeJSON = "/resume.json"
+	PathResumePDF  = "/resume.pdf"
+	PathResumeTXT  = "/resume.txt"
+	PathResumeMD   = "/resume.md"
+	PathPGPKey     = "/pgp.asc"
+	PathCustomCSS  = "/custom.css"
 )
 
-func NewHTTPHandler(fallback http.Handler, profile *Profile, pgpKey string) http.Handler {
-	return httpmux.Map{
-		PathPing:        {"GET": httpmux.TextHandler("ok\n")},
-		PathVersion:     {"GET": httpmux.TextHandler(version + "\n")},
-		PathFaviconSVG:  {"GET": httpmux.SVGHandler(faviconSVG)},
-		PathRobotsTXT:   {"GET": httpmux.TextHandler(robotsTXT)},
-		PathSitemapXML:  {"GET": httpmux.XMLHandler(generateSitemapXML(profile.Domain))},
-		PathProfileHTML: {"GET": ExportAndServeHTML(profile)},
-		PathProfilePDF:  {"GET": ExportAndServePDF(profile)},
-		PathProfileJSON: {"GET": ExportAndServeJSON(profile)},
-		PathProfileTXT:  {"GET": ExportAndServeText(profile)},
-		PathProfileMD:   {"GET": ExportAndServeMarkdown(profile)},
-		PathPGPKey:      {"GET": httpmux.TextHandler(pgpKey)},
-	}.Handler(fallback)
+func NewHTTPHandler(fallback http.Handler, conf *Config) http.Handler {
+	m := httpmux.Map{
+		PathPing:       {"GET": httpmux.TextHandler("ok\n")},
+		PathVersion:    {"GET": httpmux.TextHandler(version + "\n")},
+		PathFaviconSVG: {"GET": httpmux.SVGHandler(faviconSVG)},
+		PathRobotsTXT:  {"GET": httpmux.TextHandler(robotsTXT)},
+		PathSitemapXML: {"GET": httpmux.XMLHandler(generateSitemapXML(conf.Resume.Domain))},
+		PathResumeHTML: {"GET": ExportAndServeHTML(conf)},
+		PathResumePDF:  {"GET": ExportAndServePDF(conf)},
+		PathResumeJSON: {"GET": ExportAndServeJSON(conf)},
+		PathResumeTXT:  {"GET": ExportAndServeText(conf)},
+		PathResumeMD:   {"GET": ExportAndServeMarkdown(conf)},
+	}
+	if len(conf.PGPKey) > 0 {
+		m[PathPGPKey] = map[string]http.Handler{"GET": httpmux.TextHandler(string(conf.PGPKey))}
+	}
+	if len(conf.CustomCSS) > 0 {
+		m[PathCustomCSS] = map[string]http.Handler{"GET": httpmux.CSSHandler([]byte(conf.CustomCSS))}
+	}
+
+	return m.Handler(fallback)
 }
 
 func handleAccessLog(logger *slog.Logger) httpmux.LoggingHandlerFunc {
@@ -78,11 +86,11 @@ Disallow:
 
 func generateSitemapXML(domain string) []byte {
 	paths := []string{
-		PathProfileHTML,
-		PathProfileJSON,
-		PathProfilePDF,
-		PathProfileTXT,
-		PathProfileMD,
+		PathResumeHTML,
+		PathResumeJSON,
+		PathResumePDF,
+		PathResumeTXT,
+		PathResumeMD,
 	}
 
 	b := &bytes.Buffer{}

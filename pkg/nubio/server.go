@@ -2,7 +2,6 @@ package nubio
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -15,32 +14,6 @@ import (
 	"golang.org/x/crypto/acme/autocert"
 )
 
-type Config struct {
-	Address         string `json:"address"`        // Local HTTP server address.
-	Domain          string `json:"domain"`         // Public domain name used to host the site.
-	TrueIPHeader    string `json:"true_ip_header"` // Optional: (ex: "X-Forwarded-For", use when reverse proxying).
-	TLSDirpath      string `json:"tls_dirpath"`    // Path to TLS certificate directory.
-	TLSEmailAddress string `json:"tls_email_addr"` // Email address in TLS certificate.
-	Profile         string `json:"profile"`        // Path to JSON file where profile data is stored.
-	PGPKey          string `json:"pgp_key"`        // Path to PGP public key file.
-}
-
-func (v *Config) Check() (errs []error) {
-	if v.Domain == "" {
-		errs = append(errs, errors.New("missing domain"))
-	}
-	if v.Address == "" && v.TLSDirpath == "" {
-		errs = append(errs, errors.New("missing address (or set TLS dirpath for HTTPS)"))
-	}
-	if v.TLSDirpath != "" && v.TLSEmailAddress == "" {
-		errs = append(errs, errors.New("missing TLS email address"))
-	}
-	if v.Profile == "" {
-		errs = append(errs, errors.New("missing profile path"))
-	}
-	return errs
-}
-
 func RunServer(args ...string) (exitcode int) {
 	// Init logger.
 	slogh := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
@@ -48,48 +21,22 @@ func RunServer(args ...string) (exitcode int) {
 	logger.Debug("logger ready")
 
 	// Load config.
-	configPath := "server.json"
+	configPath := "config.json"
 	if len(args) > 0 {
 		configPath = args[0]
 	}
 	config := &Config{}
-	err := loadJSONFile(configPath, config)
+	config, err := LoadConfig(configPath)
 	if err != nil {
-		logger.Error("load server config", "error", err)
+		logger.Error("load config", "error", err)
 		return 1
 	}
 	errs := config.Check()
 	if len(errs) > 0 {
 		for _, err := range errs {
-			logger.Error("bad server config", "error", err)
+			logger.Error("bad config", "error", err)
 		}
 		return 1
-	}
-
-	// Load user profile.
-	profile, err := LoadProfileFile(config.Profile)
-	if err != nil {
-		logger.Error("load profile config", "error", err)
-		return 1
-	}
-	profile.Domain = config.Domain
-	errs = profile.Check()
-	if len(errs) > 0 {
-		for _, err := range errs {
-			logger.Error("bad profile config", "error", err)
-		}
-		return 1
-	}
-
-	// Load PGP key if provided.
-	var pgpKey []byte
-	if config.PGPKey != "" {
-		pgpKey, err = os.ReadFile(config.PGPKey)
-		if err != nil {
-			logger.Error("read PGP public key file", "error", err)
-			return 1
-		}
-		profile.Contact.PGP = profile.Domain + PathPGPKey
 	}
 
 	// Init and register HTTP endpoints, wrap global middleware.
@@ -103,7 +50,7 @@ func RunServer(args ...string) (exitcode int) {
 	// middlewares propagates up and will cause the program to exit.
 	//
 	// Other middlewares should be put below the panic recovery middleware.
-	h := httpmux.Wrap(NewHTTPHandler(nil, profile, string(pgpKey)),
+	h := httpmux.Wrap(NewHTTPHandler(nil, config),
 		httpmux.NewTrueIPMiddleware(config.TrueIPHeader),
 		httpmux.NewRequestIDMiddleware(),
 		httpmux.NewLoggingMiddleware(handleAccessLog(logger)),
@@ -170,7 +117,7 @@ func runHTTPS(h http.Handler, config *Config, logger *slog.Logger) (exitcode int
 	// Configure autocert.
 	tlsCertManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist(config.Domain, "www."+config.Domain),
+		HostPolicy: autocert.HostWhitelist(config.Resume.Domain, "www."+config.Resume.Domain),
 		Cache:      autocert.DirCache(config.TLSDirpath),
 		Email:      config.TLSEmailAddress,
 	}

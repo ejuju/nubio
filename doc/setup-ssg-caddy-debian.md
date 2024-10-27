@@ -1,6 +1,6 @@
 # Setup guide for SSG with Caddy on Debian (with CI/CD)
 
-In this guide, we will setup a self-hosted online profile
+In this guide, we will setup a self-hosted online resume
 using Caddy and Debian.
 
 We will use a fictional person named "Alex Doe" to illustrate our example.
@@ -34,8 +34,8 @@ go install github.com/ejuju/nubio@latest
 ## Generate static website
 
 ```bash
-vim profile.json # Add your profile.json
-nubio ssg profile.json .out # Generate website files
+vim config.json # Create your config.json
+nubio ssg config.json .out # Generate website files
 ```
 
 ## Update your DNS
@@ -101,9 +101,9 @@ Your website is now up and running!
 
 ## Setup CI/CD with Github workflow
 
-Setup a Git repo containing your `profile.json` file.
+Setup a Git repo containing your `config.json` file.
 
-Publish the repo to your Github (visibility: private)
+Publish the repo to your Github (with visibility: private).
 
 Generate a new SSH key pair: `ssh-keygen`
 
@@ -145,8 +145,8 @@ jobs:
         run: |
           go install github.com/ejuju/nubio@v0.3.1
           mkdir .out
-          nubio check-profile profile.json
-          nubio ssg profile.json .out
+          nubio check config.json
+          nubio ssg config.json .out
           echo "$SSH_KEY" > "$SSH_KEY_PATH"
           chmod 0600 "$SSH_KEY_PATH"
           scp \
@@ -164,5 +164,5 @@ git push
 ```
 
 CI/CD is setup!
-You can now make modifications to your `profile.json` and
+You can now make modifications to your `config.json` and
 the new changes will be deployed when you push.

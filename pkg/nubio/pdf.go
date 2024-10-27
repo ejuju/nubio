@@ -28,12 +28,12 @@ var (
 	notoBoldTTF []byte
 )
 
-func ExportPDF(w io.Writer, p *Profile) error {
+func ExportPDF(w io.Writer, conf *Config) error {
 	pdf := fpdf.New("P", "pt", "A4", "")
 	pdf.SetCreationDate(time.Now())
 	pdf.SetLang("en")
-	pdf.SetAuthor(p.Name, true)
-	pdf.SetTitle("Curriculum Vitae - "+p.Name, true)
+	pdf.SetAuthor(conf.Resume.Name, true)
+	pdf.SetTitle("Curriculum Vitae - "+conf.Resume.Name, true)
 
 	// Use custom font because standard fonts use cp1252 encoding.
 	fontFamily := "sans-serif"
@@ -60,7 +60,7 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	pdf.AddPage()
 	pdf.SetFontSize(fontSizeTitle)
 	pdf.SetFontStyle("B")
-	pdf.MultiCell(0, fontSizeTitle, p.Name, "", "C", false)
+	pdf.MultiCell(0, fontSizeTitle, conf.Resume.Name, "", "C", false)
 
 	// Append horizontal line below title.
 	pdf.Ln(fontSizeTitle)
@@ -69,7 +69,7 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	// Append work experiences.
 	pdf.Ln(24)
 	writeHeading(pdf, "Work Experience")
-	for _, v := range p.Experiences {
+	for _, v := range conf.Resume.WorkExperience {
 		pdf.Ln(16)
 		pdf.SetFontSize(fontSize)
 		pdf.SetFontStyle("B")
@@ -89,7 +89,7 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	// Append skills.
 	pdf.AddPage()
 	writeHeading(pdf, "Skills")
-	for _, v := range p.Skills {
+	for _, v := range conf.Resume.Skills {
 		pdf.Ln(16)
 		pdf.SetFontSize(fontSize)
 		pdf.SetFontStyle("B")
@@ -105,7 +105,7 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	pdf.Ln(24)
 	writeHeading(pdf, "Languages")
 	pdf.Ln(16)
-	for _, v := range p.Languages {
+	for _, v := range conf.Resume.Languages {
 		writeKV(pdf, v.Label, v.Proficiency)
 	}
 
@@ -113,7 +113,7 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	pdf.Ln(24)
 	writeHeading(pdf, "Education")
 	pdf.Ln(8)
-	for _, v := range p.Education {
+	for _, v := range conf.Resume.Education {
 		pdf.Ln(8)
 		pdf.SetFontSize(fontSize)
 		pdf.SetFontStyle("B")
@@ -129,7 +129,7 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	pdf.Ln(24)
 	writeHeading(pdf, "Links")
 	pdf.Ln(8)
-	for _, v := range p.Links {
+	for _, v := range conf.Resume.Links {
 		pdf.Ln(12)
 		pdf.SetFontSize(fontSize)
 		pdf.SetFontStyle("B")
@@ -166,9 +166,9 @@ func ExportPDF(w io.Writer, p *Profile) error {
 	// Append contact.
 	pdf.Ln(24)
 	writeHeading(pdf, "Contact")
-	addContactLink(pdf, "Email address", p.Contact.EmailAddress, "mailto:"+p.Contact.EmailAddress)
-	if p.Contact.PGP != "" {
-		addContactLink(pdf, "PGP key", p.Contact.PGP, "https://"+p.Contact.PGP)
+	addContactLink(pdf, "Email address", conf.Resume.Contact.EmailAddress, "mailto:"+conf.Resume.Contact.EmailAddress)
+	if conf.Resume.Contact.PGP != "" {
+		addContactLink(pdf, "PGP key", conf.Resume.Contact.PGP, "https://"+conf.Resume.Contact.PGP)
 	}
 	// Write whole PDF.
 	return pdf.Output(w)

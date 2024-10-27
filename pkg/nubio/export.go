@@ -10,24 +10,24 @@ import (
 )
 
 var (
-	//go:embed profile.html.gotmpl
+	//go:embed resume.html.gotmpl
 	HTMLRawTemplate string
 	HTMLTemplate    = template.Must(template.New("html").Parse(HTMLRawTemplate))
 
-	//go:embed profile.txt.gotmpl
+	//go:embed resume.txt.gotmpl
 	TextRawTemplate string
 	TextTemplate    = template.Must(template.New("txt").Parse(TextRawTemplate))
 
-	//go:embed profile.md.gotmpl
+	//go:embed resume.md.gotmpl
 	MarkdownRawTemplate string
 	MarkdownTemplate    = template.Must(template.New("md").Parse(MarkdownRawTemplate))
 )
 
-type ExportFunc func(w io.Writer, p *Profile) error
+type ExportFunc func(w io.Writer, p *Config) error
 
-func ExportAndServe(p *Profile, f ExportFunc, typ string) http.HandlerFunc {
+func ExportAndServe(conf *Config, f ExportFunc, typ string) http.HandlerFunc {
 	buf := &bytes.Buffer{}
-	err := f(buf, p)
+	err := f(buf, conf)
 	if err != nil {
 		panic(err)
 	}
@@ -39,27 +39,27 @@ func ExportAndServe(p *Profile, f ExportFunc, typ string) http.HandlerFunc {
 	}
 }
 
-func ExportHTML(w io.Writer, p *Profile) error     { return HTMLTemplate.Execute(w, p) }
-func ExportJSON(w io.Writer, p *Profile) error     { return json.NewEncoder(w).Encode(p) }
-func ExportText(w io.Writer, p *Profile) error     { return TextTemplate.Execute(w, p) }
-func ExportMarkdown(w io.Writer, p *Profile) error { return MarkdownTemplate.Execute(w, p) }
+func ExportHTML(w io.Writer, conf *Config) error     { return HTMLTemplate.Execute(w, conf) }
+func ExportText(w io.Writer, conf *Config) error     { return TextTemplate.Execute(w, conf) }
+func ExportMarkdown(w io.Writer, conf *Config) error { return MarkdownTemplate.Execute(w, conf) }
+func ExportJSON(w io.Writer, conf *Config) error     { return json.NewEncoder(w).Encode(conf.Resume) }
 
-func ExportAndServePDF(p *Profile) http.HandlerFunc {
-	return ExportAndServe(p, ExportPDF, "application/pdf")
+func ExportAndServePDF(conf *Config) http.HandlerFunc {
+	return ExportAndServe(conf, ExportPDF, "application/pdf")
 }
 
-func ExportAndServeHTML(p *Profile) http.HandlerFunc {
-	return ExportAndServe(p, ExportHTML, "text/html; charset=utf-8")
+func ExportAndServeHTML(conf *Config) http.HandlerFunc {
+	return ExportAndServe(conf, ExportHTML, "text/html; charset=utf-8")
 }
 
-func ExportAndServeJSON(p *Profile) http.HandlerFunc {
-	return ExportAndServe(p, ExportJSON, "application/json")
+func ExportAndServeJSON(conf *Config) http.HandlerFunc {
+	return ExportAndServe(conf, ExportJSON, "application/json")
 }
 
-func ExportAndServeText(p *Profile) http.HandlerFunc {
-	return ExportAndServe(p, ExportText, "text/plain")
+func ExportAndServeText(conf *Config) http.HandlerFunc {
+	return ExportAndServe(conf, ExportText, "text/plain")
 }
 
-func ExportAndServeMarkdown(p *Profile) http.HandlerFunc {
-	return ExportAndServe(p, ExportMarkdown, "text/markdown")
+func ExportAndServeMarkdown(conf *Config) http.HandlerFunc {
+	return ExportAndServe(conf, ExportMarkdown, "text/markdown")
 }

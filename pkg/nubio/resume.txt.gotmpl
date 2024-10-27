@@ -1,7 +1,7 @@
-Hi, I'm {{ .Name }}!
+Hi, I'm {{ .Resume.Name }}!
 
 Work Experience:
-{{ range .Experiences }}
+{{ range .Resume.WorkExperience }}
 - Title: {{ .Title }}
 - Organization: {{ .Organization }}
 - Location: {{ .Location }}
@@ -11,12 +11,12 @@ Work Experience:
 {{ end }}
 
 Skills:
-{{ range .Skills }}
+{{ range .Resume.Skills }}
 - {{ .Title }} ({{ range $i, $v := .Tools }}{{ if $i }}, {{ end }}{{ $v }}{{ end }})
 {{- end }}
 
 Education:
-{{ range .Education }}
+{{ range .Resume.Education }}
 - From: {{ .From }}
 - To: {{ .To }}
 - Title: {{ .Title }}
@@ -24,26 +24,26 @@ Education:
 {{ end }}
 
 Languages:
-{{ range .Languages }}
+{{ range .Resume.Languages }}
 - {{ .Label }} ({{ .Proficiency }})
 {{- end }}
 
 Interests:
-{{ range .Interests }}
+{{ range .Resume.Interests }}
 - {{ . }}
 {{- end }}
 
 Hobbies:
-{{ range .Hobbies }}
+{{ range .Resume.Hobbies }}
 - {{ . }}
 {{- end }}
 
 Links:
-{{ range .Links }}
+{{ range .Resume.Links }}
 - {{ .Label }}: https://{{ .URL }}
 {{- end }}
 
 Contact:
 
-You can reach me by email: {{ .Contact.EmailAddress }}
-{{ if .Contact.PGP }}PGP key available here: https://{{ .Contact.PGP }}{{ end }}
+You can reach me by email: {{ .Resume.Contact.EmailAddress }}
+{{ if .Resume.Contact.PGP }}PGP key available here: https://{{ .Contact.PGP }}{{ end }}

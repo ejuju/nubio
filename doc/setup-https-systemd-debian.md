@@ -24,7 +24,7 @@ TODO
 ## Add Github workflow to your repo
 
 In order to deploy our changes, we need to:
-- Copy the new `profile.json` to `/var/www/profile.json`
+- Copy the new `config.json` to `/var/www/config.json`
 - Restart the server: `systemctl restart website`
 
 This can be achieved with a Github workflow (`.github/workflows/deploy.yaml`):
@@ -40,15 +40,13 @@ mkdir /var/www
 mkdir /var/www/tls
 ```
 
-Add your profile config (in `/var/www/profile.json`).
-
-Add your server config (in `/var/www/server.json`):
+Add your config (in `/var/www/config.json`):
 ```json
 {
     "domain": "alexdoe.example",
     "tls_dirpath": "tls",
     "tls_email_addr": "contact@alexdoe.example",
-    "profile": "profile.json"
+    // ...
 }
 ```
 
