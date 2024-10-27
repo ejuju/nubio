@@ -1,7 +1,7 @@
-Hi, I'm {{ .Resume.Name }}!
+Hi, I'm {{ .Name }}!
 
 Work Experience:
-{{ range .Resume.WorkExperience }}
+{{ range .WorkExperience }}
 - Title: {{ .Title }}
 - Organization: {{ .Organization }}
 - Location: {{ .Location }}
@@ -11,12 +11,12 @@ Work Experience:
 {{ end }}
 
 Skills:
-{{ range .Resume.Skills }}
+{{ range .Skills }}
 - {{ .Title }} ({{ range $i, $v := .Tools }}{{ if $i }}, {{ end }}{{ $v }}{{ end }})
 {{- end }}
 
 Education:
-{{ range .Resume.Education }}
+{{ range .Education }}
 - From: {{ .From }}
 - To: {{ .To }}
 - Title: {{ .Title }}
@@ -24,28 +24,31 @@ Education:
 {{ end }}
 
 Languages:
-{{ range .Resume.Languages }}
+{{ range .Languages }}
 - {{ .Label }} ({{ .Proficiency }})
 {{- end }}
 
 Interests:
-{{ range .Resume.Interests }}
+{{ range .Interests }}
 - {{ . }}
 {{- end }}
 
 Hobbies:
-{{ range .Resume.Hobbies }}
+{{ range .Hobbies }}
 - {{ . }}
 {{- end }}
 
 Links:
-{{ range .Resume.Links }}
+
+- Resume: https://{{ .Domain }}
+{{- range .Links }}
 - {{ .Label }}: https://{{ .URL }}
 {{- end }}
 
 Contact:
 
-You can reach me by email: {{ .Resume.Contact.EmailAddress }}
-{{- if .Resume.Contact.PGP }}
-PGP key available here: https://{{ .Contact.PGP }}
+You can reach me by email: {{ .EmailAddress }}
+
+{{- if .PGPKeyURL }}
+PGP key available here: https://{{ .PGPKeyURL }}
 {{- end }}

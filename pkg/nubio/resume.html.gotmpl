@@ -6,10 +6,10 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="mask-icon" href="/favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ .Resume.Name }}</title>
+    <title>{{ .Name }}</title>
     <meta name="description" content="Welcome to my public web profile!">
     <meta name="robots" content="index, follow" />
-    <meta name="author" content="{{ .Resume.Name }}" />
+    <meta name="author" content="{{ .Name }}" />
     <style>
         :root {
             --color-fg-0: hsl(0, 0%, 95%);
@@ -157,7 +157,7 @@
         }
     </style>
 
-    {{- if .Resume.CustomCSS }}
+    {{- if .CustomCSS }}
     <link rel="stylesheet" href="/custom.css" />
     {{- end }}
 </head>
@@ -165,17 +165,17 @@
 <body>
     <main>
         <section id="top" class="card">
-            <h1>{{ .Resume.Name }}</h1>
+            <h1>{{ .Name }}</h1>
             <ul class="hlist">
                 <li>
-                    <a class="button" href="mailto:{{ .Resume.Contact.EmailAddress }}">
-                        <span class="emoji">@</span>{{.Resume.Contact.EmailAddress }}
+                    <a class="button" href="mailto:{{ .EmailAddress }}">
+                        <span class="emoji">@</span>{{.EmailAddress }}
                     </a>
                 </li>
-                {{- if .Resume.PGPKey }}
-                <li><a target="_blank" class="button" href="/pgp.asc"><span class="emoji">🔑</span>PGP key</a></li>
+                {{- if .PGPKeyURL }}
+                <li><a target="_blank" class="button" href="https://{{ .PGPKeyURL }}"><span class="emoji">🔑</span>PGP key</a></li>
                 {{- end }}
-                {{- range .Resume.Links }}
+                {{- range .Links }}
                 <li>
                     <a target="_blank" rel="noopener noreferrer" class="button" href="https://{{ .URL }}">
                         <span class="emoji">🔗</span>{{ .Label }}
@@ -187,7 +187,7 @@
 
         <section id="experiences" class="card">
             <h2>Work Experience</h2>
-            {{- range .Resume.WorkExperience }}
+            {{- range .WorkExperience }}
             <hr>
             <section class="grid-12px">
                 <h3>{{ .Title }} at {{ .Organization }}</h3>
@@ -201,7 +201,7 @@
         <section id="skills" class="card">
             <h2>Skills</h2>
             <hr>
-            {{- range .Resume.Skills }}
+            {{- range .Skills }}
             <section class="grid-8px">
                 <h3>{{ .Title }}</h3>
                 <ul class="hlist">{{ range .Tools }}<li class="tag">{{ . }}</li>{{ end }}</ul>
@@ -212,7 +212,7 @@
         <section id="languages" class="card">
             <h2>Languages</h2>
             <hr>
-            {{- range .Resume.Languages }}
+            {{- range .Languages }}
             <section class="grid-8px">
                 <h3>{{ .Label }}</h3>
                 <p class="color-fg-2">{{ .Proficiency }}</p>
@@ -223,7 +223,7 @@
         <section id="education" class="card">
             <h2>Education</h2>
             <hr>
-            {{- range .Resume.Education }}
+            {{- range .Education }}
             <section class="grid-8px">
                 <h3>{{ .Title }}</h3>
                 <p class="color-fg-2">At {{ .Organization }} ({{ .From }} - {{ .To }})</p>
@@ -235,7 +235,7 @@
             <h2>Interests</h2>
             <hr>
             <ul class="vlist">
-                {{ range .Resume.Interests }}<li class="kv"><span class="emoji color-fg-2">+</span>{{ . }}</li>{{ end }}
+                {{ range .Interests }}<li class="kv"><span class="emoji color-fg-2">+</span>{{ . }}</li>{{ end }}
             </ul>
         </section>
 
@@ -243,7 +243,7 @@
             <h2>Hobbies</h2>
             <hr>
             <ul class="vlist">
-                {{ range .Resume.Hobbies }}<li class="kv"><span class="emoji color-fg-2">+</span>{{ . }}</li>{{ end }}
+                {{ range .Hobbies }}<li class="kv"><span class="emoji color-fg-2">+</span>{{ . }}</li>{{ end }}
             </ul>
         </section>
 

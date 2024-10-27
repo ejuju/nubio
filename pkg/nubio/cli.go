@@ -29,7 +29,8 @@ var commands = []*cli.Command{
 	commandRunServer,
 	commandRunSSG,
 	commandExport,
-	commandCheckConfig,
+	commandCheckResumeConfig,
+	commandCheckServerConfig,
 }
 
 // Prepend help command.
@@ -78,24 +79,24 @@ var commandRunSSG = &cli.Command{
 
 var commandExport = &cli.Command{
 	Keyword:     "export",
-	Usage:       "export $FORMAT $CONFIG_PATH $OUTPUT_PATH",
+	Usage:       "export $FORMAT $RESUME_CONFIG_PATH $OUTPUT_PATH",
 	Description: "Export to file.",
 	Do: func(args ...string) (exitcode int) {
 		if len(args) < 3 {
-			log.Println("missing argument(s): format, config_path, output_path")
+			log.Println("missing argument(s): format, resume_config_path, output_path")
 			return 1
 		}
 		format := ExportFormat(args[0])
 		in := args[1]
 		out := args[2]
 
-		// Load and check config.json.
-		conf, err := LoadConfig(in)
+		// Load and check resume config.
+		resumeConf, err := LoadResumeConfig(in)
 		if err != nil {
 			log.Printf("load config: %s", err)
 			return 1
 		}
-		errs := conf.Check()
+		errs := resumeConf.Check()
 		if len(errs) > 0 {
 			for _, err := range errs {
 				log.Printf("check config: %s", err)
@@ -126,7 +127,7 @@ var commandExport = &cli.Command{
 			return 1
 		}
 		defer f.Close()
-		err = exporter(f, conf)
+		err = exporter(f, resumeConf)
 		if err != nil {
 			log.Printf("encode and write: %s", err)
 			return 1
@@ -137,26 +138,55 @@ var commandExport = &cli.Command{
 	},
 }
 
-var commandCheckConfig = &cli.Command{
-	Keyword:     "check",
-	Aliases:     []string{"check-config"},
-	Usage:       "check $PATH_TO_CONFIG",
-	Description: "Check a \"config.json\" file.",
+var commandCheckResumeConfig = &cli.Command{
+	Keyword:     "check-resume-config",
+	Aliases:     []string{"check-resume"},
+	Usage:       "check-resume-config $PATH_TO_CONFIG",
+	Description: "Check a resume config file.",
 	Do: func(args ...string) (exitcode int) {
-		// Load config.json.
-		path := "config.json"
+		// Load config.
+		path := "resume.json"
 		if len(args) > 0 {
 			path = args[0]
 		}
 		log.Printf("Checking file: %s", path)
-		conf, err := LoadConfig(path)
+		conf, err := LoadResumeConfig(path)
 		if err != nil {
 			return 1
 		}
 		errs := conf.Check()
 		if len(errs) > 0 {
 			for _, err := range errs {
-				log.Printf("Error: %s", err)
+				log.Printf("- %s", err)
+			}
+			return 1
+		}
+
+		log.Printf("All good!")
+		return 0
+	},
+}
+
+var commandCheckServerConfig = &cli.Command{
+	Keyword:     "check-server-config",
+	Aliases:     []string{"check-server"},
+	Usage:       "check-server-config $PATH_TO_CONFIG",
+	Description: "Check a resume config file.",
+	Do: func(args ...string) (exitcode int) {
+		// Load config.
+		path := "server.json"
+		if len(args) > 0 {
+			path = args[0]
+		}
+		log.Printf("Checking file: %s", path)
+		conf, err := LoadServerConfig(path)
+		if err != nil {
+			return 1
+		}
+		errs := conf.Check()
+		if len(errs) > 0 {
+			for _, err := range errs {
+				log.Printf("- %s", err)
 			}
 			return 1
 		}

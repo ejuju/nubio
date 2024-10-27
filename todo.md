@@ -3,6 +3,9 @@
 For v1:
 - [ ] Add complete setup examples: SSG with Caddy and HTTPS server with Systemd/Debian.
 - [ ] Support alt domains for HTTP(S) server (server config `"domain_alts": "mysite.fr"` redirecting to `"mysite.example"`)
+- [ ] Add `dev` CLI command for running local plain HTTP server for rendering resume file without `server.json` file.
+- [ ] Make sections (education, hobbies and interests, etc.) optional.
+- [ ] Inline custom CSS when exporting as single HTML page.
 
 Nice-to-haves:
 - [ ] Add 404 page

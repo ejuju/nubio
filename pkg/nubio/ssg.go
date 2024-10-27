@@ -20,16 +20,16 @@ func RunSSG(args ...string) (exitcode int) {
 	configPath := args[0]
 	outputDirpath := args[1]
 
-	// Load config.
-	config, err := LoadConfig(configPath)
+	// Load conf.
+	conf, err := LoadResumeConfig(configPath)
 	if err != nil {
-		logger.Error("load config", "error", err)
+		logger.Error("load resume config", "error", err)
 		return 1
 	}
-	errs := config.Check()
+	errs := conf.Check()
 	if len(errs) > 0 {
 		for _, err := range errs {
-			logger.Error("bad config", "error", err)
+			logger.Error("bad resume config", "error", err)
 		}
 		return 1
 	}
@@ -46,20 +46,20 @@ func RunSSG(args ...string) (exitcode int) {
 	// Generate static files.
 	files := map[string][]byte{
 		strings.TrimPrefix(PathFaviconSVG, "/"): faviconSVG,
-		strings.TrimPrefix(PathSitemapXML, "/"): generateSitemapXML(config.Resume.Domain),
+		strings.TrimPrefix(PathSitemapXML, "/"): generateSitemapXML(conf.Domain),
 		strings.TrimPrefix(PathRobotsTXT, "/"):  []byte(robotsTXT),
 		strings.TrimPrefix(PathPing, "/"):       []byte("ok\n"),
 		strings.TrimPrefix(PathVersion, "/"):    []byte(version + "\n"),
 	}
-	if len(config.Resume.PGPKey) > 0 {
-		files[strings.TrimPrefix(PathPGPKey, "/")] = []byte(config.Resume.PGPKey)
+	if len(conf.PGPKey) > 0 {
+		files[strings.TrimPrefix(PathPGPKey, "/")] = []byte(conf.PGPKey)
 	}
-	if len(config.Resume.CustomCSS) > 0 {
-		files[strings.TrimPrefix(PathCustomCSS, "/")] = []byte(config.Resume.CustomCSS)
+	if len(conf.CustomCSS) > 0 {
+		files[strings.TrimPrefix(PathCustomCSS, "/")] = []byte(conf.CustomCSS)
 	}
 	for path, export := range exports {
 		b := &bytes.Buffer{}
-		err = export(b, config)
+		err = export(b, conf)
 		if err != nil {
 			logger.Error("export", "path", path, "error", err)
 			return 1

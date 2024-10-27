@@ -1,21 +1,23 @@
 {
-    "slug":    "{{ .Resume.Slug }}",
-    "domain":  "{{ .Resume.Domain }}",
-    "name":    "{{ .Resume.Name }}",
-    "contact": {
-        "email_address": "{{ .Resume.Contact.EmailAddress }}",
-        "pgp_key_url":   "{{ .Resume.Contact.PGP }}"
-    },
+    "slug":          "{{ .Slug }}",
+    "domain":        "{{ .Domain }}",
+    "name":          "{{ .Name }}",
+    "email_address": "{{ .EmailAddress }}",
+    "pgp_key_url":   "{{ .PGPKeyURL }}",
     "links": [
-        {{- range $i, $v := .Resume.Links }}
+        {
+            "label": "Resume",
+            "url":   "https://{{ .Domain }}"
+        }{{ if .Links }},{{ end }}
+        {{- range $i, $v := .Links }}
         {
             "label": "{{ $v.Label }}",
-            "url": "{{ $v.URL }}"
-        }{{ if lt $i (subtract (len $.Resume.Links) 1) }},{{ end }}
+            "url":   "{{ $v.URL }}"
+        }{{ if lt $i (subtract (len $.Links) 1) }},{{ end }}
         {{- end }}
     ],
     "work_experience": [
-        {{- range $expIdx, $exp := .Resume.WorkExperience }}
+        {{- range $expIdx, $exp := .WorkExperience }}
         {
             "from":         "{{ .From }}",
             "to":           "{{ .To }}",
@@ -25,50 +27,50 @@
             "description":  "{{ .Description }}",
             "skills": [
                 {{- range $i, $v := .Skills }}
-                "{{ $v }}"{{ if lt $i (subtract (len (index $.Resume.WorkExperience $expIdx).Skills) 1) }},{{ end }}
+                "{{ $v }}"{{ if lt $i (subtract (len (index $.WorkExperience $expIdx).Skills) 1) }},{{ end }}
                 {{- end }}
             ]
-        }{{ if lt $expIdx (subtract (len $.Resume.WorkExperience) 1) }},{{ end }}
+        }{{ if lt $expIdx (subtract (len $.WorkExperience) 1) }},{{ end }}
         {{- end }}
     ],
     "skills": [
-        {{- range $i, $v := .Resume.Skills }}
+        {{- range $i, $v := .Skills }}
         {
             "title": "{{ .Title }}",
             "tools": [
                 {{- range $j, $v := .Tools }}
-                "{{ $v }}"{{ if lt $j (subtract (len (index $.Resume.Skills $i).Tools) 1) }},{{ end }}
+                "{{ $v }}"{{ if lt $j (subtract (len (index $.Skills $i).Tools) 1) }},{{ end }}
                 {{- end }}
             ]
-        }{{ if lt $i (subtract (len $.Resume.Skills) 1) }},{{ end }}
+        }{{ if lt $i (subtract (len $.Skills) 1) }},{{ end }}
         {{- end }}
     ],
     "languages": [
-        {{- range $i, $v := .Resume.Languages }}
+        {{- range $i, $v := .Languages }}
         {
             "label":       "{{ .Label }}",
             "proficiency": "{{ .Proficiency }}"
-        }{{ if lt $i (subtract (len $.Resume.Languages) 1) }},{{ end }}
+        }{{ if lt $i (subtract (len $.Languages) 1) }},{{ end }}
         {{- end }}
     ],
     "education": [
-        {{- range $i, $v := .Resume.Education }}
+        {{- range $i, $v := .Education }}
         {
             "from":         "{{ .From }}",
             "to":           "{{ .To }}",
             "title":        "{{ .Title }}",
             "organization": "{{ .Organization }}"
-        }{{ if lt $i (subtract (len $.Resume.Education) 1) }},{{ end }}
+        }{{ if lt $i (subtract (len $.Education) 1) }},{{ end }}
         {{- end }}
     ],
     "interests": [
-        {{- range $i, $v := .Resume.Interests }}
-        "{{ . }}"{{ if lt $i (subtract (len $.Resume.Interests) 1) }},{{ end }}
+        {{- range $i, $v := .Interests }}
+        "{{ . }}"{{ if lt $i (subtract (len $.Interests) 1) }},{{ end }}
         {{- end }}
     ],
     "hobbies": [
-        {{- range $i, $v := .Resume.Hobbies }}
-        "{{ . }}"{{ if lt $i (subtract (len $.Resume.Hobbies) 1) }},{{ end }}
+        {{- range $i, $v := .Hobbies }}
+        "{{ . }}"{{ if lt $i (subtract (len $.Hobbies) 1) }},{{ end }}
         {{- end }}
     ]
 }

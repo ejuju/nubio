@@ -6,10 +6,11 @@ Nubio can be used as a static site generator, CLI, HTTP(S) server or Go library.
 
 ### Features
 
-- Export your resume as PDF, JSON, plain text, Markdown, or static HTML page.
+- Configure your resume with a single JSON file.
+- Export your resume as PDF, JSON, plain text, Markdown, or static HTML.
 - Serve your resume as a website (or generate static website files).
-- Single executable.
 - Auto HTTPS (get and renew certs using ACME).
+- Single executable.
 
 ### Live demo
 
@@ -21,8 +22,9 @@ Nubio can be used as a static site generator, CLI, HTTP(S) server or Go library.
 
 ### 3rd-party Go dependencies
 
-- For PDF generation: [github.com/go-pdf/fpdf](https://github.com/go-pdf/fpdf)
-- For HTTPS/ACME support: [golang.org/x/crypto](https://golang.org/x/crypto)
+- PDF generation: [github.com/go-pdf/fpdf](https://github.com/go-pdf/fpdf)
+- HTTPS/ACME: [golang.org/x/crypto](https://golang.org/x/crypto)
+- Unicode normalization: [golang.org/x/text](https://golang.org/x/text)
 
 ---
 
@@ -38,21 +40,30 @@ go install github.com/ejuju/nubio@latest
 
 ### Configuration
 
-Your server configuration and resume information is stored in a single JSON file,
-usually named `config.json`.
+Your resume is configured using a single JSON file,
+usually named `resume.json`.
 
-Check out an example in [config.json](/config.json).
+A `profile.json` file typically contains:
+- Contact details
+- External links
+- Work Experience
+- Skills
+- Languages
+- Education
+- Interests
+- Hobbies
 
-You can check the validity of your `config.json` with:
+Check out an example in [/resume.json](/resume.json).
 
+You can check the validity of your `resume.json` using the CLI:
 ```bash
-nubio check config.json
+nubio check-resume-config resume.json
 ```
 
 ### Generating a static website (SSG)
 
 ```bash
-nubio ssg config.json static/
+nubio ssg resume.json static/
 ```
 
 For an example setup with Caddy on Debian, check out:
@@ -64,7 +75,7 @@ You can also use Nubio as a CLI to generate static file exports,
 for example, to export your config as a PDF:
 
 ```bash
-nubio export pdf /path/to/config.json /path/to/output.pdf
+nubio export pdf /path/to/resume.json /path/to/output
 ```
 
 Supported export formats are:
@@ -76,14 +87,22 @@ Supported export formats are:
 
 ### Running as HTTP(S) server
 
-First, you'll need to configure your `config.json` file with the necessary information.
+First, you'll need to configure a `server.json` file with the necessary information.
 
-Example config fields for a HTTPS server:
+Example `server.json` for a local development server:
 ```json
 {
-    "domain": "mysite.example",
+    "address": ":8080",
+    "resume_path": "resume.json
+}
+```
+
+Example `server.json` for a HTTPS server (running on port 80 and 443):
+```json
+{
     "tls_dirpath": "tls",
     "tls_email_addr": "contact@mysite.example",
+    "resume_path": "resume.json
 }
 ```
 
@@ -91,23 +110,22 @@ The field `tls_dirpath` indicates a directory where TLS certificates will be sto
 When using HTTPS, the server uses ports `80` and `443` by default,
 there's no need to use the `address` field (it is ignored).
 
-Example fields for a HTTP server behind a reverse proxy:
+Example `server.json` for a HTTP server behind a reverse proxy:
 ```json
 {
-    "domain": "mysite.example",
     "address": ":8080",
     "true_ip_header": "X-Forwarded-For",
+    "resume_path": "resume.json
 }
 ```
 
 To start the server, run:
 ```bash
-nubio run config.json
+nubio run server.json
 ```
 
-Notes:
-- You can also simply run `nubio run` which by default will look
-  for `config.json` in its current working directory.
+NB: You can also simply run `nubio run` which by default will look
+for a `server.json` file in the current working directory.
 
 ### Using custom CSS
 
@@ -132,9 +150,9 @@ Here's an example of some custom CSS to set the UI to "light mode":
 
 ### Embedding in your Go program
 
-- Export resume to PDF: `nubio.ExportPDF(w, resume)`
-- Export resume to HTML: `nubio.ExportHTML(w, resume)`
-- Resume type definition: see `nubio.Resume`
+- Export your resume to PDF: `nubio.ExportPDF(w, resume)`
+- Export your resume to HTML: `nubio.ExportHTML(w, resume)`
+- Validate your resume configuration: `resume.Check()`
 - And more...
 
 Official package documentation is available here:

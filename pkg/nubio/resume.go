@@ -12,16 +12,8 @@ import (
 	"github.com/ejuju/nubio/pkg/httpmux"
 )
 
-type Config struct {
-	Address         string  `json:"address"`        // Local HTTP server address.
-	TrueIPHeader    string  `json:"true_ip_header"` // Optional: (ex: "X-Forwarded-For", use when reverse proxying).
-	TLSDirpath      string  `json:"tls_dirpath"`    // Path to TLS certificate directory.
-	TLSEmailAddress string  `json:"tls_email_addr"` // Email address in TLS certificate.
-	Resume          *Resume `json:"resume"`         // Resume content.
-}
-
 // Publicly exportable user resume info.
-type Resume struct {
+type ResumeConfig struct {
 	Slug string `json:"slug"` // Optional: Name as a URI-compatible slug (ex: "alex-doe").
 	Name string `json:"name"` // Full name (ex: "Alex Doe").
 
@@ -29,14 +21,8 @@ type Resume struct {
 	// Note:
 	//	- For SSG: This field is required.
 	//	- For server: This field is overwritten by corresponding app config field.
-	Domain string `json:"domain"`
-
-	PGPKeyPath    string `json:"pgp_key_path"`    // Path to PGP public key. Not exported.
-	PGPKey        string `json:"pgp_key"`         // Literal value or populated by the corresponding file's content on load.
-	CustomCSSPath string `json:"custom_css_path"` // Path to custom CSS stylesheet. Not exported.
-	CustomCSS     string `json:"custom_css"`      // Literal value or populated by the corresponding file's content on load.
-
-	Contact        Contact          `json:"contact"`
+	Domain         string           `json:"domain"`
+	EmailAddress   string           `json:"email_address"`
 	Links          []Link           `json:"links"`
 	WorkExperience []WorkExperience `json:"work_experience"`
 	Skills         []Skill          `json:"skills"`
@@ -44,64 +30,72 @@ type Resume struct {
 	Education      []Education      `json:"education"`
 	Interests      []string         `json:"interests"`
 	Hobbies        []string         `json:"hobbies"`
+
+	CustomCSSPath string `json:"custom_css_path"` // Path to custom CSS stylesheet. Not exported.
+	CustomCSS     string `json:"custom_css"`      // Literal value or populated by the corresponding file's content on load.
+
+	// Public PGP key URL (without leading "https://").
+	// This field is overwritten on startup if a PGP key is provided in the app config.
+	PGPKeyURL  string `json:"pgp_key_url"`
+	PGPKeyPath string `json:"pgp_key_path"` // Path to PGP public key. Not exported.
+	PGPKey     string `json:"pgp_key"`      // Literal value or populated by the corresponding file's content on load.
+
 }
 
-func LoadConfig(path string) (conf *Config, err error) {
-	// Read whole file into memory.
+// Read and decode resume config file.
+func LoadResumeConfig(path string) (conf *ResumeConfig, err error) {
 	b, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("read whole file: %w", err)
+		return nil, fmt.Errorf("read config file: %w", err)
 	}
-
-	// Decode from JSON.
-	conf = &Config{}
+	conf = &ResumeConfig{}
 	err = json.Unmarshal(b, conf)
 	if err != nil {
-		return nil, fmt.Errorf("unmarshal JSON: %w", err)
+		return nil, fmt.Errorf("decode config file: %w", err)
 	}
 
 	// Create name slug if none is provided.
-	if conf.Resume.Slug == "" {
-		conf.Resume.Slug = httpmux.Slugify(conf.Resume.Name)
+	if conf.Slug == "" {
+		conf.Slug = httpmux.Slugify(conf.Name)
 	}
 
 	// Load PGP key if provided.
-	if conf.Resume.PGPKeyPath != "" {
-		b, err = os.ReadFile(conf.Resume.PGPKeyPath)
+	if conf.PGPKeyPath != "" {
+		b, err = os.ReadFile(conf.PGPKeyPath)
 		if err != nil {
 			return nil, fmt.Errorf("load PGP key: %w", err)
 		}
-		conf.Resume.PGPKey = string(b)
+		conf.PGPKey = string(b)
+		conf.PGPKeyURL = conf.Domain + PathPGPKey
 	}
 
 	// Load custom CSS if provided.
-	if conf.Resume.CustomCSSPath != "" {
-		b, err = os.ReadFile(conf.Resume.CustomCSSPath)
+	if conf.CustomCSSPath != "" {
+		b, err = os.ReadFile(conf.CustomCSSPath)
 		if err != nil {
 			return nil, fmt.Errorf("load custom CSS: %w", err)
 		}
-		conf.Resume.CustomCSS = string(b)
+		conf.CustomCSS = string(b)
 	}
 
 	return conf, nil
 }
 
-func (conf *Config) Check() (errs []error) {
-	// Check HTTPS-related fields.
+func (conf *ServerConfig) Check() (errs []error) {
+	if conf.ResumePath == "" {
+		errs = append(errs, errors.New("missing resume path"))
+	}
+	if conf.Address == "" && conf.TLSDirpath == "" {
+		errs = append(errs, errors.New("missing address or TLS dirpath"))
+	}
 	if conf.TLSDirpath != "" && conf.TLSEmailAddress == "" {
 		errs = append(errs, errors.New("missing TLS email address"))
-	}
-
-	if conf.Resume == nil {
-		errs = append(errs, errors.New("missing resume"))
-	} else {
-		errs = append(errs, conf.Resume.Check()...)
 	}
 
 	return errs
 }
 
-func (p *Resume) Check() (errs []error) {
+func (p *ResumeConfig) Check() (errs []error) {
 	// Check name and domain.
 	if p.Name == "" {
 		errs = append(errs, errors.New("missing name"))
@@ -113,8 +107,16 @@ func (p *Resume) Check() (errs []error) {
 	}
 
 	// Check contact info.
-	for _, err := range p.Contact.Check() {
-		errs = append(errs, fmt.Errorf("contact: %w", err))
+	if p.EmailAddress == "" {
+		errs = append(errs, errors.New("missing email address"))
+	}
+	if p.PGPKeyURL != "" {
+		u, err := url.Parse(p.PGPKeyURL)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("invalid PGP key URL"))
+		} else if u.Scheme == "" {
+			errs = append(errs, errors.New("missing scheme in PGP URL"))
+		}
 	}
 
 	// Check links.
@@ -187,29 +189,6 @@ func (p *Resume) Check() (errs []error) {
 		}
 	}
 
-	return errs
-}
-
-type Contact struct {
-	EmailAddress string `json:"email_address"`
-
-	// Public PGP key URL (without leading "https://").
-	// This field is overwritten on startup if a PGP key is provided in the app config.
-	PGP string `json:"pgp"`
-}
-
-func (v *Contact) Check() (errs []error) {
-	if v.EmailAddress == "" {
-		errs = append(errs, errors.New("missing email address"))
-	}
-	if v.PGP != "" {
-		u, err := url.Parse(v.PGP)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("invalid PGP key URL"))
-		} else if u.Scheme == "" {
-			errs = append(errs, errors.New("missing scheme in PGP URL"))
-		}
-	}
 	return errs
 }
 

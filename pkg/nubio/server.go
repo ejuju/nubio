@@ -2,6 +2,7 @@ package nubio
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -14,6 +15,42 @@ import (
 	"golang.org/x/crypto/acme/autocert"
 )
 
+type ServerConfig struct {
+	Address         string `json:"address"`        // Local HTTP server address.
+	TrueIPHeader    string `json:"true_ip_header"` // Optional: (ex: "X-Forwarded-For", use when reverse proxying).
+	TLSDirpath      string `json:"tls_dirpath"`    // Path to TLS certificate directory.
+	TLSEmailAddress string `json:"tls_email_addr"` // Email address in TLS certificate.
+	ResumePath      string `json:"resume_path"`    // Path to resume config file.
+}
+
+// Read and decode server and resume config files.
+func LoadServerAndResumeConfig(path string) (*ServerConfig, *ResumeConfig, error) {
+	serverConf, err := LoadServerConfig(path)
+	if err != nil {
+		return nil, nil, fmt.Errorf("load server config: %w", err)
+	}
+
+	resumeConf, err := LoadResumeConfig(serverConf.ResumePath)
+	if err != nil {
+		return nil, nil, fmt.Errorf("load resume config: %w", err)
+	}
+
+	return serverConf, resumeConf, nil
+}
+
+func LoadServerConfig(path string) (conf *ServerConfig, err error) {
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("read: %w", err)
+	}
+	conf = &ServerConfig{}
+	err = json.Unmarshal(b, conf)
+	if err != nil {
+		return nil, fmt.Errorf("decode JSON: %w", err)
+	}
+	return conf, nil
+}
+
 func RunServer(args ...string) (exitcode int) {
 	// Init logger.
 	slogh := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
@@ -21,20 +58,26 @@ func RunServer(args ...string) (exitcode int) {
 	logger.Debug("logger ready")
 
 	// Load config.
-	configPath := "config.json"
+	defaultServerConfigPath := "server.json"
 	if len(args) > 0 {
-		configPath = args[0]
+		defaultServerConfigPath = args[0]
 	}
-	config := &Config{}
-	config, err := LoadConfig(configPath)
+	serverConf, resumeConf, err := LoadServerAndResumeConfig(defaultServerConfigPath)
 	if err != nil {
 		logger.Error("load config", "error", err)
 		return 1
 	}
-	errs := config.Check()
+	errs := serverConf.Check()
 	if len(errs) > 0 {
 		for _, err := range errs {
-			logger.Error("bad config", "error", err)
+			logger.Error("bad server config", "error", err)
+		}
+		return 1
+	}
+	errs = resumeConf.Check()
+	if len(errs) > 0 {
+		for _, err := range errs {
+			logger.Error("bad resume config", "error", err)
 		}
 		return 1
 	}
@@ -50,8 +93,8 @@ func RunServer(args ...string) (exitcode int) {
 	// middlewares propagates up and will cause the program to exit.
 	//
 	// Other middlewares should be put below the panic recovery middleware.
-	h := httpmux.Wrap(NewHTTPHandler(nil, config),
-		httpmux.NewTrueIPMiddleware(config.TrueIPHeader),
+	h := httpmux.Wrap(NewHTTPHandler(nil, resumeConf),
+		httpmux.NewTrueIPMiddleware(serverConf.TrueIPHeader),
 		httpmux.NewRequestIDMiddleware(),
 		httpmux.NewLoggingMiddleware(handleAccessLog(logger)),
 		httpmux.NewPanicRecoveryMiddleware(handlePanic(logger)),
@@ -59,10 +102,10 @@ func RunServer(args ...string) (exitcode int) {
 	)
 
 	// Run HTTP(S) server(s).
-	if config.TLSDirpath != "" {
-		exitcode = runHTTPS(h, config, logger)
+	if serverConf.TLSDirpath != "" {
+		exitcode = runHTTPS(h, serverConf, resumeConf, logger)
 	} else {
-		exitcode = runHTTP(h, config, logger)
+		exitcode = runHTTP(h, serverConf, logger)
 	}
 
 	// Done.
@@ -70,7 +113,7 @@ func RunServer(args ...string) (exitcode int) {
 	return exitcode
 }
 
-func runHTTP(h http.Handler, config *Config, logger *slog.Logger) (exitcode int) {
+func runHTTP(h http.Handler, config *ServerConfig, logger *slog.Logger) (exitcode int) {
 	errc := make(chan error, 1)
 	s := httpmux.NewDefaultHTTPServer(config.Address, h, logger)
 	go func() {
@@ -103,9 +146,9 @@ func runHTTP(h http.Handler, config *Config, logger *slog.Logger) (exitcode int)
 	return exitcode
 }
 
-func runHTTPS(h http.Handler, config *Config, logger *slog.Logger) (exitcode int) {
+func runHTTPS(h http.Handler, serverConf *ServerConfig, resumeConf *ResumeConfig, logger *slog.Logger) (exitcode int) {
 	// Ensure certs directory exists.
-	fstat, err := os.Stat(config.TLSDirpath)
+	fstat, err := os.Stat(serverConf.TLSDirpath)
 	if err != nil {
 		logger.Error("check certs directory", "error", err)
 		return 1
@@ -117,9 +160,9 @@ func runHTTPS(h http.Handler, config *Config, logger *slog.Logger) (exitcode int
 	// Configure autocert.
 	tlsCertManager := autocert.Manager{
 		Prompt:     autocert.AcceptTOS,
-		HostPolicy: autocert.HostWhitelist(config.Resume.Domain, "www."+config.Resume.Domain),
-		Cache:      autocert.DirCache(config.TLSDirpath),
-		Email:      config.TLSEmailAddress,
+		HostPolicy: autocert.HostWhitelist(resumeConf.Domain, "www."+resumeConf.Domain),
+		Cache:      autocert.DirCache(serverConf.TLSDirpath),
+		Email:      serverConf.TLSEmailAddress,
 	}
 	autocertServer := httpmux.NewDefaultHTTPServer(":80", tlsCertManager.HTTPHandler(nil), logger)
 	httpsServer := httpmux.NewDefaultHTTPServer(":443", h, logger)
