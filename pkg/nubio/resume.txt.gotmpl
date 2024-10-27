@@ -46,4 +46,6 @@ Links:
 Contact:
 
 You can reach me by email: {{ .Resume.Contact.EmailAddress }}
-{{ if .Resume.Contact.PGP }}PGP key available here: https://{{ .Contact.PGP }}{{ end }}
+{{- if .Resume.Contact.PGP }}
+PGP key available here: https://{{ .Contact.PGP }}
+{{- end }}
