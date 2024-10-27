@@ -41,13 +41,7 @@ nubio ssg profile.json .out # Generate website files
 ## Update your DNS
 
 - Ensure your domain resolves to your server's IP address(es).
-- Ensure you have a CNAME on `www.` pointing to `www.alexdoe.example.`.
-
-## Copy static files to remote server
-
-```bash
-scp -r .out/* root@alexdoe.example:/var/www/alexdoe
-```
+- Ensure you have a CNAME on `www.` pointing to `alexdoe.example.`.
 
 ## Setup Caddy on the remote server
 
@@ -93,6 +87,14 @@ www.alexdoe.example {
 Restart Caddy:
 ```bash
 systemctl restart caddy && systemctl status caddy
+```
+
+## Copy static files to remote server
+
+From your local machine, copy the static files created by `nubio` to the remote server:
+
+```bash
+scp -r .out/* root@alexdoe.example:/var/www/alexdoe
 ```
 
 Your website is now up and running!
@@ -141,7 +143,7 @@ jobs:
           go-version: "1.21.7"
       - name: Build and deploy.
         run: |
-          go install github.com/ejuju/nubio@v0.2.7
+          go install github.com/ejuju/nubio@v0.3.1
           mkdir .out
           nubio check-profile profile.json
           nubio ssg profile.json .out
@@ -162,5 +164,5 @@ git push
 ```
 
 CI/CD is setup!
-You can now make modifications to your profile.json and
+You can now make modifications to your `profile.json` and
 the new changes will be deployed when you push.
