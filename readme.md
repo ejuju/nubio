@@ -93,7 +93,7 @@ Example `server.json` for a local development server:
 ```json
 {
     "address": ":8080",
-    "resume_path": "resume.json
+    "resume_path": "resume.json"
 }
 ```
 
@@ -102,7 +102,7 @@ Example `server.json` for a HTTPS server (running on port 80 and 443):
 {
     "tls_dirpath": "tls",
     "tls_email_addr": "contact@mysite.example",
-    "resume_path": "resume.json
+    "resume_path": "resume.json"
 }
 ```
 
@@ -115,7 +115,7 @@ Example `server.json` for a HTTP server behind a reverse proxy:
 {
     "address": ":8080",
     "true_ip_header": "X-Forwarded-For",
-    "resume_path": "resume.json
+    "resume_path": "resume.json"
 }
 ```
 
