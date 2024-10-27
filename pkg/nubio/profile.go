@@ -89,12 +89,22 @@ func (p *Profile) Check() (errs []error) {
 	}
 
 	// Check languages.
-	if len(p.Skills) == 0 {
+	if len(p.Languages) == 0 {
 		errs = append(errs, errors.New("missing languages"))
 	}
-	for i, v := range p.Skills {
+	for i, v := range p.Languages {
 		for _, err := range v.Check() {
 			errs = append(errs, fmt.Errorf("language %d: %w", i, err))
+		}
+	}
+
+	// Check education.
+	if len(p.Education) == 0 {
+		errs = append(errs, errors.New("missing education"))
+	}
+	for i, v := range p.Education {
+		for _, err := range v.Check() {
+			errs = append(errs, fmt.Errorf("education %d: %w", i, err))
 		}
 	}
 
@@ -109,10 +119,10 @@ func (p *Profile) Check() (errs []error) {
 	}
 
 	// Check hobbies.
-	if len(p.Interests) == 0 {
+	if len(p.Hobbies) == 0 {
 		errs = append(errs, errors.New("missing hobbies"))
 	}
-	for i, v := range p.Interests {
+	for i, v := range p.Hobbies {
 		for v == "" {
 			errs = append(errs, fmt.Errorf("hobby %d: empty text", i))
 		}
