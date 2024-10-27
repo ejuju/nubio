@@ -51,11 +51,11 @@ func RunSSG(args ...string) (exitcode int) {
 		strings.TrimPrefix(PathPing, "/"):       []byte("ok\n"),
 		strings.TrimPrefix(PathVersion, "/"):    []byte(version + "\n"),
 	}
-	if len(config.PGPKey) > 0 {
-		files[strings.TrimPrefix(PathPGPKey, "/")] = []byte(config.PGPKey)
+	if len(config.Resume.PGPKey) > 0 {
+		files[strings.TrimPrefix(PathPGPKey, "/")] = []byte(config.Resume.PGPKey)
 	}
-	if len(config.CustomCSS) > 0 {
-		files[strings.TrimPrefix(PathCustomCSS, "/")] = []byte(config.CustomCSS)
+	if len(config.Resume.CustomCSS) > 0 {
+		files[strings.TrimPrefix(PathCustomCSS, "/")] = []byte(config.Resume.CustomCSS)
 	}
 	for path, export := range exports {
 		b := &bytes.Buffer{}

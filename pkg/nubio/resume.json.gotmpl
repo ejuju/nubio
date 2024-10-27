@@ -1,0 +1,74 @@
+{
+    "slug":    "{{ .Resume.Slug }}",
+    "domain":  "{{ .Resume.Domain }}",
+    "name":    "{{ .Resume.Name }}",
+    "contact": {
+        "email_address": "{{ .Resume.Contact.EmailAddress }}",
+        "pgp_key_url":   "{{ .Resume.Contact.PGP }}"
+    },
+    "links": [
+        {{- range $i, $v := .Resume.Links }}
+        {
+            "label": "{{ $v.Label }}",
+            "url": "{{ $v.URL }}"
+        }{{ if lt $i (subtract (len $.Resume.Links) 1) }},{{ end }}
+        {{- end }}
+    ],
+    "work_experience": [
+        {{- range $expIdx, $exp := .Resume.WorkExperience }}
+        {
+            "from":         "{{ .From }}",
+            "to":           "{{ .To }}",
+            "title":        "{{ .Title }}",
+            "organization": "{{ .Organization }}",
+            "location":     "{{ .Location }}",
+            "description":  "{{ .Description }}",
+            "skills": [
+                {{- range $i, $v := .Skills }}
+                "{{ $v }}"{{ if lt $i (subtract (len (index $.Resume.WorkExperience $expIdx).Skills) 1) }},{{ end }}
+                {{- end }}
+            ]
+        }{{ if lt $expIdx (subtract (len $.Resume.WorkExperience) 1) }},{{ end }}
+        {{- end }}
+    ],
+    "skills": [
+        {{- range $i, $v := .Resume.Skills }}
+        {
+            "title": "{{ .Title }}",
+            "tools": [
+                {{- range $j, $v := .Tools }}
+                "{{ $v }}"{{ if lt $j (subtract (len (index $.Resume.Skills $i).Tools) 1) }},{{ end }}
+                {{- end }}
+            ]
+        }{{ if lt $i (subtract (len $.Resume.Skills) 1) }},{{ end }}
+        {{- end }}
+    ],
+    "languages": [
+        {{- range $i, $v := .Resume.Languages }}
+        {
+            "label":       "{{ .Label }}",
+            "proficiency": "{{ .Proficiency }}"
+        }{{ if lt $i (subtract (len $.Resume.Languages) 1) }},{{ end }}
+        {{- end }}
+    ],
+    "education": [
+        {{- range $i, $v := .Resume.Education }}
+        {
+            "from":         "{{ .From }}",
+            "to":           "{{ .To }}",
+            "title":        "{{ .Title }}",
+            "organization": "{{ .Organization }}"
+        }{{ if lt $i (subtract (len $.Resume.Education) 1) }},{{ end }}
+        {{- end }}
+    ],
+    "interests": [
+        {{- range $i, $v := .Resume.Interests }}
+        "{{ . }}"{{ if lt $i (subtract (len $.Resume.Interests) 1) }},{{ end }}
+        {{- end }}
+    ],
+    "hobbies": [
+        {{- range $i, $v := .Resume.Hobbies }}
+        "{{ . }}"{{ if lt $i (subtract (len $.Resume.Hobbies) 1) }},{{ end }}
+        {{- end }}
+    ]
+}

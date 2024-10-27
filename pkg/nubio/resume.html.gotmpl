@@ -157,7 +157,7 @@
         }
     </style>
 
-    {{- if .CustomCSS }}
+    {{- if .Resume.CustomCSS }}
     <link rel="stylesheet" href="/custom.css" />
     {{- end }}
 </head>
@@ -172,7 +172,7 @@
                         <span class="emoji">@</span>{{.Resume.Contact.EmailAddress }}
                     </a>
                 </li>
-                {{- if .Resume.Contact.PGP }}
+                {{- if .Resume.PGPKey }}
                 <li><a target="_blank" class="button" href="/pgp.asc"><span class="emoji">🔑</span>PGP key</a></li>
                 {{- end }}
                 {{- range .Resume.Links }}

@@ -3,24 +3,50 @@ package nubio
 import (
 	"bytes"
 	_ "embed"
-	"encoding/json"
-	"html/template"
+	templatehtml "html/template"
 	"io"
 	"net/http"
+	templatetxt "text/template"
 )
+
+type ExportFormat string
+
+const (
+	ExportTypeHTML ExportFormat = "html"
+	ExportTypePDF  ExportFormat = "pdf"
+	ExportTypeJSON ExportFormat = "json"
+	ExportTypeTXT  ExportFormat = "txt"
+	ExportTypeMD   ExportFormat = "md"
+)
+
+var tmplFuncs = templatehtml.FuncMap{
+	"subtract": func(a, b int) int { return a - b },
+}
+
+func mustParseHTMLTmpl(name, raw string) *templatehtml.Template {
+	return templatehtml.Must(templatehtml.New(name).Funcs(tmplFuncs).Parse(raw))
+}
+
+func mustParseTextTmpl(name, raw string) *templatetxt.Template {
+	return templatetxt.Must(templatetxt.New(name).Funcs(tmplFuncs).Parse(raw))
+}
 
 var (
 	//go:embed resume.html.gotmpl
 	HTMLRawTemplate string
-	HTMLTemplate    = template.Must(template.New("html").Parse(HTMLRawTemplate))
+	HTMLTemplate    = mustParseHTMLTmpl("html", HTMLRawTemplate)
 
 	//go:embed resume.txt.gotmpl
 	TextRawTemplate string
-	TextTemplate    = template.Must(template.New("txt").Parse(TextRawTemplate))
+	TextTemplate    = mustParseTextTmpl("txt", TextRawTemplate)
+
+	//go:embed resume.json.gotmpl
+	JSONRawTemplate string
+	JSONTemplate    = mustParseTextTmpl("json", JSONRawTemplate)
 
 	//go:embed resume.md.gotmpl
 	MarkdownRawTemplate string
-	MarkdownTemplate    = template.Must(template.New("md").Parse(MarkdownRawTemplate))
+	MarkdownTemplate    = mustParseTextTmpl("md", MarkdownRawTemplate)
 )
 
 type ExportFunc func(w io.Writer, p *Config) error
@@ -42,7 +68,7 @@ func ExportAndServe(conf *Config, f ExportFunc, typ string) http.HandlerFunc {
 func ExportHTML(w io.Writer, conf *Config) error     { return HTMLTemplate.Execute(w, conf) }
 func ExportText(w io.Writer, conf *Config) error     { return TextTemplate.Execute(w, conf) }
 func ExportMarkdown(w io.Writer, conf *Config) error { return MarkdownTemplate.Execute(w, conf) }
-func ExportJSON(w io.Writer, conf *Config) error     { return json.NewEncoder(w).Encode(conf.Resume) }
+func ExportJSON(w io.Writer, conf *Config) error     { return JSONTemplate.Execute(w, conf) }
 
 func ExportAndServePDF(conf *Config) http.HandlerFunc {
 	return ExportAndServe(conf, ExportPDF, "application/pdf")
