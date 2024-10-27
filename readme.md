@@ -53,9 +53,11 @@ Your `profile.json` can include:
 - Hobbies
 
 Here's a JSON template you can fill in with your information:
+
 ```json
 {
     "name": "",
+    "domain": "",
     "contact": {"email_address": ""},
     "links": [
         {"label": "", "url": ""},
@@ -91,6 +93,12 @@ Here's a JSON template you can fill in with your information:
 ```
 
 Note: See `example.profile.json` for a realistic example.
+
+You can check the validity of your `profile.json` with:
+
+```bash
+nubio check-profile profile.json
+```
 
 ### Generating a static website (SSG)
 
