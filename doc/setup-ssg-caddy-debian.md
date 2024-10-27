@@ -143,7 +143,7 @@ jobs:
           go-version: "1.21.7"
       - name: Build and deploy.
         run: |
-          go install github.com/ejuju/nubio@v0.3.1
+          go install github.com/ejuju/nubio@v0.4.1
           mkdir .out
           nubio check config.json
           nubio ssg config.json .out
