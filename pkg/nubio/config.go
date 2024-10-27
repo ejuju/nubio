@@ -13,27 +13,28 @@ import (
 )
 
 type Config struct {
-	Address         string  `json:"address"`         // Local HTTP server address.
-	TrueIPHeader    string  `json:"true_ip_header"`  // Optional: (ex: "X-Forwarded-For", use when reverse proxying).
-	TLSDirpath      string  `json:"tls_dirpath"`     // Path to TLS certificate directory.
-	TLSEmailAddress string  `json:"tls_email_addr"`  // Email address in TLS certificate.
-	PGPKeyPath      string  `json:"pgp_key_path"`    // Path to PGP public key. Not exported.
-	PGPKey          string  `json:"pgp_key"`         // Literal value or populated by the corresponding file's content on load.
-	CustomCSSPath   string  `json:"custom_css_path"` // Path to custom CSS stylesheet. Not exported.
-	CustomCSS       string  `json:"custom_css"`      // Literal value or populated by the corresponding file's content on load.
-	Resume          *Resume `json:"resume"`          // Resume content.
+	Address         string  `json:"address"`        // Local HTTP server address.
+	TrueIPHeader    string  `json:"true_ip_header"` // Optional: (ex: "X-Forwarded-For", use when reverse proxying).
+	TLSDirpath      string  `json:"tls_dirpath"`    // Path to TLS certificate directory.
+	TLSEmailAddress string  `json:"tls_email_addr"` // Email address in TLS certificate.
+	Resume          *Resume `json:"resume"`         // Resume content.
 }
 
 // Publicly exportable user resume info.
 type Resume struct {
-	Name     string `json:"name"`      // Full name (ex: "Alex Doe").
-	NameSlug string `json:"name_slug"` // Optional: Name as a URI-compatible slug (ex: "alex-doe").
+	Slug string `json:"slug"` // Optional: Name as a URI-compatible slug (ex: "alex-doe").
+	Name string `json:"name"` // Full name (ex: "Alex Doe").
 
 	// Public domain name (ex: "alexdoe.example")
 	// Note:
 	//	- For SSG: This field is required.
 	//	- For server: This field is overwritten by corresponding app config field.
 	Domain string `json:"domain"`
+
+	PGPKeyPath    string `json:"pgp_key_path"`    // Path to PGP public key. Not exported.
+	PGPKey        string `json:"pgp_key"`         // Literal value or populated by the corresponding file's content on load.
+	CustomCSSPath string `json:"custom_css_path"` // Path to custom CSS stylesheet. Not exported.
+	CustomCSS     string `json:"custom_css"`      // Literal value or populated by the corresponding file's content on load.
 
 	Contact        Contact          `json:"contact"`
 	Links          []Link           `json:"links"`
@@ -60,26 +61,26 @@ func LoadConfig(path string) (conf *Config, err error) {
 	}
 
 	// Create name slug if none is provided.
-	if conf.Resume.NameSlug == "" {
-		conf.Resume.NameSlug = httpmux.Slugify(conf.Resume.Name)
+	if conf.Resume.Slug == "" {
+		conf.Resume.Slug = httpmux.Slugify(conf.Resume.Name)
 	}
 
 	// Load PGP key if provided.
-	if conf.PGPKeyPath != "" {
-		b, err = os.ReadFile(conf.PGPKeyPath)
+	if conf.Resume.PGPKeyPath != "" {
+		b, err = os.ReadFile(conf.Resume.PGPKeyPath)
 		if err != nil {
 			return nil, fmt.Errorf("load PGP key: %w", err)
 		}
-		conf.PGPKey = string(b)
+		conf.Resume.PGPKey = string(b)
 	}
 
 	// Load custom CSS if provided.
-	if conf.CustomCSSPath != "" {
-		b, err = os.ReadFile(conf.CustomCSSPath)
+	if conf.Resume.CustomCSSPath != "" {
+		b, err = os.ReadFile(conf.Resume.CustomCSSPath)
 		if err != nil {
 			return nil, fmt.Errorf("load custom CSS: %w", err)
 		}
-		conf.CustomCSS = string(b)
+		conf.Resume.CustomCSS = string(b)
 	}
 
 	return conf, nil

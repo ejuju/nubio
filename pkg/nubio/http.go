@@ -37,11 +37,11 @@ func NewHTTPHandler(fallback http.Handler, conf *Config) http.Handler {
 		PathResumeTXT:  {"GET": ExportAndServeText(conf)},
 		PathResumeMD:   {"GET": ExportAndServeMarkdown(conf)},
 	}
-	if len(conf.PGPKey) > 0 {
-		m[PathPGPKey] = map[string]http.Handler{"GET": httpmux.TextHandler(string(conf.PGPKey))}
+	if len(conf.Resume.PGPKey) > 0 {
+		m[PathPGPKey] = map[string]http.Handler{"GET": httpmux.TextHandler(string(conf.Resume.PGPKey))}
 	}
-	if len(conf.CustomCSS) > 0 {
-		m[PathCustomCSS] = map[string]http.Handler{"GET": httpmux.CSSHandler([]byte(conf.CustomCSS))}
+	if len(conf.Resume.CustomCSS) > 0 {
+		m[PathCustomCSS] = map[string]http.Handler{"GET": httpmux.CSSHandler([]byte(conf.Resume.CustomCSS))}
 	}
 
 	return m.Handler(fallback)

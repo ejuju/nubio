@@ -28,7 +28,7 @@ var commands = []*cli.Command{
 	commandVersion,
 	commandRunServer,
 	commandRunSSG,
-	commandGeneratePDF,
+	commandExport,
 	commandCheckConfig,
 }
 
@@ -76,16 +76,18 @@ var commandRunSSG = &cli.Command{
 	Do:          RunSSG,
 }
 
-var commandGeneratePDF = &cli.Command{
-	Keyword:     "pdf",
-	Usage:       "pdf $PATH_TO_CONFIG $PATH_TO_OUTPUT_DIR",
-	Description: "Generate PDF export.",
+var commandExport = &cli.Command{
+	Keyword:     "export",
+	Usage:       "export $FORMAT $CONFIG_PATH $OUTPUT_PATH",
+	Description: "Export to file.",
 	Do: func(args ...string) (exitcode int) {
-		if len(args) < 2 {
-			log.Println("missing argument(s): /path/to/config.json and /path/to/output.pdf")
+		if len(args) < 3 {
+			log.Println("missing argument(s): format, config_path, output_path")
+			return 1
 		}
-		in := args[0]
-		out := args[1]
+		format := ExportFormat(args[0])
+		in := args[1]
+		out := args[2]
 
 		// Load and check config.json.
 		conf, err := LoadConfig(in)
@@ -101,20 +103,36 @@ var commandGeneratePDF = &cli.Command{
 			return 1
 		}
 
-		// Encode and write PDF.
+		// Encode and write.
+		var exporter ExportFunc
+		switch format {
+		default:
+			log.Printf("unknown export format: %q", format)
+			return 1
+		case ExportTypeHTML:
+			exporter = ExportHTML
+		case ExportTypePDF:
+			exporter = ExportPDF
+		case ExportTypeJSON:
+			exporter = ExportJSON
+		case ExportTypeTXT:
+			exporter = ExportText
+		case ExportTypeMD:
+			exporter = ExportMarkdown
+		}
 		f, err := os.OpenFile(out, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 		if err != nil {
 			log.Printf("open output file: %s", err)
 			return 1
 		}
 		defer f.Close()
-		err = ExportPDF(f, conf)
+		err = exporter(f, conf)
 		if err != nil {
-			log.Printf("encode and write PDF: %s", err)
+			log.Printf("encode and write: %s", err)
 			return 1
 		}
 
-		log.Printf("PDF written to %s", out)
+		log.Printf("wrote export to %s", out)
 		return 0
 	},
 }

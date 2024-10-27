@@ -64,8 +64,15 @@ You can also use Nubio as a CLI to generate static file exports,
 for example, to export your config as a PDF:
 
 ```bash
-nubio pdf /path/to/config.json /path/to/output.pdf
+nubio export pdf /path/to/config.json /path/to/output.pdf
 ```
+
+Supported export formats are:
+- `html`
+- `pdf`
+- `json`
+- `txt` (plain-text)
+- `md` (Markdown)
 
 ### Running as HTTP(S) server
 
