@@ -1,4 +1,11 @@
 # Changelog
+
+## v0.6.0
+- Breaking change: `config.json` is now split between `resume.json` and `server.json` files.
+- Breaking change: CLI command `check` is now split in `check-server-config` and `check-resume-config`
+- Breaking change: Resume website link is included by default in `pdf`, `json`, `txt` and `md` exports
+  (not included in `html` export).
+
 ## v0.5.0
 - Breaking change: Move config fields `custom_css`, `custom_css_path`, `pgp_key`, `pgp_key_path` inside `resume` object.
 - Breaking change: CLI commands `export` replaces `pdf` and now supports more format types.

@@ -8,7 +8,7 @@ import (
 	"github.com/ejuju/nubio/pkg/cli"
 )
 
-const version = "v0"
+const version = "beta"
 
 func Run(args ...string) (exitcode int) {
 	if len(args) == 0 {
