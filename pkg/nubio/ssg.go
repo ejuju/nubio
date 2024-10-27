@@ -14,43 +14,52 @@ func RunSSG(args ...string) (exitcode int) {
 
 	// Check arguments.
 	if len(args) < 2 {
-		logger.Error("missing arguments", "args", []string{"path to profile.json", "path to output directory"})
+		logger.Error("missing arguments", "args", []string{"path to config.json", "path to output directory"})
 		return 1
 	}
-	profilePath := args[0]
+	configPath := args[0]
 	outputDirpath := args[1]
 
-	// Load profile.
-	profile, err := LoadProfileFile(profilePath)
+	// Load config.
+	config, err := LoadConfig(configPath)
 	if err != nil {
-		logger.Error("load profile config", "error", err)
+		logger.Error("load config", "error", err)
+		return 1
+	}
+	errs := config.Check()
+	if len(errs) > 0 {
+		for _, err := range errs {
+			logger.Error("bad config", "error", err)
+		}
 		return 1
 	}
 
 	// List export paths and corresponding function.
 	exports := map[string]ExportFunc{
-		"index.html":                             ExportHTML,
-		strings.TrimPrefix(PathProfilePDF, "/"):  ExportPDF,
-		strings.TrimPrefix(PathProfileJSON, "/"): ExportJSON,
-		strings.TrimPrefix(PathProfileTXT, "/"):  ExportText,
-		strings.TrimPrefix(PathProfileMD, "/"):   ExportMarkdown,
+		"index.html":                            ExportHTML,
+		strings.TrimPrefix(PathResumePDF, "/"):  ExportPDF,
+		strings.TrimPrefix(PathResumeJSON, "/"): ExportJSON,
+		strings.TrimPrefix(PathResumeTXT, "/"):  ExportText,
+		strings.TrimPrefix(PathResumeMD, "/"):   ExportMarkdown,
 	}
 
 	// Generate static files.
-	//
-	// Note that PGP key is not included here
-	// since we only rely on the profile.json,
-	// and the local PGP key is specified in the server.json.
 	files := map[string][]byte{
 		strings.TrimPrefix(PathFaviconSVG, "/"): faviconSVG,
-		strings.TrimPrefix(PathSitemapXML, "/"): generateSitemapXML(profile.Domain),
+		strings.TrimPrefix(PathSitemapXML, "/"): generateSitemapXML(config.Resume.Domain),
 		strings.TrimPrefix(PathRobotsTXT, "/"):  []byte(robotsTXT),
 		strings.TrimPrefix(PathPing, "/"):       []byte("ok\n"),
 		strings.TrimPrefix(PathVersion, "/"):    []byte(version + "\n"),
 	}
+	if len(config.PGPKey) > 0 {
+		files[strings.TrimPrefix(PathPGPKey, "/")] = []byte(config.PGPKey)
+	}
+	if len(config.CustomCSS) > 0 {
+		files[strings.TrimPrefix(PathCustomCSS, "/")] = []byte(config.CustomCSS)
+	}
 	for path, export := range exports {
 		b := &bytes.Buffer{}
-		err = export(b, profile)
+		err = export(b, config)
 		if err != nil {
 			logger.Error("export", "path", path, "error", err)
 			return 1

@@ -6,16 +6,15 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="mask-icon" href="/favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ .Name }}</title>
+    <title>{{ .Resume.Name }}</title>
     <meta name="description" content="Welcome to my public web profile!">
     <meta name="robots" content="index, follow" />
-    <meta name="author" content="{{ .Name }}" />
-
+    <meta name="author" content="{{ .Resume.Name }}" />
     <style>
         :root {
             --color-fg-0: hsl(0, 0%, 95%);
-            --color-fg-1: hsl(0, 0%, 80%);
-            --color-fg-2: hsl(0, 0%, 65%);
+            --color-fg-1: hsl(0, 0%, 85%);
+            --color-fg-2: hsl(0, 0%, 75%);
             --color-bg-0: hsl(0, 0%, 10%);
             --color-bg-1: hsl(0, 0%, 15%);
             --color-bg-2: hsl(0, 0%, 25%);
@@ -80,7 +79,7 @@
             border: none;
         }
 
-        section.card {
+        .card {
             padding: 24px 16px;
             background-color: var(--color-bg-1);
             border-radius: 8px;
@@ -107,7 +106,8 @@
         }
 
         .button {
-            background-color: var(--color-bg-2);
+            background-color: var(--color-accent, var(--color-bg-2));
+            color: var(--color-accent-contrast, var(--color-fg-1));
             padding: 8px 12px;
             border-radius: 8px;
             display: flex;
@@ -156,22 +156,26 @@
             padding: 32px 16px;
         }
     </style>
+
+    {{- if .CustomCSS }}
+    <link rel="stylesheet" href="/custom.css" />
+    {{- end }}
 </head>
 
 <body>
     <main>
         <section id="top" class="card">
-            <h1>{{ .Name }}</h1>
+            <h1>{{ .Resume.Name }}</h1>
             <ul class="hlist">
                 <li>
-                    <a class="button" href="mailto:{{ .Contact.EmailAddress }}">
-                        <span class="emoji">@</span>{{.Contact.EmailAddress }}
+                    <a class="button" href="mailto:{{ .Resume.Contact.EmailAddress }}">
+                        <span class="emoji">@</span>{{.Resume.Contact.EmailAddress }}
                     </a>
                 </li>
-                {{- if .Contact.PGP }}
+                {{- if .Resume.Contact.PGP }}
                 <li><a target="_blank" class="button" href="/pgp.asc"><span class="emoji">🔑</span>PGP key</a></li>
                 {{- end }}
-                {{- range .Links }}
+                {{- range .Resume.Links }}
                 <li>
                     <a target="_blank" rel="noopener noreferrer" class="button" href="https://{{ .URL }}">
                         <span class="emoji">🔗</span>{{ .Label }}
@@ -183,7 +187,7 @@
 
         <section id="experiences" class="card">
             <h2>Work Experience</h2>
-            {{- range .Experiences }}
+            {{- range .Resume.WorkExperience }}
             <hr>
             <section class="grid-12px">
                 <h3>{{ .Title }} at {{ .Organization }}</h3>
@@ -197,7 +201,7 @@
         <section id="skills" class="card">
             <h2>Skills</h2>
             <hr>
-            {{- range .Skills }}
+            {{- range .Resume.Skills }}
             <section class="grid-8px">
                 <h3>{{ .Title }}</h3>
                 <ul class="hlist">{{ range .Tools }}<li class="tag">{{ . }}</li>{{ end }}</ul>
@@ -208,7 +212,7 @@
         <section id="languages" class="card">
             <h2>Languages</h2>
             <hr>
-            {{- range .Languages }}
+            {{- range .Resume.Languages }}
             <section class="grid-8px">
                 <h3>{{ .Label }}</h3>
                 <p class="color-fg-2">{{ .Proficiency }}</p>
@@ -219,7 +223,7 @@
         <section id="education" class="card">
             <h2>Education</h2>
             <hr>
-            {{- range .Education }}
+            {{- range .Resume.Education }}
             <section class="grid-8px">
                 <h3>{{ .Title }}</h3>
                 <p class="color-fg-2">At {{ .Organization }} ({{ .From }} - {{ .To }})</p>
@@ -231,7 +235,7 @@
             <h2>Interests</h2>
             <hr>
             <ul class="vlist">
-                {{ range .Interests }}<li class="kv"><span class="emoji color-fg-2">+</span>{{ . }}</li>{{ end }}
+                {{ range .Resume.Interests }}<li class="kv"><span class="emoji color-fg-2">+</span>{{ . }}</li>{{ end }}
             </ul>
         </section>
 
@@ -239,15 +243,15 @@
             <h2>Hobbies</h2>
             <hr>
             <ul class="vlist">
-                {{ range .Hobbies }}<li class="kv"><span class="emoji color-fg-2">+</span>{{ . }}</li>{{ end }}
+                {{ range .Resume.Hobbies }}<li class="kv"><span class="emoji color-fg-2">+</span>{{ . }}</li>{{ end }}
             </ul>
         </section>
 
         <section id="exports" class="card">
-            <a class="button" href="/profile.pdf" download="{{ .NameSlug }}.pdf">Download PDF</a>
-            <a class="button" href="/profile.txt" download="{{ .NameSlug }}.txt">Download TXT</a>
-            <a class="button" href="/profile.json" download="{{ .NameSlug }}.json">Download JSON</a>
-            <a class="button" href="/profile.md" download="{{ .NameSlug }}.md">Download Markdown</a>
+            <a class="button" target="_blank" rel="noopener noreferrer" href="/resume.pdf">Open PDF</a>
+            <a class="button" target="_blank" rel="noopener noreferrer" href="/resume.txt">Open TXT</a>
+            <a class="button" target="_blank" rel="noopener noreferrer" href="/resume.json">Open JSON</a>
+            <a class="button" target="_blank" rel="noopener noreferrer" href="/resume.md">Open Markdown</a>
         </section>
     </main>
 

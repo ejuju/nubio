@@ -1,4 +1,4 @@
-# Nubio: Self-hosted online profile/resume for developers
+# Nubio: Self-hosted online resume for developers
 
 Nubio can be used as a static site generator, CLI, HTTP(S) server or Go library.
 
@@ -6,19 +6,18 @@ Nubio can be used as a static site generator, CLI, HTTP(S) server or Go library.
 
 ### Features
 
-- Define your profile as JSON
-- Export your profile as PDF, JSON, plain text, Markdown, or HTML page
-- Serve your profile as a website (or generate static website files).
-- Single executable
-- Auto HTTPS (get and renew certs using ACME)
+- Export your resume as PDF, JSON, plain text, Markdown, or static HTML page.
+- Serve your resume as a website (or generate static website files).
+- Single executable.
+- Auto HTTPS (get and renew certs using ACME).
 
 ### Live demo
 
 - Website: [juliensellier.com](https://juliensellier.com/)
-- PDF export: [juliensellier.com/profile.pdf](https://juliensellier.com/profile.pdf)
-- JSON export: [juliensellier.com/profile.json](https://juliensellier.com/profile.pdf)
-- Plain-text export: [juliensellier.com/profile.txt](https://juliensellier.com/profile.pdf)
-- Markdown export: [juliensellier.com/profile.md](https://juliensellier.com/profile.pdf)
+- PDF export: [juliensellier.com/resume.pdf](https://juliensellier.com/resume.pdf)
+- JSON export: [juliensellier.com/resume.json](https://juliensellier.com/resume.json)
+- Plain-text export: [juliensellier.com/resume.txt](https://juliensellier.com/resume.json)
+- Markdown export: [juliensellier.com/resume.md](https://juliensellier.com/resume.json)
 
 ### 3rd-party Go dependencies
 
@@ -37,76 +36,24 @@ and installed locally using:
 go install github.com/ejuju/nubio@latest
 ```
 
-### Configuring your profile
+### Configuration
 
-Your profile's information is stored in a single JSON file,
-usually named `profile.json`.
+Your server configuration and resume information is stored in a single JSON file,
+usually named `config.json`.
 
-Your `profile.json` can include:
-- Contact details
-- External links
-- Work Experience
-- Skills
-- Languages
-- Education
-- Interests
-- Hobbies
+Check out an example in [config.json](/config.json).
 
-Here's a JSON template you can fill in with your information:
-
-```json
-{
-    "name": "",
-    "domain": "",
-    "contact": {"email_address": ""},
-    "links": [
-        {"label": "", "url": ""},
-    ],
-    "experiences": [
-        {
-            "from": "",
-            "to": "",
-            "title": "",
-            "organization": "",
-            "location": "",
-            "description": "",
-            "skills": [""]
-        }
-    ],
-    "skills": [
-        {"title": "", "tools": [""]},
-    ],
-    "languages": [
-        {"label": "", "proficiency": ""},
-    ],
-    "education": [
-        {
-            "from": "",
-            "to": "",
-            "title": "",
-            "organization": ""
-        }
-    ],
-    "interests": [""],
-    "hobbies": [""]
-}
-```
-
-Note: See `example.profile.json` for a realistic example.
-
-You can check the validity of your `profile.json` with:
+You can check the validity of your `config.json` with:
 
 ```bash
-nubio check-profile profile.json
+nubio check config.json
 ```
 
 ### Generating a static website (SSG)
 
 ```bash
-nubio ssg profile.json static/
+nubio ssg config.json static/
 ```
-
-Note: Make sure to fill in the `domain` field in your `profile.json` for SSG.
 
 For an example setup with Caddy on Debian, check out:
 [/doc/setup-ssg-caddy-debian.md](/doc/setup-ssg-caddy-debian.md)
@@ -114,23 +61,22 @@ For an example setup with Caddy on Debian, check out:
 ### Generating exports via CLI
 
 You can also use Nubio as a CLI to generate static file exports,
-for example, to export your profile as a PDF:
+for example, to export your config as a PDF:
 
 ```bash
-nubio pdf /path/to/profile.json /path/to/output.pdf
+nubio pdf /path/to/config.json /path/to/output.pdf
 ```
 
 ### Running as HTTP(S) server
 
-First, you'll need to configure your `server.json` file.
+First, you'll need to configure your `config.json` file with the necessary information.
 
-Example for a HTTPS server:
+Example config fields for a HTTPS server:
 ```json
 {
     "domain": "mysite.example",
     "tls_dirpath": "tls",
     "tls_email_addr": "contact@mysite.example",
-    "profile": "profile.json"
 }
 ```
 
@@ -138,40 +84,50 @@ The field `tls_dirpath` indicates a directory where TLS certificates will be sto
 When using HTTPS, the server uses ports `80` and `443` by default,
 there's no need to use the `address` field (it is ignored).
 
-Example for a HTTP server behind a reverse proxy:
+Example fields for a HTTP server behind a reverse proxy:
 ```json
 {
     "domain": "mysite.example",
     "address": ":8080",
     "true_ip_header": "X-Forwarded-For",
-    "profile": "profile.json"
-}
-```
-
-Example for a local development server:
-```json
-{
-    "address": ":8080",
-    "domain": "localhost",
-    "profile": "profile.json"
 }
 ```
 
 To start the server, run:
 ```bash
-nubio run server.json
+nubio run config.json
 ```
 
 Notes:
-- You can also simply run `nubio run` which by default will look 
-  for `server.json` in its current working directory.
-- The `server.json` indicates where the `profile.json` file can be found.
+- You can also simply run `nubio run` which by default will look
+  for `config.json` in its current working directory.
+
+### Using custom CSS
+
+In order to add custom CSS, use the corresponding config field:
+- `custom_css` to import the CSS from the config file field value.
+- `custom_css_path` to import the CSS from a file, when provided, overwrites `custom_css`.
+
+Check out the [HTML template file](/pkg/nubio/resume.html.gotmpl) to see how to select
+the desired elements.
+
+Here's an example of some custom CSS to set the UI to "light mode":
+```css
+:root {
+    --color-fg-0: hsl(0, 0%, 5%);
+    --color-fg-1: hsl(0, 0%, 20%);
+    --color-fg-2: hsl(0, 0%, 35%);
+    --color-bg-0: hsl(0, 0%, 95%);
+    --color-bg-1: hsl(0, 0%, 92%);
+    --color-bg-2: hsl(0, 0%, 85%);
+}
+```
 
 ### Embedding in your Go program
 
-- Export profile to PDF: `nubio.ExportPDF(w, profile)`
-- Export profile to HTML: `nubio.ExportHTML(w, profile)`
-- Profile type definition: see `nubio.Profile`
+- Export resume to PDF: `nubio.ExportPDF(w, resume)`
+- Export resume to HTML: `nubio.ExportHTML(w, resume)`
+- Resume type definition: see `nubio.Resume`
 - And more...
 
 Official package documentation is available here:

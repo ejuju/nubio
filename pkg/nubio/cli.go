@@ -29,8 +29,7 @@ var commands = []*cli.Command{
 	commandRunServer,
 	commandRunSSG,
 	commandGeneratePDF,
-	commandCheckProfile,
-	commandCheckServer,
+	commandCheckConfig,
 }
 
 // Prepend help command.
@@ -72,33 +71,32 @@ var commandRunServer = &cli.Command{
 
 var commandRunSSG = &cli.Command{
 	Keyword:     "ssg",
-	Usage:       "ssg $PATH_TO_PROFILE_CONF $PATH_TO_OUTPUT_DIR",
+	Usage:       "ssg $PATH_TO_CONFIG $PATH_TO_OUTPUT_DIR",
 	Description: "Generate static website files.",
 	Do:          RunSSG,
 }
 
 var commandGeneratePDF = &cli.Command{
 	Keyword:     "pdf",
-	Usage:       "pdf $PATH_TO_PROFILE_CONF $PATH_TO_OUTPUT_DIR",
+	Usage:       "pdf $PATH_TO_CONFIG $PATH_TO_OUTPUT_DIR",
 	Description: "Generate PDF export.",
 	Do: func(args ...string) (exitcode int) {
 		if len(args) < 2 {
-			log.Println("missing argument(s): /path/to/profile.json and /path/to/output.pdf")
+			log.Println("missing argument(s): /path/to/config.json and /path/to/output.pdf")
 		}
 		in := args[0]
 		out := args[1]
 
-		// Load and check profile.json.
-		p := &Profile{}
-		err := loadJSONFile(in, p)
+		// Load and check config.json.
+		conf, err := LoadConfig(in)
 		if err != nil {
-			log.Printf("load profile: %s", err)
+			log.Printf("load config: %s", err)
 			return 1
 		}
-		errs := p.Check()
+		errs := conf.Check()
 		if len(errs) > 0 {
 			for _, err := range errs {
-				log.Printf("check profile: %s", err)
+				log.Printf("check config: %s", err)
 			}
 			return 1
 		}
@@ -110,7 +108,7 @@ var commandGeneratePDF = &cli.Command{
 			return 1
 		}
 		defer f.Close()
-		err = ExportPDF(f, p)
+		err = ExportPDF(f, conf)
 		if err != nil {
 			log.Printf("encode and write PDF: %s", err)
 			return 1
@@ -121,52 +119,23 @@ var commandGeneratePDF = &cli.Command{
 	},
 }
 
-var commandCheckProfile = &cli.Command{
-	Keyword:     "check-profile",
-	Usage:       "check-profile $PATH_TO_PROFILE_CONF",
-	Description: "Check a \"profile.json\" file.",
+var commandCheckConfig = &cli.Command{
+	Keyword:     "check",
+	Aliases:     []string{"check-config"},
+	Usage:       "check $PATH_TO_CONFIG",
+	Description: "Check a \"config.json\" file.",
 	Do: func(args ...string) (exitcode int) {
-		// Load profile.json.
-		path := "profile.json"
+		// Load config.json.
+		path := "config.json"
 		if len(args) > 0 {
 			path = args[0]
 		}
 		log.Printf("Checking file: %s", path)
-		p := &Profile{}
-		err := loadJSONFile(path, p)
+		conf, err := LoadConfig(path)
 		if err != nil {
 			return 1
 		}
-		errs := p.Check()
-		if len(errs) > 0 {
-			for _, err := range errs {
-				log.Printf("Error: %s", err)
-			}
-			return 1
-		}
-
-		log.Printf("All good!")
-		return 0
-	},
-}
-
-var commandCheckServer = &cli.Command{
-	Keyword:     "check-server",
-	Usage:       "check-server $PATH_TO_SERVER_CONF",
-	Description: "Check a \"server.json\" file.",
-	Do: func(args ...string) (exitcode int) {
-		// Load server.json.
-		path := "server.json"
-		if len(args) > 0 {
-			path = args[0]
-		}
-		log.Printf("Checking file: %s", path)
-		p := &Config{}
-		err := loadJSONFile(path, p)
-		if err != nil {
-			return 1
-		}
-		errs := p.Check()
+		errs := conf.Check()
 		if len(errs) > 0 {
 			for _, err := range errs {
 				log.Printf("Error: %s", err)

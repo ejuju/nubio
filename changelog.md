@@ -8,3 +8,4 @@
 - Breaking change: resume JSON field `experiences` has been renamed to `work_experience`.
 - Custom CSS is now supported.
 - "Resume" is now used instead of "profile" for clarity.
+- Resume exports are opened in new tab instead of downloaded.

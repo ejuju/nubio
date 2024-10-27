@@ -1,16 +1,31 @@
 package nubio
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/url"
+	"os"
 	"time"
 	"unicode/utf8"
 
 	"github.com/ejuju/nubio/pkg/httpmux"
 )
 
-type Profile struct {
+type Config struct {
+	Address         string  `json:"address"`         // Local HTTP server address.
+	TrueIPHeader    string  `json:"true_ip_header"`  // Optional: (ex: "X-Forwarded-For", use when reverse proxying).
+	TLSDirpath      string  `json:"tls_dirpath"`     // Path to TLS certificate directory.
+	TLSEmailAddress string  `json:"tls_email_addr"`  // Email address in TLS certificate.
+	PGPKeyPath      string  `json:"pgp_key_path"`    // Path to PGP public key. Not exported.
+	PGPKey          string  `json:"pgp_key"`         // Literal value or populated by the corresponding file's content on load.
+	CustomCSSPath   string  `json:"custom_css_path"` // Path to custom CSS stylesheet. Not exported.
+	CustomCSS       string  `json:"custom_css"`      // Literal value or populated by the corresponding file's content on load.
+	Resume          *Resume `json:"resume"`          // Resume content.
+}
+
+// Publicly exportable user resume info.
+type Resume struct {
 	Name     string `json:"name"`      // Full name (ex: "Alex Doe").
 	NameSlug string `json:"name_slug"` // Optional: Name as a URI-compatible slug (ex: "alex-doe").
 
@@ -20,29 +35,75 @@ type Profile struct {
 	//	- For server: This field is overwritten by corresponding app config field.
 	Domain string `json:"domain"`
 
-	Contact     Contact      `json:"contact"`
-	Links       []Link       `json:"links"`
-	Experiences []Experience `json:"experiences"`
-	Skills      []Skill      `json:"skills"`
-	Languages   []Language   `json:"languages"`
-	Education   []Education  `json:"education"`
-	Interests   []string     `json:"interests"`
-	Hobbies     []string     `json:"hobbies"`
+	Contact        Contact          `json:"contact"`
+	Links          []Link           `json:"links"`
+	WorkExperience []WorkExperience `json:"work_experience"`
+	Skills         []Skill          `json:"skills"`
+	Languages      []Language       `json:"languages"`
+	Education      []Education      `json:"education"`
+	Interests      []string         `json:"interests"`
+	Hobbies        []string         `json:"hobbies"`
 }
 
-func LoadProfileFile(path string) (p *Profile, err error) {
-	p = &Profile{}
-	err = loadJSONFile(path, p)
+func LoadConfig(path string) (conf *Config, err error) {
+	// Read whole file into memory.
+	b, err := os.ReadFile(path)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("read whole file: %w", err)
 	}
-	if p.NameSlug == "" {
-		p.NameSlug = httpmux.Slugify(p.Name)
+
+	// Decode from JSON.
+	conf = &Config{}
+	err = json.Unmarshal(b, conf)
+	if err != nil {
+		return nil, fmt.Errorf("unmarshal JSON: %w", err)
 	}
-	return p, nil
+
+	// Create name slug if none is provided.
+	if conf.Resume.NameSlug == "" {
+		conf.Resume.NameSlug = httpmux.Slugify(conf.Resume.Name)
+	}
+
+	// Load PGP key if provided.
+	if conf.PGPKeyPath != "" {
+		b, err = os.ReadFile(conf.PGPKeyPath)
+		if err != nil {
+			return nil, fmt.Errorf("load PGP key: %w", err)
+		}
+		conf.PGPKey = string(b)
+	}
+
+	// Load custom CSS if provided.
+	if conf.CustomCSSPath != "" {
+		b, err = os.ReadFile(conf.CustomCSSPath)
+		if err != nil {
+			return nil, fmt.Errorf("load custom CSS: %w", err)
+		}
+		conf.CustomCSS = string(b)
+	}
+
+	return conf, nil
 }
 
-func (p *Profile) Check() (errs []error) {
+func (conf *Config) Check() (errs []error) {
+	// Check HTTP(S)-related fields.
+	if conf.Address == "" && conf.TLSDirpath == "" {
+		errs = append(errs, errors.New("missing address (or set TLS dirpath for HTTPS)"))
+	}
+	if conf.TLSDirpath != "" && conf.TLSEmailAddress == "" {
+		errs = append(errs, errors.New("missing TLS email address"))
+	}
+
+	if conf.Resume == nil {
+		errs = append(errs, errors.New("missing resume"))
+	} else {
+		errs = append(errs, conf.Resume.Check()...)
+	}
+
+	return errs
+}
+
+func (p *Resume) Check() (errs []error) {
 	// Check name and domain.
 	if p.Name == "" {
 		errs = append(errs, errors.New("missing name"))
@@ -69,10 +130,10 @@ func (p *Profile) Check() (errs []error) {
 	}
 
 	// Check experiences.
-	if len(p.Experiences) == 0 {
+	if len(p.WorkExperience) == 0 {
 		errs = append(errs, errors.New("missing experiences"))
 	}
-	for i, v := range p.Experiences {
+	for i, v := range p.WorkExperience {
 		for _, err := range v.Check() {
 			errs = append(errs, fmt.Errorf("experience %d: %w", i, err))
 		}
@@ -154,7 +215,7 @@ func (v *Contact) Check() (errs []error) {
 	return errs
 }
 
-type Experience struct {
+type WorkExperience struct {
 	From         string   `json:"from"`
 	To           string   `json:"to"`
 	Title        string   `json:"title"`
@@ -171,7 +232,7 @@ var (
 	maxExpDate = time.Date(3000, 1, 1, 0, 0, 0, 0, time.UTC)
 )
 
-func (v *Experience) Check() (errs []error) {
+func (v *WorkExperience) Check() (errs []error) {
 	if v.From == "" {
 		errs = append(errs, errors.New("missing start date"))
 	}

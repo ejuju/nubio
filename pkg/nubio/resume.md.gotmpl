@@ -1,7 +1,7 @@
-# {{ .Name }}
+# {{ .Resume.Name }}
 
 ## Work Experience
-{{ range .Experiences }}
+{{ range .Resume.WorkExperience }}
 |              |   |
 |--------------|---|
 | Title        | {{ .Title }} |
@@ -13,12 +13,12 @@
 {{ end }}
 
 ## Skills
-{{ range .Skills }}
+{{ range .Resume.Skills }}
 - {{ .Title }} ({{ range $i, $v := .Tools }}{{ if $i }}, {{ end }}{{ $v }}{{ end }})
 {{- end }}
 
 ## Education
-{{ range .Education }}
+{{ range .Resume.Education }}
 |              |   |
 |--------------|---|
 | From         | {{ .From }} |
@@ -28,27 +28,27 @@
 {{ end }}
 
 ## Languages
-{{ range .Languages }}
+{{ range .Resume.Languages }}
 - {{ .Label }} ({{ .Proficiency }})
 {{- end }}
 
 ## Interests
-{{ range .Interests }}
+{{ range .Resume.Interests }}
 - {{ . }}
 {{- end }}
 
 ## Hobbies
-{{ range .Hobbies }}
+{{ range .Resume.Hobbies }}
 - {{ . }}
 {{- end }}
 
 ## Links
-{{ range .Links }}
+{{ range .Resume.Links }}
 - {{ .Label }}: [{{ .URL }}](https://{{ .URL }})
 {{- end }}
 
 ## Contact
 
-You can reach me via email: [{{ .Contact.EmailAddress }}](mailto:{{ .Contact.EmailAddress }}).
+You can reach me via email: [{{ .Resume.Contact.EmailAddress }}](mailto:{{ .Resume.Contact.EmailAddress }}).
 
-{{ if .Contact.PGP }}[PGP key available here](https://{{ .Contact.PGP }}){{ end }}
+{{ if .Resume.Contact.PGP }}[PGP key available here](https://{{ .Resume.Contact.PGP }}){{ end }}
