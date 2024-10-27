@@ -1,18 +1,13 @@
 # Setup guide for SSG with Caddy on Debian (with CI/CD)
 
 In this guide, we will setup a self-hosted online resume
-using Caddy and Debian.
+using Caddy, Debian, and Github Actions.
 
-We will use a fictional person named "Alex Doe" to illustrate our example.
+## Install Go on your development machine
 
-This was tested on a fresh Debian 12 install on 2024-10-20.
+> Skip this part if Go is already installed on your machine.
 
-Note: We use the root user here, but in reality you should create a dedicated user on the server host.
-<!-- TODO: Create and use non-root user -->
-
-## Install Go on your local machine
-
-To install Go on a Linux OS:
+To install Go 1.23.2 on a Linux/amd64 OS:
 ```bash
 echo "Installing Go..." && \
     rm -rf /usr/local/go ; \
@@ -25,23 +20,68 @@ echo "Installing Go..." && \
     go version
 ```
 
-## Install Nubio on your local machine
+Note: You may need to change the Go version and CPU architecture in the commands above.
 
+## Install (or update) Nubio on your local development machine
+
+> Skip this part if you already have the lastest Nubio version installed on your machine.
+
+To install Nubio, run:
 ```bash
 go install github.com/ejuju/nubio@latest
 ```
 
-## Generate static website
+## Setup your Git repo for local development
 
-```bash
-vim config.json # Create your config.json
-nubio ssg config.json .out # Generate website files
+Create your resume configuration in `/resume.json`.
+A sample configuration is available here: [sample resume.json](/resume.json)
+
+We will now setup a local development server to generate 
+and view our exports in a web browser:
+
+Create your local `/server.json`:
+```json
+{
+    "address": ":8080",
+    "resume_path": "resume.json"
+}
 ```
+
+Note: You may need to change the port specified in the `address` field
+depending on your local setup and preferences.
+
+Now let's check your config files and start the local server:
+```bash
+echo "Checking config files..." && \
+nubio check-resume-config resume.json && \
+nubio check-server-config server.json && \
+echo "Starting server..." && \
+nubio run
+```
+
+Your website is now running on [localhost:8080](http://localhost:8080).
+Use CTRL+C to stop the server.
+
+## Get a host with a publically accessible IP address.
+
+Here, we will be using a Debian 12 VPS.
+You may use the provider of your choice for this.
+
+<!-- TODO: Create and use non-root user -->
+Warning: We will be using the root user here,
+for a more secure setup, you should create a dedicated user on the server host.
 
 ## Update your DNS
 
 - Ensure your domain resolves to your server's IP address(es).
 - Ensure you have a CNAME on `www.` pointing to `alexdoe.example.`.
+
+## Generate static website
+
+To generate your website files, run:
+```bash
+nubio ssg config.json .out
+```
 
 ## Setup Caddy on the remote server
 
@@ -69,7 +109,7 @@ systemctl status caddy
 
 Create working directory (where static files will be served from):
 ```bash
-mkdir -p /var/www/alexdoe # Create working directory
+mkdir -p /var/www/alexdoe
 ```
 
 Setup your Caddy file in `/etc/caddy/Caddyfile`:
@@ -99,13 +139,9 @@ scp -r .out/* root@alexdoe.example:/var/www/alexdoe
 
 Your website is now up and running!
 
-## Setup CI/CD with Github workflow
+## Setup CI/CD
 
-Setup a Git repo containing your `config.json` file.
-
-Publish the repo to your Github (with visibility: private).
-
-Generate a new SSH key pair: `ssh-keygen`
+On your local machine, generate a new SSH key pair: `ssh-keygen`.
 
 Copy the public key on the remote server (append to `authorized_keys file`):
 ```bash
@@ -145,8 +181,8 @@ jobs:
         run: |
           go install github.com/ejuju/nubio@v0.5.0
           mkdir .out
-          nubio check config.json
-          nubio ssg config.json .out
+          nubio check-resume-config resume.json
+          nubio ssg resume.json .out
           echo "$SSH_KEY" > "$SSH_KEY_PATH"
           chmod 0600 "$SSH_KEY_PATH"
           scp \
@@ -156,13 +192,18 @@ jobs:
               -r .out/* "$SSH_USERNAME"@alexdoe.example:/var/www/alexdoe
 ```
 
+At this point this is what your repositery should contain:
+- `/.github/workflows/deploy.yaml`: Github action for continuous deployment.
+- `/resume.json`: Resume configuration.
+- `/server.json`: Used for local development server.
+
 Push the code:
 ```bash
 git add .
-git commit -m "cicd: add github workflow"
+git commit -m "cicd: add cicd"
 git push
 ```
 
 CI/CD is setup!
-You can now make modifications to your `config.json` and
-the new changes will be deployed when you push.
+You can now make modifications to your `resume.json` and
+the new changes will be deployed to your server when you push.

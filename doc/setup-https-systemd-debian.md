@@ -4,23 +4,6 @@ TODO
 
 ---
 
-## Setup your DNS
-
-- Add A/AAAA records pointing to your server IP address.
-- Add a CNAME from `www` to your `alexdoe.example.`
-
-## Create a new user for CICD
-
-TODO
-
-## Generate new SSH key pair
-
-TODO
-
-## Authorize CICD user
-
-TODO
-
 ## Add Github workflow to your repo
 
 In order to deploy our changes, we need to:
@@ -32,11 +15,14 @@ This can be achieved with a Github workflow (`.github/workflows/deploy.yaml`):
 TODO
 ```
 
-## Setup your working directory
+## Setup the remote working directory
+
+SSH into your development server
 
 Create new directories:
 ```bash
-mkdir /var/www
+echo "Setting up working directory..." && \
+mkdir /var/www && \
 mkdir /var/www/tls
 ```
 
@@ -46,28 +32,8 @@ Add your config (in `/var/www/config.json`):
     "domain": "alexdoe.example",
     "tls_dirpath": "tls",
     "tls_email_addr": "contact@alexdoe.example",
-    // ...
+    "resume_path": "resume.json"
 }
-```
-
-## Install Go
-
-```bash
-echo "Installing Go..." && \
-    rm -rf /usr/local/go ; \
-    cd /tmp/ && \
-    wget https://go.dev/dl/go1.23.2.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.23.2.linux-amd64.tar.gz && \
-    echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.profile && \
-    echo "export PATH=\$PATH:/root/go/bin" >> ~/.profile && \
-    source ~/.profile && \
-    go version
-```
-
-## Install Nubio
-
-```bash
-go install github.com/ejuju/nubio@latest
 ```
 
 ## Setup the new Systemd daemon
@@ -92,10 +58,10 @@ WantedBy=multi-user.target
 
 ```bash
 echo "Setting up Systemd..." && \
-    systemctl daemon-reload && \
-    systemctl enable website && \
-    systemctl start website && \
-    systemctl status
+systemctl daemon-reload && \
+systemctl enable website && \
+systemctl start website && \
+systemctl status
 ```
 
 The website is now available!
