@@ -68,7 +68,7 @@ func ExportPDF(w io.Writer, p *Profile) error {
 
 	// Append work experiences.
 	pdf.Ln(24)
-	writeHeading(pdf, "Experiences")
+	writeHeading(pdf, "Work Experience")
 	for _, v := range p.Experiences {
 		pdf.Ln(16)
 		pdf.SetFontSize(fontSize)
