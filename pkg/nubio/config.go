@@ -86,10 +86,7 @@ func LoadConfig(path string) (conf *Config, err error) {
 }
 
 func (conf *Config) Check() (errs []error) {
-	// Check HTTP(S)-related fields.
-	if conf.Address == "" && conf.TLSDirpath == "" {
-		errs = append(errs, errors.New("missing address (or set TLS dirpath for HTTPS)"))
-	}
+	// Check HTTPS-related fields.
 	if conf.TLSDirpath != "" && conf.TLSEmailAddress == "" {
 		errs = append(errs, errors.New("missing TLS email address"))
 	}
