@@ -110,14 +110,6 @@ func (p *ResumeConfig) Check() (errs []error) {
 	if p.EmailAddress == "" {
 		errs = append(errs, errors.New("missing email address"))
 	}
-	if p.PGPKeyURL != "" {
-		u, err := url.Parse(p.PGPKeyURL)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("invalid PGP key URL"))
-		} else if u.Scheme == "" {
-			errs = append(errs, errors.New("missing scheme in PGP URL"))
-		}
-	}
 
 	// Check links.
 	if len(p.Links) == 0 {

@@ -10,14 +10,14 @@ using Caddy, Debian, and Github Actions.
 To install Go 1.23.2 on a Linux/amd64 OS:
 ```bash
 echo "Installing Go..." && \
-    rm -rf /usr/local/go ; \
-    cd /tmp/ && \
-    wget https://go.dev/dl/go1.23.2.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.23.2.linux-amd64.tar.gz && \
-    echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.profile && \
-    echo "export PATH=\$PATH:/root/go/bin" >> ~/.profile && \
-    source ~/.profile && \
-    go version
+rm -rf /usr/local/go ; \
+cd /tmp/ && \
+wget https://go.dev/dl/go1.23.2.linux-amd64.tar.gz && \
+tar -C /usr/local -xzf go1.23.2.linux-amd64.tar.gz && \
+echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.profile && \
+echo "export PATH=\$PATH:/root/go/bin" >> ~/.profile && \
+source ~/.profile && \
+go version
 ```
 
 Note: You may need to change the Go version and CPU architecture in the commands above.
