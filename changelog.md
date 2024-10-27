@@ -1,4 +1,9 @@
 # Changelog
+## v0.5.0
+- Breaking change: Move config fields `custom_css`, `custom_css_path`, `pgp_key`, `pgp_key_path` inside `resume` object.
+- Breaking change: CLI commands `export` replaces `pdf` and now supports more format types.
+- Breaking change: config field `name_slug` renamed to `slug`.
+- JSON export is now generated using a text-based template (allowing control over which fields are exposed).
 
 ## v0.4.2
 
