@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.4.0
+## v0.4.2
 
 - Breaking change: `profile.json` and `server.json` files merged in single `config.json` file.
 - Breaking change: CLI commands `check-profile` and `check-server` merged into single command `check`.
