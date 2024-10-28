@@ -62,15 +62,19 @@
             "organization": "{{ .Organization }}"
         }{{ if lt $i (subtract (len $.Education) 1) }},{{ end }}
         {{- end }}
-    ],
+    ]{{ if .Interests }},{{ end }}
+    {{- if .Interests }}
     "interests": [
         {{- range $i, $v := .Interests }}
         "{{ . }}"{{ if lt $i (subtract (len $.Interests) 1) }},{{ end }}
         {{- end }}
-    ],
+    ]{{ if .Hobbies }},{{ end }}
+    {{- end }}
+    {{- if .Hobbies }}
     "hobbies": [
         {{- range $i, $v := .Hobbies }}
         "{{ . }}"{{ if lt $i (subtract (len $.Hobbies) 1) }},{{ end }}
         {{- end }}
     ]
+    {{- end }}
 }
