@@ -188,7 +188,7 @@ At this point this is what your repository should contain:
 Push the code:
 ```bash
 git add .
-git commit -m "cicd: add cicd"
+git commit -m "add cicd"
 git push
 ```
 
