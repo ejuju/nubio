@@ -162,9 +162,6 @@ func (p *ResumeConfig) Check() (errs []error) {
 	}
 
 	// Check interests.
-	if len(p.Interests) == 0 {
-		errs = append(errs, errors.New("missing interests"))
-	}
 	for i, v := range p.Interests {
 		for v == "" {
 			errs = append(errs, fmt.Errorf("interest %d: empty text", i))
@@ -172,9 +169,6 @@ func (p *ResumeConfig) Check() (errs []error) {
 	}
 
 	// Check hobbies.
-	if len(p.Hobbies) == 0 {
-		errs = append(errs, errors.New("missing hobbies"))
-	}
 	for i, v := range p.Hobbies {
 		for v == "" {
 			errs = append(errs, fmt.Errorf("hobby %d: empty text", i))
