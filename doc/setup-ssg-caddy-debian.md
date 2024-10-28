@@ -180,7 +180,7 @@ jobs:
               -r .out/* "$SSH_USERNAME"@alexdoe.example:/var/www/alexdoe
 ```
 
-At this point this is what your repositery should contain:
+At this point this is what your repository should contain:
 - `/.github/workflows/deploy.yaml`: Github action for continuous deployment.
 - `/resume.json`: Resume configuration.
 - `/server.json`: Used for local development server.
