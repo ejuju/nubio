@@ -195,3 +195,10 @@ git push
 CI/CD is setup!
 You can now make modifications to your `resume.json` and
 the new changes will be deployed to your server when you push.
+
+## Additional notes and considerations
+
+Some aspects of this setup are not necessarily safe enough for all production use-cases,
+you may consider:
+- Creating a dedicated user on the server for your Github workflow.
+- Using StrictHostKeyChecking for SSH/SCP in the Github workflow.
