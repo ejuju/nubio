@@ -62,7 +62,7 @@
             "organization": "{{ .Organization }}"
         }{{ if lt $i (subtract (len $.Education) 1) }},{{ end }}
         {{- end }}
-    ]{{ if .Interests }},{{ end }}
+    ]{{ if (or .Interests .Hobbies) }},{{ end }}
     {{- if .Interests }}
     "interests": [
         {{- range $i, $v := .Interests }}
