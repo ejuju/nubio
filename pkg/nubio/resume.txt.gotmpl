@@ -28,14 +28,18 @@ Languages:
 - {{ .Label }} ({{ .Proficiency }})
 {{- end }}
 
+{{- if .Interests }}
 Interests:
 {{ range .Interests }}
 - {{ . }}
 {{- end }}
+{{- end }}
 
+{{- if .Hobbies }}
 Hobbies:
 {{ range .Hobbies }}
 - {{ . }}
+{{- end }}
 {{- end }}
 
 Links:

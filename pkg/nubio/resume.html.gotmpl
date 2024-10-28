@@ -231,6 +231,7 @@
             {{- end }}
         </section>
 
+        {{- if .Interests }}
         <section id="interests" class="card">
             <h2>Interests</h2>
             <hr>
@@ -238,7 +239,9 @@
                 {{ range .Interests }}<li class="kv"><span class="emoji color-fg-2">+</span>{{ . }}</li>{{ end }}
             </ul>
         </section>
+        {{- end }}
 
+        {{- if .Hobbies }}
         <section id="hobbies" class="card">
             <h2>Hobbies</h2>
             <hr>
@@ -246,6 +249,7 @@
                 {{ range .Hobbies }}<li class="kv"><span class="emoji color-fg-2">+</span>{{ . }}</li>{{ end }}
             </ul>
         </section>
+        {{- end }}
 
         <section id="exports" class="card">
             <a class="button" target="_blank" rel="noopener noreferrer" href="/resume.pdf">Open PDF</a>
