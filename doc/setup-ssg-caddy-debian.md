@@ -50,7 +50,7 @@ nubio run
 Your website is now running on [localhost:8080](http://localhost:8080).
 Use CTRL+C to stop the server.
 
-## Get a host with a publically accessible IP address.
+## Get a host with a publicly accessible IP address.
 
 Here, we will be using a Debian 12 VPS.
 You may use the provider of your choice for this.
