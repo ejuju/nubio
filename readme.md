@@ -43,7 +43,7 @@ go install github.com/ejuju/nubio@latest
 Your resume is configured using a single JSON file,
 usually named `resume.json`.
 
-A `profile.json` file typically contains:
+A `resume.json` file typically contains:
 - Contact details
 - External links
 - Work Experience
