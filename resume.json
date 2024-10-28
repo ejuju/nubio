@@ -161,16 +161,5 @@
             "title": "Bachelor of Business Administration (Hospitality Management)",
             "organization": "HTH (Amsterdam)"
         }
-    ],
-    "interests": [
-        "Web-related protocols (HTTP, TLS, TCP, DNS, SMTP)",
-        "Esoteric programming languages (Forth, Brainf*ck and others)",
-        "Creative coding"
-    ],
-    "hobbies": [
-        "Coding",
-        "Playing guitar",
-        "Cooking (and eating)",
-        "Climbing (bouldering)"
     ]
 }
