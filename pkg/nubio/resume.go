@@ -12,7 +12,7 @@ import (
 	"github.com/ejuju/nubio/pkg/httpmux"
 )
 
-// Publicly exportable user resume info.
+// Holds necessary information for rendering a resume.
 type ResumeConfig struct {
 	Slug string `json:"slug"` // Optional: Name as a URI-compatible slug (ex: "alex-doe").
 	Name string `json:"name"` // Full name (ex: "Alex Doe").
