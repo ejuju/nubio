@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.6.3
+- Resume sections "Interests" and "Hobbies" are now optional (not rendered if empty)
+
 ## v0.6.0
 - Breaking change: `config.json` is now split between `resume.json` and `server.json` files.
 - Breaking change: CLI command `check` is now split in `check-server-config` and `check-resume-config`
