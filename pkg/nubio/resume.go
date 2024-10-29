@@ -33,6 +33,7 @@ type ResumeConfig struct {
 
 	CustomCSSPath string `json:"custom_css_path"` // Path to custom CSS stylesheet. Not exported.
 	CustomCSS     string `json:"custom_css"`      // Literal value or populated by the corresponding file's content on load.
+	InlineCSS     bool   `json:"inline_css"`      // Set to true to include CSS directly in HTML.
 
 	// Public PGP key URL (without leading "https://").
 	// This field is overwritten on startup if a PGP key is provided in the app config.
