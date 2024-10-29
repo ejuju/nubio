@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.6.4
+- Add default accent color and improve styling
+
 ## v0.6.3
 - Resume sections "Interests" and "Hobbies" are now optional (not rendered if empty)
 
