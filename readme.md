@@ -2,6 +2,9 @@
 
 Nubio can be used as a static site generator, CLI, HTTP(S) server or Go library.
 
+> Nubio is still being designed and developed. Use at your own risk.
+> No retro-compatibility promises are made until v1 is reached.
+
 ## Introduction
 
 ### Features
