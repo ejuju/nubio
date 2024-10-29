@@ -3,6 +3,7 @@ package nubio
 import (
 	"bytes"
 	_ "embed"
+	"encoding/json"
 	templatehtml "html/template"
 	"io"
 	"net/http"
@@ -40,10 +41,6 @@ var (
 	TextRawTemplate string
 	TextTemplate    = mustParseTextTmpl("txt", TextRawTemplate)
 
-	//go:embed resume.json.gotmpl
-	JSONRawTemplate string
-	JSONTemplate    = mustParseTextTmpl("json", JSONRawTemplate)
-
 	//go:embed resume.md.gotmpl
 	MarkdownRawTemplate string
 	MarkdownTemplate    = mustParseTextTmpl("md", MarkdownRawTemplate)
@@ -68,7 +65,10 @@ func exportAndServe(conf *ResumeConfig, f ExportFunc, typ string) http.HandlerFu
 func ExportHTML(w io.Writer, conf *ResumeConfig) error     { return HTMLTemplate.Execute(w, conf) }
 func ExportText(w io.Writer, conf *ResumeConfig) error     { return TextTemplate.Execute(w, conf) }
 func ExportMarkdown(w io.Writer, conf *ResumeConfig) error { return MarkdownTemplate.Execute(w, conf) }
-func ExportJSON(w io.Writer, conf *ResumeConfig) error     { return JSONTemplate.Execute(w, conf) }
+
+func ExportJSON(w io.Writer, conf *ResumeConfig) error {
+	return json.NewEncoder(w).Encode(conf.ToResumeExport())
+}
 
 func ExportAndServePDF(conf *ResumeConfig) http.HandlerFunc {
 	return exportAndServe(conf, ExportPDF, "application/pdf")

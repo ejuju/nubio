@@ -39,7 +39,6 @@ type ResumeConfig struct {
 	PGPKeyURL  string `json:"pgp_key_url"`
 	PGPKeyPath string `json:"pgp_key_path"` // Path to PGP public key. Not exported.
 	PGPKey     string `json:"pgp_key"`      // Literal value or populated by the corresponding file's content on load.
-
 }
 
 // Read and decode resume config file.
