@@ -17,7 +17,7 @@ Ideas:
 - [ ] Inline custom CSS file in HTML page head to allow simply opening pages without server for local dev
 - [ ] Support i18n
 - [ ] Support notifying admin by email on internal server error (panic, etc.)
-- [ ] Add more builtin HTML and PDF templates
+- [ ] Add more builtin export templates (HTML and PDF)
 - [ ] Support serving static files from directory (on `/static/*`) (using file that list file paths, URI and corresponding MIME-type)
 - [ ] Support blogging / documentation (with Markdown-like files directory)
 - [ ] Support custom templates (HTML/MD/TXT)
