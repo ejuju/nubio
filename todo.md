@@ -14,6 +14,7 @@ Nice-to-haves:
 - [ ] Support providing HTTP redirects in config (for URL shortener like capabilities)
 
 Ideas:
+- [ ] Inline custom CSS file in HTML page head to allow simply opening pages without server for local dev
 - [ ] Support i18n
 - [ ] Support notifying admin by email on internal server error (panic, etc.)
 - [ ] Add more builtin HTML and PDF templates
