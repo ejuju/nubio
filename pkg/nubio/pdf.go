@@ -61,6 +61,12 @@ func ExportPDF(w io.Writer, conf *ResumeConfig) error {
 	pdf.SetFontSize(fontSizeTitle)
 	pdf.SetFontStyle("B")
 	pdf.MultiCell(0, fontSizeTitle, conf.Name, "", "C", false)
+	pdf.SetFontSize(fontSize)
+
+	// Append short description.
+	pdf.Ln(fontSize)
+	pdf.SetFontStyle("")
+	pdf.MultiCell(0, fontSizeTitle, conf.Description, "", "C", false)
 
 	// Append horizontal line below title.
 	pdf.Ln(fontSizeTitle)
@@ -70,11 +76,15 @@ func ExportPDF(w io.Writer, conf *ResumeConfig) error {
 	pdf.Ln(24)
 	writeHeading(pdf, "Work Experience")
 	for _, v := range conf.WorkExperience {
+		orgTxt := ""
+		if v.Organization != "" {
+			orgTxt = " at " + v.Organization
+		}
 		pdf.Ln(16)
 		pdf.SetFontSize(fontSize)
 		pdf.SetFontStyle("B")
 		pdf.SetTextColor(30, 30, 30)
-		pdf.MultiCell(0, fontSize, v.Title+" at "+v.Organization, "", "", false)
+		pdf.MultiCell(0, fontSize, v.Title+orgTxt, "", "", false)
 		pdf.Ln(6)
 		pdf.SetFontStyle("")
 		pdf.SetTextColor(50, 50, 50)

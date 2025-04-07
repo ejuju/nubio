@@ -39,8 +39,6 @@ func RunSSG(args ...string) (exitcode int) {
 		"index.html":                            ExportHTML,
 		strings.TrimPrefix(PathResumePDF, "/"):  ExportPDF,
 		strings.TrimPrefix(PathResumeJSON, "/"): ExportJSON,
-		strings.TrimPrefix(PathResumeTXT, "/"):  ExportText,
-		strings.TrimPrefix(PathResumeMD, "/"):   ExportMarkdown,
 	}
 
 	// Generate static files.

@@ -14,8 +14,9 @@ import (
 
 // Holds necessary information for rendering a resume.
 type ResumeConfig struct {
-	Slug string `json:"slug"` // Optional: Name as a URI-compatible slug (ex: "alex-doe").
-	Name string `json:"name"` // Full name (ex: "Alex Doe").
+	Slug        string `json:"slug"`        // Optional: Name as a URI-compatible slug (ex: "alex-doe").
+	Name        string `json:"name"`        // Full name (ex: "Alex Doe").
+	Description string `json:"description"` // Short description.
 
 	// Public domain name (ex: "alexdoe.example")
 	// Note:
@@ -57,6 +58,15 @@ func LoadResumeConfig(path string) (conf *ResumeConfig, err error) {
 	// Create name slug if none is provided.
 	if conf.Slug == "" {
 		conf.Slug = httpmux.Slugify(conf.Name)
+	}
+
+	if conf.Description == "" {
+		for _, v := range conf.WorkExperience {
+			if v.To == "now" {
+				conf.Description = v.Title
+				break
+			}
+		}
 	}
 
 	// Load PGP key if provided.
@@ -195,6 +205,7 @@ var (
 	maxExpDate = time.Date(3000, 1, 1, 0, 0, 0, 0, time.UTC)
 )
 
+// Note: Organization is optional.
 func (v *WorkExperience) Check() (errs []error) {
 	if v.From == "" {
 		errs = append(errs, errors.New("missing start date"))
@@ -213,9 +224,6 @@ func (v *WorkExperience) Check() (errs []error) {
 
 	if v.Title == "" {
 		errs = append(errs, errors.New("missing title"))
-	}
-	if v.Organization == "" {
-		errs = append(errs, errors.New("missing organization"))
 	}
 	if v.Location == "" {
 		errs = append(errs, errors.New("missing location"))

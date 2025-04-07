@@ -1,7 +1,7 @@
 package nubio
 
 // Holds the resume information that is actually public.
-// This type definition is mainly needed for JSON exports,
+// This type definition is needed for JSON exports,
 // to "select" which fields are exported.
 type ResumeExport struct {
 	Slug           string           `json:"slug"`

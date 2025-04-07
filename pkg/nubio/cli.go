@@ -86,7 +86,7 @@ var commandExport = &cli.Command{
 			log.Println("missing argument(s): format, resume_config_path, output_path")
 			return 1
 		}
-		format := ExportFormat(args[0])
+		format := ExportType(args[0])
 		in := args[1]
 		out := args[2]
 
@@ -116,10 +116,6 @@ var commandExport = &cli.Command{
 			exporter = ExportPDF
 		case ExportTypeJSON:
 			exporter = ExportJSON
-		case ExportTypeTXT:
-			exporter = ExportText
-		case ExportTypeMD:
-			exporter = ExportMarkdown
 		}
 		f, err := os.OpenFile(out, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 		if err != nil {

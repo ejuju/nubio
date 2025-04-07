@@ -4,46 +4,31 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
-	templatehtml "html/template"
+	"html/template"
 	"io"
 	"net/http"
-	templatetxt "text/template"
 )
 
-type ExportFormat string
+type ExportType string
 
 const (
-	ExportTypeHTML ExportFormat = "html"
-	ExportTypePDF  ExportFormat = "pdf"
-	ExportTypeJSON ExportFormat = "json"
-	ExportTypeTXT  ExportFormat = "txt"
-	ExportTypeMD   ExportFormat = "md"
+	ExportTypeHTML ExportType = "html"
+	ExportTypePDF  ExportType = "pdf"
+	ExportTypeJSON ExportType = "json"
 )
 
-var tmplFuncs = templatehtml.FuncMap{
+var tmplFuncs = template.FuncMap{
 	"subtract": func(a, b int) int { return a - b },
 }
 
-func mustParseHTMLTmpl(name, raw string) *templatehtml.Template {
-	return templatehtml.Must(templatehtml.New(name).Funcs(tmplFuncs).Parse(raw))
-}
-
-func mustParseTextTmpl(name, raw string) *templatetxt.Template {
-	return templatetxt.Must(templatetxt.New(name).Funcs(tmplFuncs).Parse(raw))
+func mustParseHTMLTmpl(name, raw string) *template.Template {
+	return template.Must(template.New(name).Funcs(tmplFuncs).Parse(raw))
 }
 
 var (
 	//go:embed resume.html.gotmpl
 	HTMLRawTemplate string
 	HTMLTemplate    = mustParseHTMLTmpl("html", HTMLRawTemplate)
-
-	//go:embed resume.txt.gotmpl
-	TextRawTemplate string
-	TextTemplate    = mustParseTextTmpl("txt", TextRawTemplate)
-
-	//go:embed resume.md.gotmpl
-	MarkdownRawTemplate string
-	MarkdownTemplate    = mustParseTextTmpl("md", MarkdownRawTemplate)
 )
 
 type ExportFunc func(w io.Writer, conf *ResumeConfig) error
@@ -62,9 +47,7 @@ func exportAndServe(conf *ResumeConfig, f ExportFunc, typ string) http.HandlerFu
 	}
 }
 
-func ExportHTML(w io.Writer, conf *ResumeConfig) error     { return HTMLTemplate.Execute(w, conf) }
-func ExportText(w io.Writer, conf *ResumeConfig) error     { return TextTemplate.Execute(w, conf) }
-func ExportMarkdown(w io.Writer, conf *ResumeConfig) error { return MarkdownTemplate.Execute(w, conf) }
+func ExportHTML(w io.Writer, conf *ResumeConfig) error { return HTMLTemplate.Execute(w, conf) }
 
 func ExportJSON(w io.Writer, conf *ResumeConfig) error {
 	return json.NewEncoder(w).Encode(conf.ToResumeExport())
@@ -80,12 +63,4 @@ func ExportAndServeHTML(conf *ResumeConfig) http.HandlerFunc {
 
 func ExportAndServeJSON(conf *ResumeConfig) http.HandlerFunc {
 	return exportAndServe(conf, ExportJSON, "application/json")
-}
-
-func ExportAndServeText(conf *ResumeConfig) http.HandlerFunc {
-	return exportAndServe(conf, ExportText, "text/plain")
-}
-
-func ExportAndServeMarkdown(conf *ResumeConfig) http.HandlerFunc {
-	return exportAndServe(conf, ExportMarkdown, "text/markdown")
 }

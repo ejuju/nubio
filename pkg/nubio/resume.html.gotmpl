@@ -32,16 +32,8 @@
             padding: 0;
         }
 
-        html {
-            height: 100%;
-        }
-
-        body {
-            min-height: 100%;
-            background-color: var(--color-bg-0);
-            color: var(--color-fg-1);
-            font-family: sans-serif;
-        }
+        html { height: 100%; }
+        body { min-height: 100%; background-color: var(--color-bg-0); color: var(--color-fg-1); font-family: sans-serif; }
 
         main {
             padding: 16px;
@@ -52,36 +44,13 @@
             gap: 24px;
         }
 
-        a {
-            color: currentColor;
-            font-weight: bold;
-        }
-
-        h1 {
-            font-size: 150%;
-            color: var(--color-fg-0);
-        }
-
-        h2 {
-            color: var(--color-fg-1);
-            font-size: 125%;
-        }
-
-        h3 {
-            color: var(--color-fg-1);
-            font-size: 100%;
-        }
-
-        ul {
-            list-style-type: none;
-        }
-
-        hr {
-            width: 100%;
-            background-color: var(--color-bg-2);
-            height: 1px;
-            border: none;
-        }
+        a { color: currentColor; font-weight: bold; }
+        h1 { font-size: 150%; color: var(--color-fg-0); text-align: center; }
+        h2 { color: var(--color-fg-1); font-size: 125%; }
+        h3 { color: var(--color-fg-1); font-size: 100%; }
+        ul { list-style-type: none; }
+        hr { width: 100%; background-color: var(--color-bg-2); height: 1px; border: none; }
+        footer { max-width: 600px; margin: 0 auto; padding: 32px 16px; text-align: center; }
 
         .card {
             padding: 24px 16px;
@@ -92,22 +61,12 @@
             gap: 24px;
         }
 
-        ul.hlist {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            list-style-type: none;
-        }
-
+        ul.vlist { display: grid; gap: 8px; }
+        ul.hlist { display: flex; flex-wrap: wrap; gap: 8px; list-style-type: none; }
         ul.hlist .tag {
             padding: 4px 8px;
             background-color: var(--color-bg-2);
             border-left: 2px solid var(--color-accent);
-        }
-
-        ul.vlist {
-            display: grid;
-            gap: 8px;
         }
 
         .button {
@@ -121,45 +80,14 @@
             text-decoration: none;
         }
 
-        .emoji {
-            font-size: 110%;
-            font-weight: bold;
-            color: #ffcb4c;
-        }
+        .emoji { font-size: 110%; font-weight: bold; color: #ffcb4c; }
+        .kv { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: baseline; }
+        .grid-8px { display: grid; gap: 8px; }
+        .grid-12px { display: grid; gap: 12px; }
+        .color-fg-2 { color: var(--color-fg-2); }
 
-        .kv {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 8px;
-            align-items: baseline;
-        }
-
-        .grid-8px {
-            display: grid;
-            gap: 8px;
-        }
-
-        .grid-12px {
-            display: grid;
-            gap: 12px;
-        }
-
-        .color-fg-2 {
-            color: var(--color-fg-2);
-        }
-
-        #exports {
-            display: flex;
-            flex-wrap: wrap;
-            flex-direction: row;
-            gap: 12px;
-        }
-
-        footer {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 32px 16px;
-        }
+        #top>p { text-align: center; }
+        #top>ul { justify-content: center; }
     </style>
 
     {{- if .CustomCSS }}
@@ -171,35 +99,17 @@
     <main>
         <section id="top" class="card">
             <h1>{{ .Name }}</h1>
+            <p>{{ .Description }}</p>
             <ul class="hlist">
-                <li>
-                    <a class="button" href="mailto:{{ .EmailAddress }}">{{.EmailAddress }}</a>
-                </li>
+                <li><a class="button" href="mailto:{{ .EmailAddress }}">{{.EmailAddress }}</a></li>
                 {{- if .PGPKeyURL }}
-                <li>
-                    <a target="_blank" class="button" href="https://{{ .PGPKeyURL }}">PGP key</a>
-                </li>
+                <li><a target="_blank" class="button" href="https://{{ .PGPKeyURL }}">PGP key</a></li>
                 {{- end }}
                 {{- range .Links }}
-                <li>
-                    <a target="_blank" rel="noopener noreferrer" class="button" href="https://{{ .URL }}">{{ .Label
-                        }}</a>
-                </li>
+                <li><a target="_blank" rel="noopener noreferrer" class="button" href="https://{{ .URL }}">{{ .Label }}</a></li>
                 {{- end }}
+                <li><a class="button" target="_blank" rel="noopener noreferrer" href="/resume.pdf">Open as PDF</a></li>
             </ul>
-        </section>
-
-        <section id="experiences" class="card">
-            <h2>Work Experience</h2>
-            {{- range .WorkExperience }}
-            <hr>
-            <section class="grid-12px">
-                <h3>{{ .Title }} at {{ .Organization }}</h3>
-                <p>{{ .Description }}</p>
-                <p class="color-fg-2">{{ .From }} - {{ .To }} ({{ .Location }})</p>
-                <ul class="hlist">{{ range .Skills }}<li class="tag">{{ . }}</li>{{ end }}</ul>
-            </section>
-            {{- end }}
         </section>
 
         <section id="skills" class="card">
@@ -209,6 +119,19 @@
             <section class="grid-8px">
                 <h3>{{ .Title }}</h3>
                 <ul class="hlist">{{ range .Tools }}<li class="tag">{{ . }}</li>{{ end }}</ul>
+            </section>
+            {{- end }}
+        </section>
+
+        <section id="experiences" class="card">
+            <h2>Work Experience</h2>
+            {{- range .WorkExperience }}
+            <hr>
+            <section class="grid-12px">
+                <h3>{{ .Title }}{{ if .Organization }} at {{ .Organization }}{{ end }}</h3>
+                <p>{{ .Description }}</p>
+                <p class="color-fg-2">{{ .From }} - {{ .To }} ({{ .Location }})</p>
+                <ul class="hlist">{{ range .Skills }}<li class="tag">{{ . }}</li>{{ end }}</ul>
             </section>
             {{- end }}
         </section>
@@ -254,13 +177,6 @@
             </ul>
         </section>
         {{- end }}
-
-        <section id="exports" class="card">
-            <a class="button" target="_blank" rel="noopener noreferrer" href="/resume.pdf">Open PDF</a>
-            <a class="button" target="_blank" rel="noopener noreferrer" href="/resume.txt">Open TXT</a>
-            <a class="button" target="_blank" rel="noopener noreferrer" href="/resume.json">Open JSON</a>
-            <a class="button" target="_blank" rel="noopener noreferrer" href="/resume.md">Open Markdown</a>
-        </section>
     </main>
 
     <footer>

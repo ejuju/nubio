@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.7.0
+- Remove "Markdown" and "plain text" exports formats.
+- Support resume description (field `description`).
+- Improve website style.
+- Move skills to top of website.
+- Make resume `organization` field optional.
+
 ## v0.6.4
 - Add default accent color and improve styling
 

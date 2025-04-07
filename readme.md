@@ -1,4 +1,4 @@
-# Nubio: Self-hosted online resume for developers
+# Nubio: Self-hosted online resume tailored for developers
 
 Nubio can be used as a static site generator, CLI, HTTP(S) server or Go library.
 
@@ -10,7 +10,7 @@ Nubio can be used as a static site generator, CLI, HTTP(S) server or Go library.
 ### Features
 
 - Configure your resume with a single JSON file.
-- Export your resume as PDF, JSON, plain text, Markdown, or static HTML.
+- Export your resume as HTML, PDF, or JSON.
 - Serve your resume as a website (or generate static website files).
 - Auto HTTPS (get and renew certs using ACME).
 - Single executable.
@@ -20,14 +20,10 @@ Nubio can be used as a static site generator, CLI, HTTP(S) server or Go library.
 - Website: [juliensellier.com](https://juliensellier.com/)
 - PDF export: [juliensellier.com/resume.pdf](https://juliensellier.com/resume.pdf)
 - JSON export: [juliensellier.com/resume.json](https://juliensellier.com/resume.json)
-- Plain-text export: [juliensellier.com/resume.txt](https://juliensellier.com/resume.json)
-- Markdown export: [juliensellier.com/resume.md](https://juliensellier.com/resume.json)
 
-### 3rd-party Go dependencies
+### 3rd-party dependencies
 
 - PDF generation: [github.com/go-pdf/fpdf](https://github.com/go-pdf/fpdf)
-- HTTPS/ACME: [golang.org/x/crypto](https://golang.org/x/crypto)
-- Unicode normalization: [golang.org/x/text](https://golang.org/x/text)
 
 ---
 
@@ -85,8 +81,6 @@ Supported export formats are:
 - `html`
 - `pdf`
 - `json`
-- `txt` (plain-text)
-- `md` (Markdown)
 
 ### Running as HTTP(S) server
 

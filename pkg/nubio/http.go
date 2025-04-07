@@ -18,8 +18,6 @@ const (
 	PathResumeHTML = "/"
 	PathResumeJSON = "/resume.json"
 	PathResumePDF  = "/resume.pdf"
-	PathResumeTXT  = "/resume.txt"
-	PathResumeMD   = "/resume.md"
 	PathPGPKey     = "/pgp.asc"
 	PathCustomCSS  = "/custom.css"
 )
@@ -34,8 +32,6 @@ func NewHTTPHandler(fallback http.Handler, conf *ResumeConfig) http.Handler {
 		PathResumeHTML: {"GET": ExportAndServeHTML(conf)},
 		PathResumePDF:  {"GET": ExportAndServePDF(conf)},
 		PathResumeJSON: {"GET": ExportAndServeJSON(conf)},
-		PathResumeTXT:  {"GET": ExportAndServeText(conf)},
-		PathResumeMD:   {"GET": ExportAndServeMarkdown(conf)},
 	}
 	if len(conf.PGPKey) > 0 {
 		m[PathPGPKey] = map[string]http.Handler{"GET": httpmux.TextHandler(string(conf.PGPKey))}
@@ -89,8 +85,6 @@ func generateSitemapXML(domain string) []byte {
 		PathResumeHTML,
 		PathResumeJSON,
 		PathResumePDF,
-		PathResumeTXT,
-		PathResumeMD,
 	}
 
 	b := &bytes.Buffer{}
