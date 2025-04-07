@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.7.1
+- Upgrade golang.org/x/net
+
 ## v0.7.0
 - Remove "Markdown" and "plain text" exports formats.
 - Support resume description (field `description`).
